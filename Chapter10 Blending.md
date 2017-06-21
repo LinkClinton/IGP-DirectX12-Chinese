@@ -4,11 +4,13 @@
 
 ![10.1](Images/10.1.png)
 
-**注意**:我们现在提到的后台缓冲可以认为就是正在渲染即将要呈现的Render Target。然而在之后我们是可以渲染一个离屏的Render Target。
-
 <font size = 2>**目标**</font>
 
 - 理解如何使用混合，并且能够在Direct3D中使用它。
 - 学习Direct3D支持的不同的混合模式。
 - 发现如何通过使用Alpha去控制图元的透明度。
 - 学习如何使用HLSL中的Clip函数阻止一个像素绘制到后台缓冲中。
+
+## 10.1 THE BLENDING EQUATION
+
+我们设$C_src$
