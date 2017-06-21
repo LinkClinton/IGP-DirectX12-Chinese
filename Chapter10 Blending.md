@@ -9,7 +9,7 @@
 ![10.1](Images/10.1.png)
 
 
-<font size = 2>**目标**</font>
+**目标**
 
 - 理解如何使用混合，并且能够在`Direct3D`中使用它。
 - 学习`Direct3D`支持的不同的混合模式。
@@ -23,14 +23,14 @@
 但是在使用混合的情况下，C<sub>src</sub>和C<sub>dst</sub>将会混合成一个新的颜色C，并且C将会替代C<sub>dst</sub>作为后台缓冲里面的像素(你可以认为新的颜色C将会被写入到后台缓冲中去)。
 `Direct3D`使用下面的这个方程来混合源和目标像素的颜色:
 
-<center>C = C<sub>src</sub> × F<sub>src</sub> ^ C<sub>dst</sub> × F<sub>dst</sub> </center>
+**C = C<sub>src</sub> × F<sub>src</sub> ^ C<sub>dst</sub> × F<sub>dst</sub>**
 
 F将会在下面介绍，主要是通过F来让我们有更多的方式去实现更多的效果。
 `×` 符合表示的是向量的点积，`^`(他那个符合我打不出，我们暂且叫做混合操作)符号是一种由我们自主定义的运算，具体下面会介绍。
 
 上面的方程是用于处理颜色分量中的RGB的，对于Alpha值我们单独使用下面的方程处理，这个方程和上面的是极为相似的：
 
-<center>A = A<sub>src</sub>F<sub>src</sub> ^ A<sub>dst</sub>F<sub>dst</sub></center>
+**A = A<sub>src</sub>F<sub>src</sub> ^ A<sub>dst</sub>F<sub>dst</sub>**
 
 这个方程基本上是一样的，但是这样分开处理的话就可以让`^`运算可以不同了。我们将RGB和Alpha分开处理的动机就是让我们能够单独处理RGB和Alpha值，而两者不互相影响。
 
@@ -47,8 +47,9 @@ Alpha的混合操作也是一样的。
 当然你可以使用不同的操作来分别处理RGB和Alpha的混合。
 举个例子来说，你可以在RGB的混合中使用`+`，然后在Alpha的混合中使用`-`。
 
-<center>C = C<sub>src</sub> × F<sub>src</sub> + C<sub>dst</sub> × F<sub>dst</sub> </center>
-<center>A = A<sub>dst</sub>F<sub>dst</sub> - A<sub>src</sub>F<sub>src</sub></center>
+**C = C<sub>src</sub> × F<sub>src</sub> + C<sub>dst</sub> × F<sub>dst</sub>** 
+
+**A = A<sub>dst</sub>F<sub>dst</sub> - A<sub>src</sub>F<sub>src</sub>**
 
 
 最近在`Direct3D`中加入了一个新的特征，我们可以使用逻辑运算符来代替上面的混合操作。
