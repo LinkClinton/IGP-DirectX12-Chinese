@@ -59,7 +59,7 @@ Alpha的混合操作也是一样的。
 并且你使用逻辑运算符的话，你需要确保你的`Render Target`的格式支持(支持的格式应当是`UINT`的变种)。
 ## 10.3 BLEND FACTORS
 
-通过改变`Factors`我们可以设置更多的不同的混合组合，从而来实现更多的不同的效果。
+通过改变`Factors(因素)`，我们可以设置更多的不同的混合组合，从而来实现更多的不同的效果。
 我们将会在下面解释一些混合组合，但是你还是要去体验一下他们的效果，从而能够有一个概念。
 下面将会介绍一些基础的`Factors`。你可以去看SDK文档里面的`D3D12_BLEND`枚举了解到更多高级的`Factors`。
 我们设**C<sub>src</sub> = (r<sub>src</sub>, g<sub>src</sub>, b<sub>src</sub>)**，**A<sub>src</sub> = a<sub>src</sub>**(这个RGBA值是由像素着色器输出的)，
@@ -77,6 +77,36 @@ Alpha的混合操作也是一样的。
 - `D3D12_BLEND_INV_DEST_COLOR`: **F = (1 - a<sub>dst</sub>, 1 - a<sub>dst</sub>, 1 - a<sub>dst</sub>)**
 - `D3D12_BLEND_SRC_ALPHA_SAT`: **F = (a'<sub>src</sub>, a'<sub>src</sub>, a'<sub>src</sub>, a'<sub>src</sub>), a'<sub>src</sub> = clamp(a<sub>src</sub>, 0, 1)**
 - `D3D12_BLEND_BLEND_FACTOR`: **F = (r, g, b, a)**
+
+最后一个枚举类型中的参数 **(r ,g ,b ,a)** 通过下面这个函数设置。
+
+`ID3D12GraphicsCommandList::OMSetBlendFactor`
+
+参数是一个`Float[4]`，表示4个分量的值，如果设置为`nullptr`那么就默认全是1。
+
+## 10.4 BLEND STATE
+
+我们已经讨论过了混合操作符和混合因素，但是我们如何在`Direct3D`里面设置这些参数呢？
+和其他的`Direct3D`的状态一样，混合状态也是`PSO(渲染管道)`的一个部分。
+之前我们使用的都是默认的混合状态(禁用状态)。
+
+我们如果要使用非默认的混合状态，我们必须填充`D3D12_BLEND_DESC`结构。
+
+```C++
+    struct D3D12_BLEND_DESC{
+        bool AlphaToCoverageEnable; //默认是False
+        bool IndependentBlendEnable; //默认是False
+        D3D11_RENDER_TARGET_BLEND_DESC RenderTarget[8];
+    };
+```
+
+- `AlphaToCoverageEnable`:设置成`true`开启`alpha-to-coverage`技术，这个技术是多重采样技术在渲染某些纹理 **(这里的翻译无法保证正确性，因此就使用某些纹理代替)** 的时候使用的。设置成`false`来关闭这个技术。`alpha-to-coverage`技术需要多重采样开启才能使用(换言之就是必须在创建后台缓冲和深度缓冲的时候开启多重采样)。
+- `IndependentBlendEnable`:`Direct3D`最多支持同时渲染8个`Render Target`。如果这个属性设置成`true`，那么就可以在渲染不同的'Render Target'的时候使用不同的混合参数(例如混合因素，混合操作符，混合是否开启等)。如果设置成`false`，那么所有的`Render Target`就会使用同样的混合方法(具体来说就是`D3D12_BLEND_DESC::RenderTarget`中的第一个元素作为所有的`Render Target`使用的混合方法)。对于现在来说，我们一次只使用一个`Render Target`。
+- `RenderTarget`:第i个元素描述第i个`Render Target`使用的混合方法，如果`IndependentBlendEnable`设置成`false`，那么所有的`Render Target`就全部使用`RenderTarget[0]`这个混合方法去进行混合。
+
+
+
+
 
 
 
