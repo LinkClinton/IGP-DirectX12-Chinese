@@ -101,7 +101,9 @@ Alpha的混合操作也是一样的。
 ```
 
 - `AlphaToCoverageEnable`:设置成`true`开启`alpha-to-coverage`技术，这个技术是多重采样技术在渲染某些纹理 **(这里的翻译无法保证正确性，因此就使用某些纹理代替)** 的时候使用的。设置成`false`来关闭这个技术。`alpha-to-coverage`技术需要多重采样开启才能使用(换言之就是必须在创建后台缓冲和深度缓冲的时候开启多重采样)。
-- `IndependentBlendEnable`:`Direct3D`最多支持同时渲染8个`Render Target`。如果这个属性设置成`true`，那么就可以在渲染不同的'Render Target'的时候使用不同的混合参数(例如混合因素，混合操作符，混合是否开启等)。如果设置成`false`，那么所有的`Render Target`就会使用同样的混合方法(具体来说就是`D3D12_BLEND_DESC::RenderTarget`中的第一个元素作为所有的`Render Target`使用的混合方法)。对于现在来说，我们一次只使用一个`Render Target`。
+
+- `IndependentBlendEnable`:`Direct3D`最多支持同时渲染8个`Render Target`。如果这个属性设置成`true`，那么就可以在渲染不同的`Render Target`的时候使用不同的混合参数(例如混合因素，混合操作符，混合是否开启等)。如果设置成`false`，那么所有的`Render Target`就会使用同样的混合方法(具体来说就是`D3D12_BLEND_DESC::RenderTarget`中的第一个元素作为所有的`Render Target`使用的混合方法)。对于现在来说，我们一次只使用一个`Render Target`。
+
 - `RenderTarget`:第i个元素描述第i个`Render Target`使用的混合方法，如果`IndependentBlendEnable`设置成`false`，那么所有的`Render Target`就全部使用`RenderTarget[0]`这个混合方法去进行混合。
 
 
