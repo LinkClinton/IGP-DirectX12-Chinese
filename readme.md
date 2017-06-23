@@ -14,9 +14,6 @@
 - [Chapter 9 Texturing]()
 - [Chapter 10 Blending](https://github.com/LinkClinton/IGP-DirectX12-Chinese/blob/master/Chapter10%20Blending.md)
 - [Chapter 11 Stenciling]()
-- [Chapter 12 The Geometry Shader]()
-- [Chapter 13 The Compute Shader]()
-- [Chapter 14 The Tessellation Stages]()
 - [Chapter 17 Picking]()
 - [Chapter 23 Character Animation]()
 
@@ -27,3 +24,5 @@
 当然你可以参考`SharpDX`中的代码。
 
 如果你也想参与翻译的话，可以联系我。
+
+最近沉迷游戏不可自拔。
