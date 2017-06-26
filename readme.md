@@ -12,7 +12,7 @@
 - [Chapter 7 Drawing in Direct3D Part II]()
 - [Chapter 8 Lighting]()
 - [Chapter 9 Texturing]()
-- [Chapter 10 Blending](https://github.com/LinkClinton/IGP-DirectX12-Chinese/blob/master/Chapter10%20Blending.md)
+- [Chapter 10 Blending](Chapter10%20Blending.md)
 - [Chapter 11 Stenciling]()
 - [Chapter 17 Picking]()
 - [Chapter 23 Character Animation]()
@@ -20,6 +20,8 @@
 ##
 
 因为现在主要是使用`SharpDX`，因此例子可能就不会重新写以及翻译了。
+
+如果有些地方会有些问题，比如标题的链接什么的，建议换个`MarkDown`阅读就好了。
 
 当然你可以参考`SharpDX`中的代码。
 
