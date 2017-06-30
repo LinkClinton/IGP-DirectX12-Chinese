@@ -7,3 +7,24 @@
 
 **目标**
 
+- 基本上了解`Direct3D`在3D程序编写上扮演的角色。
+- 理解`COM`在`Direct3D`里面中的作用。
+- 了解基本的图形概念，例如2D图片如何储存的，页面的过滤，深度缓存，多重采样和`CPU`与`GPU`的交互。
+- 学习如何使用计时函数实现高精度的计时器。
+- 学习如何初始化`Direct3D`。
+
+## <span id = "4.1"> 4.1 PRELIMINARIES </span>
+
+初始化`Direct3D`我们需要了解一些基础的`Direct3D`类型和一些基础的图形概念。
+我们在这一段中介绍这些类型和概念，所以不要认为我们离题了。
+
+### <span id = "4.1.1"> 4.1.1 Direct3D 12 Overview </span>
+
+`Direct3D` 是一个用于控制和管理`GPU`(**graphics	processing	unit**)的底层的图形`API`(**application	programming	interface**)，它能够让我们使用硬件加速渲染虚拟的3D世界。
+我们如果要提交给`GPU`一个指令去清理`Render Target`(屏幕)，我们可以通过使用`Direct3D`函数来做到。
+`Direct3D`和硬件驱动将会把`Direct3D`的指令翻译成可以被`CPU`理解的机器语言。
+我们并不需要关心具体使用的`GPU`是什么，我们只需要知道他是否支持我们正在使用的`Direct3D`的版本。
+通常来说`GPU`厂家，例如`NVIDIA`,`Intel`,`AMD`都会提供支持`Direct3D`的驱动。
+
+`Direct3D 12`增加了一些新的特性，但是相比以前的版本来说，最大的改进还是重新设计了它，减少了对`CPU`的消耗和提高了对多线程的支持。
+为了达到这个目的，`Direct3D 12`比`Direct3D 11`变得更加底层。 
