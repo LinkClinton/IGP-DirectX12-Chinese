@@ -1,4 +1,4 @@
-# <span id = "10"> Chapter10 Blending </span>
+# <span id = "10"> Chapter 10 Blending </span>
 
 观察下方图片[10.1](#Image10.1)。
 我们在这一帧中最开始渲染的是地形和木箱，因此地形和木箱的像素就被储存在后台缓冲中。
@@ -170,7 +170,7 @@ Alpha的混合操作也是一样的。
 
 **<center>C = C<sub>src</sub> × (1, 1, 1) - C<sub>dst</sub> × (1, 1, 1)</center>**
 
-**<center>C = C<sub>src</sub> + C<sub>dst</sub></center>**
+**<center>C = C<sub>src</sub> - C<sub>dst</sub></center>**
 
 ### <span id = "10.5.3"> 10.5.3 Multiplying </span>
 
@@ -178,9 +178,9 @@ Alpha的混合操作也是一样的。
 
 如果我们想将源像素和目标像素相乘(参见[10.4](#Image10.4))。方程如下：
 
-**<center>C = C<sub>src</sub> × (0, 0, 0) - C<sub>dst</sub> × C<sub>src</sub></center>**
+**<center>C = C<sub>src</sub> × (0, 0, 0) x C<sub>dst</sub> × C<sub>src</sub></center>**
 
-**<center>C = C<sub>src</sub> + C<sub>dst</sub></center>**
+**<center>C = C<sub>src</sub> x C<sub>dst</sub></center>**
 
 ### <span id = "10.5.4"> 10.5.4 Transparency </span>
 
@@ -188,14 +188,14 @@ Alpha的混合操作也是一样的。
 我们设不透明度为**A**，透明度为**T**。那么透明度和不透明度的关系就是**T = 1 - A**。
 比如不透明度是0.4,那么透明度就是0.6。现在我们想将源像素和目标像素在保留源像素的不透明度的情况下，将目标像素透明。方程如下：
 
-**<center>C = C<sub>src</sub> × (a<sub>src</sub>, a<sub>src</sub>, a<sub>src</sub>) - C<sub>dst</sub> × (1 - a<sub>src</sub>, 1 - a<sub>src</sub>, 1 - a<sub>src</sub>)</center>**
+**<center>C = C<sub>src</sub> × (a<sub>src</sub>, a<sub>src</sub>, a<sub>src</sub>) + C<sub>dst</sub> × (1 - a<sub>src</sub>, 1 - a<sub>src</sub>, 1 - a<sub>src</sub>)</center>**
 
 **<center>C = a<sub>src</sub> × C<sub>src</sub> + (1 - a<sub>src</sub>) × C<sub>dst</sub></center>**
 
 举个例子就是，我们假设**a<sub>src</sub> = 0.25**，就是不透明度为**25%**。
 当源像素和目标像素混合的时候，我们希望保留 **25%** 的源像素，**75%** 的目标像素(这里目标像素在源像素的前面，其实就是说决定目标像素的物体在决定源像素的物体前面)。方程如下：
 
-**<center>C = C<sub>src</sub> × (a<sub>src</sub>, a<sub>src</sub>, a<sub>src</sub>) - C<sub>dst</sub> × (1 - a<sub>src</sub>, 1 - a<sub>src</sub>, 1 - a<sub>src</sub>)</center>**
+**<center>C = C<sub>src</sub> × (a<sub>src</sub>, a<sub>src</sub>, a<sub>src</sub>) + C<sub>dst</sub> × (1 - a<sub>src</sub>, 1 - a<sub>src</sub>, 1 - a<sub>src</sub>)</center>**
 
 **<center>C = 0.25 × C<sub>src</sub> + 0.75 × C<sub>dst</sub></center>**
 
