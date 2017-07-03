@@ -1,4 +1,4 @@
-# <span id = "10"> Chapter 10 Blending </span>
+# <element id = "10"> Chapter 10 Blending </element>
 
 观察下方图片[10.1](#Image10.1)。
 我们在这一帧中最开始渲染的是地形和木箱，因此地形和木箱的像素就被储存在后台缓冲中。
@@ -15,7 +15,7 @@
 - 发现如何通过使用Alpha去控制图元的透明度。
 - 学习如何使用HLSL中的Clip函数阻止一个像素绘制到后台缓冲中。
 
-## <span id = "10.1">  10.1 THE BLENDING EQUATION </span>
+## <element id = "10.1">  10.1 THE BLENDING EQUATION </element>
 
 我们设**C<sub>src**</sub>表示从我们的像素着色器(**PixelShader**)输出的第**i**,**j**个像素，也就是我们正在光栅化的像素，然后我们设**C<sub>dst**</sub>表示现在在后台缓冲中第**i**,**j**个像素。
 如果不使用混合技术的话，像素**C<sub>src**</sub>将会替代**C<sub>dst**</sub>(前提是他能够通过深度和模板测试)。
@@ -34,7 +34,7 @@ F将会在下面介绍，主要是通过F来让我们有更多的方式去实现更多的效果。
 这个方程基本上是一样的，但是这样分开处理的话就可以让`^`运算可以不同了。我们将RGB和Alpha分开处理的动机就是让我们能够单独处理RGB和Alpha值，而两者不互相影响。
 
 
-## <span id = "10.2"> 10.2 BLEND OPERATIONTS </span>
+## <element id = "10.2"> 10.2 BLEND OPERATIONTS </element>
 
 - `D3D12_BLEND_OP_ADD`: **C = C<sub>src</sub> × F<sub>src</sub> + C<sub>dst</sub> × F<sub>dst</sub>**
 - `D3D12_BLEND_OP_SUBTRACT`: **C = C<sub>dst</sub> × F<sub>dst</sub> - C<sub>src</sub> × F<sub>src</sub>**
@@ -56,7 +56,7 @@ Alpha的混合操作也是一样的。
 
 但是你需要注意的是，如果你使用逻辑运算符代替混合操作，你需要注意的是逻辑运算符和传统运算符是不能同时使用的，你必须在这两种里面选择一种使用。
 并且你使用逻辑运算符的话，你需要确保你的`Render Target`的格式支持(支持的格式应当是`UINT`的变种)。
-## <span id = "10.3"> 10.3 BLEND FACTORS </span>
+## <element id = "10.3"> 10.3 BLEND FACTORS </element>
 
 通过改变`Factors(因素)`，我们可以设置更多的不同的混合组合，从而来实现更多的不同的效果。
 我们将会在下面解释一些混合组合，但是你还是要去体验一下他们的效果，从而能够有一个概念。
@@ -83,7 +83,7 @@ Alpha的混合操作也是一样的。
 
 参数是一个`Float[4]`，表示4个分量的值，如果设置为`nullptr`那么就默认全是1。
 
-## <span id = "10.4"> 10.4 BLEND STATE </span>
+## <element id = "10.4"> 10.4 BLEND STATE </element>
 
 我们已经讨论过了混合操作符和混合因素，但是我们如何在`Direct3D`里面设置这些参数呢？
 和其他的`Direct3D`的状态一样，混合状态也是`PSO(渲染管道)`的一个部分。
@@ -136,11 +136,11 @@ Alpha的混合操作也是一样的。
 
 **Notice:** 由于混合需要处理每一个像素，所以他的开销很大。你最好只在需要的时候才打开它。
 
-## <span id = "10.5"> 10.5 EXAMPLES </span>
+## <element id = "10.5"> 10.5 EXAMPLES </element>
 
 在这个部分，我们看一些混合操作的特效例子。当然我们只看关于**RGB**混合的例子。
 
-### <span id = "10.5.1"> 10.5.1 No Color Write </span>
+### <element id = "10.5.1"> 10.5.1 No Color Write </element>
 
 如果我们只是想单纯的留下目标像素，即源像素不会和目标像素进行混合以及覆盖，那么就可以使用这个方法。
 举个例子来说就是，将目标像素输出到`Depth/Stencil Buffer`中去。方程在下面：
@@ -153,7 +153,7 @@ Alpha的混合操作也是一样的。
 这样的话就禁止了所有的颜色输出到`Back Buffer`中。
 
 
-### <span id = "10.5.2"> 10.5.2 Adding/Subtracting </span>
+### <element id = "10.5.2"> 10.5.2 Adding/Subtracting </element>
 
 <img src = "Images/10.2.png" id = "Image10.2"></img>
 
@@ -172,7 +172,7 @@ Alpha的混合操作也是一样的。
 
 **<center>C = C<sub>src</sub> - C<sub>dst</sub></center>**
 
-### <span id = "10.5.3"> 10.5.3 Multiplying </span>
+### <element id = "10.5.3"> 10.5.3 Multiplying </element>
 
 <img src = "Images/10.4.png" id = "Image10.4"></img>
 
@@ -182,7 +182,7 @@ Alpha的混合操作也是一样的。
 
 **<center>C = C<sub>src</sub> x C<sub>dst</sub></center>**
 
-### <span id = "10.5.4"> 10.5.4 Transparency </span>
+### <element id = "10.5.4"> 10.5.4 Transparency </element>
 
 现在我们假设**Alpha**分量用来控制源像素的不透明度(0就是**0%**,0.4就是**40%**)。
 我们设不透明度为**A**，透明度为**T**。那么透明度和不透明度的关系就是**T = 1 - A**。
@@ -219,7 +219,7 @@ Alpha的混合操作也是一样的。
 
 **<center>B' = B ^ C<sub>0</sub> + ... ^ C<sub>n-1</sub></center>**
 
-### <span id = "10.5.5"> 10.5.5 Blending and the Depth Buffer </span>
+### <element id = "10.5.5"> 10.5.5 Blending and the Depth Buffer </element>
 
 当我们进行前面说的几种混合(不包括第一种)的时候，在深度测试的时候可能会有一点问题。
 这里我们以加法混合作为例子，其他的混合是差不多的思路。
@@ -228,7 +228,7 @@ Alpha的混合操作也是一样的。
 因此我就不直接翻译原文了(原文里面有一部分单词语法没理解，我英语是个渣，但是意思是这个意思没错)。
 
 
-## <span id = "10.6"> 10.6 ALPHA CHANNELS </span>
+## <element id = "10.6"> 10.6 ALPHA CHANNELS </element>
 
 从[**10.5.4**](#10.5.4)中我们使用**Alpha**分量在**RGB**混合中去控制物体的不透明度。
 用于混合的源像素的颜色来自像素着色器。
@@ -237,7 +237,7 @@ Alpha的混合操作也是一样的。
 
 你可以使用图片编辑软件(例如PS)给任何图片加入**Alpha**通道，然后将图片存储为支持**Alpha**通道的图片格式，例如**DDS**。
 
-## <span id = "10.7"> 10.7 CLIPPING PIXELS </span>
+## <element id = "10.7"> 10.7 CLIPPING PIXELS </element>
 
 有时候我们想从正在处理的源像素中完全剔除一部分像素。
 我们可以通过时候`HLSL`内置的函数`Clip(x)`(**这个函数只能在像素着色器中使用**)。
@@ -266,7 +266,7 @@ float4 PS(VertexOut pIn) : SV_TARGET
 <img src = "Images/10.7.png" id = "Image10.7"></img>
 
 
-## <span id = "10.8"> 10.8 FOG</span>
+## <element id = "10.8"> 10.8 FOG</element>
 
 为了在游戏中模仿准确的天气环境，我们需要能够实现一个雾的特效。
 参见图片[10.8](#Image10.8)。可以显然看出雾的效果。
@@ -316,7 +316,7 @@ float4 PS(VertexOut pIn) : SV_TARGET
 这样的话，如果我们不想使用雾效的话，就不会产生额外的运算开销了。具体参见`D3D_SHADER_MACRO`。
 
 
-## <span id = "10.9"> 10.9 SUMMARY</span>
+## <element id = "10.9"> 10.9 SUMMARY</element>
 
 - 混合是一项能够让我们将正在处理的像素(**Source Pixel**)和已经处理好的像素(**Destination Pixel**)进行混合的技术。
 - 混合是有一个混合方程的，注意的是**RGB**和**Alpha**混合是独立的。
