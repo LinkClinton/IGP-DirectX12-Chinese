@@ -208,4 +208,47 @@
 `Direct3D`并没有要求子像素的位置在像素组的哪里。
 
 
+### <element id = "4.1.8"> 4.1.8 Multisampling in Direct3D </element>
+
+在下一部分，我们需要填充一个`DXGI_SAMPLE_DESC`的结构。结构定义如下：
+
+```C++
+struct DXGI_SAMPLE_DESC
+{
+    UINT Count;
+    UINT Quality;
+};
+```
+
+`Count`表示采样的时候几个像素一组。`Quality`表示采样的质量等级(这个的支持需要看具体的硬件)。
+高采样数量和采样等级的开销是很大的，所以在质量和效率上面要权衡一下。
+纹理格式和采样数量会影响采样等级的范围。
+
+我们可以使用`ID3D12Device::CheckFeatureSupport`来查询采样等级的支持。
+
+**这一段是代码，可以自己去原书上看**
+
+注意第二个参数既是输入的也是输出的，对于输入来说，我们必须确定纹理的格式，采样数量，我们想要查询的采样标识。
+然后函数填充`NumQualityLevels`作为输出。质量等级的范围就是`[0,NumQualityLevels)`.
+
+```C++
+#define D3D11_MAX_MULTISAMPLE_SAMPLE_COUNT  (32) 
+```
+
+通常为了保证性能和空间足够，采样数量一般是4或者8就好了(逗我...)。
+如果你不想使用多重采样，你可以设置采样数量为1，质量等级为0。
+
+### <element id = "4.1.9"> 4.1.9 Feature Levels </element>
+
+这一章怎么全是`Direct3D 11`的内容，有毒，所以我来意译(YY)了。
+
+`Direct3D 12`介绍了特征等级的概念(即`D3D_FEATURE_LEVEL`类型)。
+
+特征等级严格定义了一些功能，举个例子来说如果`GPU`支持`Direct3D 12`的特征等级的话，那么他就必须支持所有的`Direct3D 12`的功能(还有一些其他功能，例如多重采样还是需要查询，因为他对于不同的设备来可以说有差异)。
+
+如果硬件并不支持现在的特征等级的话，应用就会自己使用最新的硬件支持的版本的特征等级。
+
+### <element id = "4.1.10"> 4.1.10 DirectX Graphics Infrastructure</element>
+
+
 
