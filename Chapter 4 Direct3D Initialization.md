@@ -250,5 +250,67 @@ struct DXGI_SAMPLE_DESC
 
 ### <element id = "4.1.10"> 4.1.10 DirectX Graphics Infrastructure</element>
 
+`DirectX`图形接口是用于`Direct3D`的`API`。
+这个接口是基于一些图形`API`会有很多共通的地方从而出现的。
+例如2D渲染`API`中你也需要类似3D渲染中一样交换交换链，因此我们就产生了`DXGI`
+`IDXGISwapChain`就是`DXGI`中的一部分，它主要用于全屏和窗口的切换，枚举图形系统信息，如显示设备，显示器，支持的显示模式等。
 
+我们会在我们初始化`Direct3D`的时候简要的描述下`DXGI`接口。
+例如`IDXGIFactory`主要是用于创建交换链，枚举显示设备。通常来说显示设备是物理硬件的一部分(显卡)。
+一个系统可以有很多显卡设备，一个显卡设备使用`IDXGIAdapter`接口。下面的内容是枚举设备的代码。
+
+一个系统可以有几个显示器，一个显示器就是一个显示输出，他被定义为`IDXGIOutput`。
+每个显示设备会和多个显示器关联，例如你有3个显示器两个显卡的电脑，那么肯定有一个显卡至少管理两台显示器。下面的代码枚举显示器输出。
+
+### <element id = "4.1.11"> 4.1.11 Checking Feature Support </element>
+
+我们已经使用过`ID3D12Device::CheckFeatureSupport`去检测现在使用的显卡对多重采样的支持了。
+但是这只是这个函数可以检测的一部分特性。
+
+```C++
+    HRESULT ID3D12Device::CheckFeatureSupport(
+        D3D12_FEATURE Feature, 
+        void *pFeatureSupportData,
+        UINT FeatureSupportDataSize); 
+```
+
+- `Feature`:`D3D12_FEATURE`类型。
+  - `D3D12_FEATURE_D3D12_OPTIONS`:检测`Direct3D 12`的特性支持。
+  - `D3D12_FEATURE_ARCHITECTURE`:检测硬件架构特性支持。
+  - `D3D12_FEATURE_FEATURE_LEVELS`:检测特性等级支持。
+  - `D3D12_FEATURE_FORMAT_SUPPORT`:检测纹理格式支持。
+  - `D3D12_FEATURE_MULTISAMPLE_QUALITY_LEVELS`:检测多重采样质量等级支持。
+- `pFeatureSupportData`:一个存储你需要检测的特性的数据的地址的指针。他的值依据你需要检测的特性。
+- `FeatureSupportDataSize`:上一个参数的数据的内存大小。
+
+`ID3D12Device::CheckFeatureSupport`函数支持检测很多特性，很多高级特性并不需要在本书中检测。
+建议大佬们还是去看官方文档比较好。
+
+### <element id = "4.1.12"> 4.1.12 Residency </element>
+
+一个复杂的游戏会使用到很多资源，例如纹理和模型网格，但是很多资源并不需要一直使用下去。
+例如我们绘制一个森林和一个巨大的洞穴，在玩家们进入洞穴之前洞穴的资源是没有必要的。
+当玩家进入洞穴后，森林的资源就是没有必要的了。
+
+在`Direct3D 12`中，应用通过将资源从显存中移除来管理资源。
+然后在又需要这个资源的时候重新加载。
+最基本的想法就是尽量减少显存的使用，因为我们可能没有办法将整个游戏的资源存到显存里面去，又或者有其他应用需要使用到显存。
+性能上要注意的是不要将一个资源覆盖掉这个相同的资源。
+如果你想要将一个资源从显存中移除，那么这个资源最好是一段时间不需要使用的资源。
+
+通常来说，一个资源在创建的时候就会被加入显存，丢弃的时候会从显存中移除。
+但是应用也可以使用`ID3D12Device::MakeResident`来管理。
+
+```C++
+HRESULT ID3D12Device::MakeResident(
+    UINT NumObjects, 
+    ID3D12Pageable *const *ppObjects);
+	
+HRESULT ID3D12Device::Evict(
+    UINT NumObjects, 
+    ID3D12Pageable *const *ppObjects); 
+```
+
+第一个参数是资源个数，第二个参数是一个`ID3D12Pageable`类型的数组。
+因为本书里面的东西太弱，所以不使用这个东西，你可以去看看文档里面的例子。
 
