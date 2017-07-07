@@ -6,13 +6,13 @@
 
 目前来说肯定会翻译的章节：
 
-- [Chapter 4 Direct3D Initialization](Chapter%204%20Direct3D%20Initialization.md)
+- [Chapter 4 Direct3D Initialization](/Chapter%204%20Direct3D%20Initialization.md)
 - [Chapter 5 The Rendering Pipeline]()
 - [Chapter 6 Drawing in Direct3D]()
 - [Chapter 7 Drawing in Direct3D Part II]()
 - [Chapter 8 Lighting]()
 - [Chapter 9 Texturing]()
-- [Chapter 10 Blending](Chapter%2010%20Blending.md)
+- [Chapter 10 Blending](/Chapter%2010%20Blending.md)
 - [Chapter 11 Stenciling]()
 - [Chapter 17 Picking]()
 - [Chapter 23 Character Animation]()
