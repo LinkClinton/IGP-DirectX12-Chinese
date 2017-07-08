@@ -302,15 +302,132 @@ struct DXGI_SAMPLE_DESC
 但是应用也可以使用`ID3D12Device::MakeResident`来管理。
 
 ```C++
-HRESULT ID3D12Device::MakeResident(
-    UINT NumObjects, 
-    ID3D12Pageable *const *ppObjects);
+    HRESULT ID3D12Device::MakeResident(
+        UINT NumObjects, 
+        ID3D12Pageable *const *ppObjects);
 	
-HRESULT ID3D12Device::Evict(
-    UINT NumObjects, 
-    ID3D12Pageable *const *ppObjects); 
+    HRESULT ID3D12Device::Evict(
+        UINT NumObjects, 
+        ID3D12Pageable *const *ppObjects); 
 ```
 
 第一个参数是资源个数，第二个参数是一个`ID3D12Pageable`类型的数组。
 因为本书里面的东西太弱，所以不使用这个东西，你可以去看看文档里面的例子。
 
+## <element id = "4.2"> 4.2 CPU/GPU INTERACTION </element>
+
+我们知道图形编程中是有两个处理器同时工作的，一个`CPU`一个`GPU`。
+他们同时工作，但有的时候他们需要进行同步。
+为了达到理想的性能，我们需要尽可能的减少同步次数。
+同步并不是很好的情况，这意味着会有一个处理器处于空闲状态去等待另外一个处理器完成他的任务。
+换句话说，他破坏了他们互相间的运行的独立。
+
+### <element id = “4.2.1> 4.2.1 The Command Queue and Commmand Lists </element>
+
+`GPU`有一个指令队列(`Command Queue`)。`CPU`通过使用`Direct3D`中的指令表(`Command List`)将指令提交到指令队列中去(参见图片[4.6](#Image4.6))。
+有一个重要的地方是，当一组指令被提交到指令队列后`GPU`并不会立马执行他。
+这些指令将会放在指令队列里面，等待`GPU`处理完前面提交的指令后处理他。
+
+<img src="Images/4.6.png" id = "Image4.6"> </img>
+
+如果指令队列是空的，那么由于没有事情可以处理，`GPU`就是空闲的了。
+另一方面来说，如果指令队列太满了，那么`CPU`就可能需要等待`GPU`处理完他的指令。
+这两种情况都不是很好的情况，这意味着有性能浪费。
+
+在`Direct3D 12`中，指令队列被声明为`ID3D12CommandQueue`。
+它通过填充`D3D12_QUEUE_DESC`结构，调用`ID3D12Device::CreateCommandQueue`函数来创建。
+
+下面是创建代码。
+
+其中有一个成员函数`ExecuteCommandLists`就是可以将指令列表提交到指令队列中去。
+
+```C++
+void ID3D12CommandQueue::ExecuteCommandLists(
+    UINT Count, //要提交的指令列表的数量
+    ID3D12CommandList *const *ppCommandLists); //指令列表的数组
+```
+
+我们可以从上面的代码看出，一个图形指令列表声明为`ID3D12GraphicsCommandList`他继承自`ID3D12CommandList`。
+图形指令列表有很多方法加入指令，例如设置`ViewPort`,清理`Render Target`。例如：
+
+```C++
+    CommandList->RSSetViewports(1, &myViewport);
+    CommandList->ClearRenderTargetView(CurrentBackBuffer, Color, 0, nullptr);
+    CommandList->DrawIndexedInstanced(36, 1, 0, 0, 0);
+```
+
+虽然看起来这些函数是调用后就立马执行的，但是其实并不是。上面的代码只是将指令加入到指令列表中去而已。
+`ExecuteCommandLists`才将指令加入到指令队列中去，然后`GPU`从指令队列中读取指令去处理指令。
+通过这本书我们将会学习`ID3D12GraphicsCommandList`支持的各种不同的指令。
+当我们将所有的指令加入到指令列表后，我们需要使用`ID3D12GraphicsCommandList::Close`去关闭指令队列。
+
+```C++
+    CommandList->Close();
+```
+
+注意必须在指令列表被提交到指令队列前关闭他。
+
+一个和指令列表有关联的就是指令分配器(`ID3D12CommandAllocator`)，指令列表记录指令，而指令分配器则是存储具体的数据。
+当一个指令列表被指令队列提交的时候，指令队列会使用指令分配器里面的数据。
+
+```C++
+    HRESULT ID3D12Device::CreateCommandAllocator(
+        D3D12_COMMAND_LIST_TYPE type, 
+        REFIID riid, 
+        void **ppCommandAllocator);
+```
+
+- `type`: 允许什么类型的指令列表可以和指令分配器关联。
+  - `D3D12_COMMAND_LIST_TYPE_DIRECT`: 存储直接提交给`GPU`类型的指令列表
+  - `D3D12_COMMAND_LIST_TYPE_BUNDLE`: 由于`CPU`在构建指令列表的时候也是有开销的，因此`Direct3D 12`提供了一个优化，让我们能够记录一组指令到所谓的`Bundle`中去。在一个`Bundle`被记录后，驱动会预处理一些指令来在渲染的时候优化他的执行。因此，`Bundle`中的指令应当在开始的时候就记录下来。因为`Direct3D 12`的`API`效率已经足够高了，所以你并不需要经常使用`Bundle`，你最好只在你能够确保使用`Bundle`能够提高性能的情况下使用他。
+- `riid`: `ID3D12CommandAllocator`的**COM ID**。
+- `ppCommandAllocator`: 创建的指令分配器。
+
+```C++
+    HRESULT ID3D12Device::CreateCommandList(
+        UINT nodeMask,
+        D3D12_COMMAND_LIST_TYPE type,
+        ID3D12CommandAllocator *pCommandAllocator,
+        ID3D12PipelineState *pInitialState,
+        REFIID riid,
+        void **ppCommandList
+    );
+```
+
+- `nodeMask`: 通常设置为0。在这里他确定和这个指令队列关联的`GPU`是哪个。
+- `type`: 上面有解释了。
+- `pCommandAllocator`: 关联的指令分配器。指令分配器支持的类型必须和这个指令列表类型一致。
+- `pInitialState`: 使用的初始的渲染管道，没有的话就设置为`nullptr`。
+- `riid`: `ID3D12GraphicsCommandList`的**COM ID**。
+- `ppCommandList`: 创建的指令列表。
+
+你可以创建多个指令列表同时关联同一个指令分配器，但是你不能同时记录指令。
+也就是说我们必须保证除了正在记录指令的那个指令列表外，其他的指令列表必须被关闭。
+这样的话，所有的由这个指令列表发出的指令就在指令分配器那里是连续的了。
+注意的是，只要一个指令列表是被创建或者重置(**Reset**)了，那么就代表他被打开了。
+所以如果我们在一行代码里面创建两个关联同一个指令分配器的指令列表的话就会报错。
+
+```
+D3D12 ERROR: ID3D12CommandList:: {Create,Reset}CommandList: The command allocator is currently in-use by another command list.
+```
+
+在我们将一个指令列表提交给指令队列后，重新使用他的内存去记录新的指令是没问题的。
+我们使用函数`ID3D12CommandList::Reset`来重置他。他们的参数和创建的时候差不多。
+
+```C++
+    HRESULT ID3D12CommandList::Reset(
+        ID3D12CommandAllocator *pAllocator,
+        ID3D12PipelineState *pInitialState);
+```
+
+这样的话我们就可以让指令列表变得和创建的时候一样了，并且可以重新使用他原本的内存空间，以至于可以不用释放内存重新创建一个新的指令列表了。
+重置一个指令列表不会影响到指令队列里面的指令，因为那些指令存储仍然储存在指令分配器里面。
+
+在我们已经提交完这一帧的渲染指令后，我们也可以重新使用指令分配器里面的内存。因此我们可以重置他。
+
+```C++
+    HRESULT ID3D12CommandAllocator::Reset();
+```
+
+这个方法类似于`std::vector::clear`。能让里面的值变为0，但是大小仍然不变。
+当然由于指令队列要从指令分配器中获取指令数据，**一个指令分配器必须在`GPU`处理完这个分配器里面的所有指令后才可以重置**。
