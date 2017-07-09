@@ -431,3 +431,74 @@ D3D12 ERROR: ID3D12CommandList:: {Create,Reset}CommandList: The command allocato
 
 这个方法类似于`std::vector::clear`。能让里面的值变为0，但是大小仍然不变。
 当然由于指令队列要从指令分配器中获取指令数据，**一个指令分配器必须在`GPU`处理完这个分配器里面的所有指令后才可以重置**。
+
+### <element id = "4.2.2"> 4.2.2 CPU/GPU Synchronization </elemnt>
+
+由于由两个处理器同时在运行，一系列同步的问题就出现了。
+假设我们有一些想要绘制资源**R**。然后再**p1**的时候，`CPU`更新了他的数据，并且发出了绘制他的指令**C**。
+由于加入指令到指令队列后，并不会阻碍`CPU`的继续运行，所以`CPU`继续运行。然后在**p2**的时候`CPU`重新更新了资源`R`的数据，然后将其提交到队列中去。
+参见图片[4.7](#Image4.7)
+
+<img src="Images/4.7.png" id = "Image4.7"> </img>
+
+只是一个错误的例子。因为指令**C**绘制的图形可能是**p2**这个时候的数据信息，或者是**R**被更新过后的数据信息。
+
+我们的解决方法就是让`CPU`等待`GPU`运行到某一时刻(**fence**)再运行。
+我们称之为清理队列。我们可以使用`fence`来做到这点。
+
+```C++
+    HRESULT ID3D12Device::CreateFence(
+        UINT64 InitialValue,
+        D3D12_FENCE_FLAGS Flags,
+        REFIID riid,
+        void **ppFence
+    );
+```
+
+伴随着`fence`的还有一个`UINT64`的值。
+我们初始化他为0，然后在每次我们需要在标志一个新的点作为同步的标志的时候，我们都需要将这个数字增加。
+这里还是给个例子。
+
+```C++
+    CommandQueue->Signal(Fence, ++CurrentFence);
+
+    if (Fence->GetCompletedValue() < CurrentFence) {
+        HANDLE eventHandle = CreateEventEx(nullptr, false,
+            false, EVENT_ALL_ACCESS); //创建事件
+
+        Fence->SetEventOnCompletion(CurrentFence, eventHandle); //设置事件等待
+
+        WaitForSingleObject(eventHandle, INFINITE); //等待只要完成为止
+        CloseHandle(eventHandle);
+    }
+```
+
+<img src="Images/4.8.png" id = "Image4.8"> </img>
+
+现在`GPU`处理指令到了**x<sub>gpu</sub>**，`CPU`开始调用`ID3D12CommandQueue::Signal`到**n+1**。
+`ID3D12Fence::GetCompletedValue`会返回最后一个完成的点的值。
+
+因此在之前的例子中，在`CPU`加入绘制指令**C**，他将会重新更新**R**之前完成指令队列里面的指令。
+但是这个方案并不是一个很好的方案，因为他让`CPU`去等待`GPU`完成。
+但是这是一个最为简单的方案，我们会一直用到第7章。
+你可以在任何时候调用这个方法清理掉队列。
+例如你需要在进入主循环之前加载一些资源的时候，你就可以调用这个方法先清理掉队列里面的指令。
+
+这个方法同样也可以解决我们上面提到的**必须完成指令队列中的所有指令后才可以去重置指令分配器**的问题。
+
+### <element id = "4.2.3"> 4.2.3 Resource Transitions </element>
+
+实现一个简单的效果，一般都会有一步就是`GPU`写入资源**R**。
+然后在之后的某些时候，读入资源**R**。
+这样的话，如果在读入资源**R**的时候，`GPU`并没有写入完资源或者还没开始写，那么就比较尴尬了。
+为了解决这样的尴尬情况，`Direct3D`给资源增加了一个新的状态。
+资源创建的时候为默认状态，然后应用程序需要告诉`Direct3D`资源状态的改变。
+这样的话`GPU`就可以做他需要做的而不用担心遇到上面那种尴尬情况了。
+例如你有一个纹理，你将他的状态设置为`Render Target`，然后我们需要读取这个纹理，我们将会将他的状态设置为`Shader Resource`。
+通过资源状态的变换，`GPU`设法回避上面的尴尬情况，例如等待所有写入操作完成后再去读取。
+这样的话，其实资源状态的转变的开销也会变低。因为程序开发者是知道资源转变是什么时候发生的，而一个自动判断资源转变的系统却是要增加额外的开销。
+
+接下来原文中是介绍了使用`D3DX12`进行资源转换的例子。这里可以自己去看。
+
+
+
