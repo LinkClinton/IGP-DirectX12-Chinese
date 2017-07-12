@@ -322,7 +322,7 @@ struct DXGI_SAMPLE_DESC
 同步并不是很好的情况，这意味着会有一个处理器处于空闲状态去等待另外一个处理器完成他的任务。
 换句话说，他破坏了他们互相间的运行的独立。
 
-### <element id = “4.2.1> 4.2.1 The Command Queue and Commmand Lists </element>
+### <element id = "4.2.1"> 4.2.1 The Command Queue and Commmand Lists </element>
 
 `GPU`有一个指令队列(`Command Queue`)。`CPU`通过使用`Direct3D`中的指令表(`Command List`)将指令提交到指令队列中去(参见图片[4.6](#Image4.6))。
 有一个重要的地方是，当一组指令被提交到指令队列后`GPU`并不会立马执行他。
@@ -582,4 +582,39 @@ D3D12 ERROR: ID3D12CommandList:: {Create,Reset}CommandList: The command allocato
     Device->GetDescriptorHandleIncrementSize(Type);
 ```
 
+### <element id = "4.3.3"> 4.3.3 Check 4X MSAA Quality Support </element>
 
+在这里，我们检测`4XMSAA`的质量等级。
+我们选择4X的原因是因为他的开销并不是很大，并且所有的`Direct3D 11`设备都支持各种格式的`Render Target`使用`4XMSAA`。
+也就是说只要是支持`Direct3D 11`的设备那么就肯定支持`4XMSAA`。
+但是我们必须检测`4XMSAA`的质量等级。
+
+下面是代码。
+
+由于在这里`4XMSAA`是肯定被支持的，那么检测出来的等级肯定是大于0的。
+所以我们在这里设置一个断言。
+
+### <element id = "4.3.4"> 4.3.4 Create Command Queue and Command List </element>
+
+我们回顾[4.2.1](#4.2.1)可以知道：
+
+- `ID3D12CommandQueue`: 指令队列。
+- `ID3D12CommandAllocator`: 指令分配器。
+- `ID3D12GraphicsCommandList`: 指令列表。
+
+```C++
+    queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
+    queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
+
+    Device->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(CommandQueue));
+
+    Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT,
+        IID_PPV_ARGS(CommandAllocator));
+
+    Device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT,
+        CommandAllocator, nullptr, IID_PPV_ARGS(CommandList));
+
+    CommandList->Close();
+```
+由于这一章节我们并不需要使用指令列表绘制什么，因此初始化的渲染管道就被设置为空了。
+我们将在第6章介绍渲染管道。
