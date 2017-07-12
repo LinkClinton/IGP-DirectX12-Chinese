@@ -520,5 +520,66 @@ D3D12 ERROR: ID3D12CommandList:: {Create,Reset}CommandList: The command allocato
 如果读者看完了本书，我们推荐去学习**Multithreading12 SDK sample** 来了解多线程。
 一个应用程序想最大化使用系统资源的话，对于多核`CPU`来说，使用多线程是很有优势的。
 
+## <element id = "4.3"> INITIALIZING DIRECT3D </element>
+
+接下来将要介绍如何初始化`Direct3D`。
+步骤稍微多，不过并不需要一次性完成。
+我们可以分为这些步骤：
+
+- 使用`D3D12CreateDevice`函数创建`ID3D12Device`。
+- 创建`ID3D12Fence`并且查询描述符大小。
+- 检测`4XMSAA`的质量等级支持。
+- 创建指令队列，指令分配器和指令列表。
+- 创建交换链。
+- 创建程序需要的描述符堆。
+- 从`Back Buffer`中创建`Render Target View`。
+- 创建`Depth/Stencil Buffer`和`Depth/Stencil View`。
+- 设置视口和裁剪矩形。
+
+### <element id = "4.3.1"> Create the Device </element>
+
+初始化`Direct3D`的第一步就是创建`Direct3D 12`设备(**device**)。
+一个设备就表示了一个显示适配器，通常来说一个显示适配器就表示了一块3D硬件(显卡)。
+当然系统也可以在枚举3D硬件的时候枚举到软件显示适配器(**WARP**)。
+`Direct3D 12`设备可以检测支持的特性和创建`Direct3D`接口，例如资源(**Resource**)，标志符(**View**)以及指令列表等。
+
+```C++
+
+    HRESULT WINAPI D3D12CreateDevice(
+        IUnknown* pAdapter,
+        D3D_FEATURE_LEVEL MinimumFeatureLevel,
+        REFIID riid,
+        void** ppDevice
+    );
+
+```
+
+- `pAdapter`: 指定我们创建的设备要使用哪块显示适配器。如果设置成`nullptr`的话，那么我们就使用默认的显示适配器。我们将会在后面介绍如何枚举系统的显示适配器。
+- `MinimumFeatureLevel`: 我们程序要求的最低等级的特征等级，如果硬件连这个都不支持的话，那么设备就会创建失败。
+- `riid`: 我们需要创建的设备的**COM ID**。
+- `ppDevice`: 返回我们创建的设备。
+
+下面部分是代码...
+
+我们最好在`Debug`的时候开启调试层，当我们的调试层已经开启的时候，`Direct3D`将会进行额外的调试并且会将会发送消息到`VC++ Output Window`。
+
+如果我们使用硬件创建设备失败了的话，我们就尝试使用软件创建。
+`WARP`，**Windows Advanced Rasterization Platform**。
+
+- `Windows7`支持的特征等级是`10.1`。
+- `Windows8`支持的特征等级是`11.1`。
+
+### <element id = "4.3.2"> 4.3.2 Create the Fence and Descriptor Sizes </element>
+
+在我们创建完设备后，我们需要创建一个用于`GPU`和`CPU`同步的`Fence`。
+由于我们使用描述符，因此我们需要知道不同的描述符他的大小。
+由于描述符大小不同的`GPU`有不同的值，因此我们需要查询他的大小。
+
+```C++
+    Device->CreateFence(0, D3D12_FENCE_FLAG_NONE,
+        IID_PPV_ARGS(&Fence));
+
+    Device->GetDescriptorHandleIncrementSize(Type);
+```
 
 
