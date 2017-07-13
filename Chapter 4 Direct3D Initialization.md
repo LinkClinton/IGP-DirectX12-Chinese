@@ -618,3 +618,69 @@ D3D12 ERROR: ID3D12CommandList:: {Create,Reset}CommandList: The command allocato
 ```
 由于这一章节我们并不需要使用指令列表绘制什么，因此初始化的渲染管道就被设置为空了。
 我们将在第6章介绍渲染管道。
+
+### <element id = "4.3.5"> 4.3.5 Describe and Create the Swap Chain </element>
+
+初始化的下一步是创建交换链。我们创建交换链的时候首先需要填充`DXGI_SWAP_CHAIN_DESC`结构。
+我们需要这个就够来描述我们要创建什么属性的交换链。
+
+```C++
+    struct DXGI_SWAP_CHAIN_DESC
+    {
+        DXGI_MODE_DESC BufferDesc;
+        DXGI_SAMPLE_DESC SampleDesc;
+        DXGI_USAGE BufferUsage;
+        UINT BufferCount;
+        HWND OutputWindow;
+        BOOL Windowed;
+        DXGI_SWAP_EFFECT SwapEffect;
+        UINT Flags;
+    };
+
+    struct DXGI_MODE_DESC
+    {
+        UINT Width; //缓存的宽度
+        UINT Height; //缓存的高度
+        DXGI_RATIONAL RefreshRate; 
+        DXGI_FORMAT Format; //缓存的格式
+        DXGI_MODE_SCANLINE_ORDER ScanlineOrdering;
+        DXGI_MODE_SCALING Scaling; //如何在显示器上缩放显示
+    };
+```
+
+我们将会使用较为常用的属性去填充下面的成员。
+如果你想了解更多填充的属性，你可以去参阅**SDK**文档。
+
+- `BufferDesc`: 描述我们创建的`BackBuffer`的属性，主要属性就是他的宽度高度以及他的格式。其余的可以去参考**SDK**文档。
+- `SampleDesc`: 多重采样的数量和质量等级，我们设置成采样数量为1，质量等级为0。
+- `BufferUsage`: 设置为`DXGI_USAGE_RENDER_TARGET_OUTPUT`。
+- `BufferCount`: 我们在交换链中要使用多少个缓冲，由于我们使用双缓冲因此设置为2。
+- `OutputWindow`: 我们要呈现的窗口的句柄。
+- `Windowed`: 设置为`true`就是窗口模式，否则是全屏模式。
+- `SwapEffect`: 设置为`DXGI_SWAP_EFFECT_FLIP_DISCARD`。
+- `Flags`: 一些其他设置。如果你设置了`DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH`，那么在你切换到全屏模式的时候就会选择一个最适合当前程序的显示模式，如果你没有设置这个属性，那么你切换成全屏的时候他就使用当前桌面的显示模式。
+
+在我们填充完毕这个结构后，我们就可以创建交换链了。
+
+```C++
+    HRESULT IDXGIFactory::CreateSwapChain(
+        IUnknown *pDevice, //ID3D12CommandQueue
+        DXGI_SWAP_CHAIN_DESC *pDesc, 
+        IDXGISwapChain **ppSwapChain);
+```
+
+下面是代码。
+
+### <element id = "4.3.6"> Create the Descriptor Heaps</element>
+
+我们需要创建描述符堆去存储我们程序需要的描述符。
+一个描述符堆使用的是`ID3D12DescriptorHeap`接口。
+我们可以使用`ID3D12Device::CreateDescriptorHeap`来创建描述符堆。
+在本章中，我们需要我们在交换链中使用的缓冲个数那么多的`Render Target View`去描述交换链中的缓冲资源，这些资源将存储我们最后要呈现的内容。
+并且我们还需要一个`Depth/Stencil View`去描述一个用于深度测试的`Depth/Stencil Buffer`资源。
+因此我们需要一个堆存储`Render Target View`和`Depth/Stencil View`。
+
+```C++
+    
+```
+
