@@ -596,7 +596,7 @@ D3D12 ERROR: ID3D12CommandList:: {Create,Reset}CommandList: The command allocato
 
 ### <element id = "4.3.4"> 4.3.4 Create Command Queue and Command List </element>
 
-我们回顾[4.2.1](#4.2.1)可以知道：
+我们回顾<a href ="#4.2.1">**4.2.1**</a>可以知道：
 
 - `ID3D12CommandQueue`: 指令队列。
 - `ID3D12CommandAllocator`: 指令分配器。
@@ -680,7 +680,89 @@ D3D12 ERROR: ID3D12CommandList:: {Create,Reset}CommandList: The command allocato
 并且我们还需要一个`Depth/Stencil View`去描述一个用于深度测试的`Depth/Stencil Buffer`资源。
 因此我们需要一个堆存储`Render Target View`和`Depth/Stencil View`。
 
+下面是代码。
+
+我们需要记录当前使用的后台缓冲是哪一个，当我们每次交换两个缓冲的位置的时候(即**Present**)，我们绘制到的缓冲就会改变了，原本我们绘制到的那个就作为显示的缓冲了，而原本的显示的就变成了要被绘制的了。
+
+在我们创建完描述符堆后，我们需要能够访问堆里面存储的描述符。因此我们定义了一个句柄(`Handle`)来用于访问描述符堆里面的描述符。
+我们可以通过`ID3D12DescriptorHeap::GetCPUDescriptorHandleForHeapStart`函数来获得描述符堆中第一个描述符，然后我们可以对其加减来获取前面的或者后面的描述符。
+但是加减的话，我们是需要知道描述符大小的，即我们加减的偏移量就是描述符的大小。
+
 ```C++
-    
+    rtvHandle = heap->GetCPUDescriptorHandleForHeapStart(); //第一个描述符
+    rtvHandle += rtvDescriptorSize; //第二个描述符
 ```
 
+### <element id = "4.3.7"> Create the Render Target View </element>
+
+在<a href="#4.1.6">**4.1.6**</a>中，我们并没有直接将一个资源绑定到渲染管道中去。
+相反，我们给资源创建了一个描述符(**Descriptor**)或者视图(**View**)，然后将描述符和视图绑定到渲染管道上去。
+为了将后台缓冲(`Back Buffer`)绑定到渲染管道中的输出合并阶段(**Output Merger Stage**)，我们需要给后台缓冲创建一个`Render Target View`。
+
+第一步就是首先获得后台缓冲:
+
+```C++
+    HRESULT IDXGISwapChain::GetBuffer(
+        UINT Buffer,
+        REFIID riid,
+        void **ppSurface);
+```
+
+- `Buffer`: 第几个缓冲。
+- `riid`: 我们这里使用`ID3D12Resource`的**COM ID**。
+- `ppSurface`: 这里我们输出的是一个`ID3D12Resource`类型的缓冲。
+
+使用`IDXGISwapChain::GetBuffer`这个函数会增加你得到的那个缓冲资源的引用，因此你必须在使用完这个缓冲后就将这个缓冲释放，如果你使用了`ComPtr`的话他会自己释放。
+
+```C++
+    void ID3D12Device::CreateRenderTargetView(
+        ID3D12Resource* pResource,
+        const D3D12_RENDER_TARGET_VIEW_DESC *pDesc,
+        D3D12_CPU_DESCRIPTOR_HANDLE DestDescriptor);
+```
+
+- `pResource`: 创建`Render Target View`的资源，在这里就是我们的后台缓冲。
+- `pDesc`: 描述一个资源里面的元素的格式，如果资源创建的时候的类型已经确定，即不是弱类型(**typeless**)，那么就可以设置为`nullptr`。因为我们已经指定了后台缓冲的格式，所以这里我们可以设置为`nullptr`。
+- `DestDescriptor`: 我们想要用来存储`Render Target View`的描述符的句柄(**Handle**)。
+
+这里需要注意的是，每个后台缓冲都必须创建一个`Render Target View`，因为每次呈现后，后台缓冲都交换了，所以每个缓冲都可能作为`Render Target View`使用。
+
+```C++
+    var rtvHandle = rtvHeap->GetCPUDescriptorHandleForHeapStart();
+
+    for (int i = 0; i < BufferCount; i++){
+        Device->CreateRenderTargetView(BackBuffer[i], nullptr, rtvHandle);
+        rtvHandle += rtvDescriptorSize;
+    }
+```
+
+### <element id = "4.3.8"> 4.3.8 Create the Depth/Stencil Buffer and View </element>
+
+我们现在需要创建深度模板缓冲(`Depth/Stencil Buffer`)。
+我们在<a href = "#4.1.5">**4.1.5**</a>说过深度缓冲其实就是一个存储深度信息的二维纹理而已。
+纹理也是`GPU`资源的一种，所以我们可以通过填充`D3D12_RESOURCE_DESC`结构来创建一个纹理资源。
+然后使用`ID3D12Device::CreateCommittedResource`来创建资源。
+
+```C++
+    struct D3D12_RESOURCE_DESC
+    {
+        D3D12_RESOURCE_DIMENSION Dimension;
+        UINT64 Alignment;
+        UINT64 Width;
+        UINT Height;
+        UINT16 DepthOrArraySize;
+        UINT16 MipLevels;
+        DXGI_FORMAT Format;
+        DXGI_SAMPLE_DESC SampleDesc;
+        D3D12_TEXTURE_LAYOUT Layout;
+        D3D12_RESOURCE_MISC_FLAG MiscFlags;
+    }
+```
+
+- `Dimension`: 确定资源的类型。
+  - `D3D12_RESOURCE_DIMENSION_UNKNOWN = 0`
+  - `D3D12_RESOURCE_DIMENSION_BUFFER = 1`
+  - `D3D12_RESOURCE_DIMENSION_TEXTURE1D = 2`
+  - `D3D12_RESOURCE_DIMENSION_TEXTURE2D = 3`
+  - `D3D12_RESOURCE_DIMENSION_TEXTURE3D = 4`
+- `Width`: 纹理的宽度，对于缓冲来说就是他的字节大小。
