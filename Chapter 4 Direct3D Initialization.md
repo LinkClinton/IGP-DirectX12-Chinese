@@ -765,4 +765,37 @@ D3D12 ERROR: ID3D12CommandList:: {Create,Reset}CommandList: The command allocato
   - `D3D12_RESOURCE_DIMENSION_TEXTURE1D = 2`
   - `D3D12_RESOURCE_DIMENSION_TEXTURE2D = 3`
   - `D3D12_RESOURCE_DIMENSION_TEXTURE3D = 4`
-- `Width`: 纹理的宽度，对于缓冲来说就是他的字节大小。
+- `Width`: 纹理的宽度(**不是字节大小，而是每一行有多少个元素**)，对于缓冲来说就是他的字节大小。
+- `Height`: 纹理的高度。
+- `DepthOrArraySize`: 纹理的深度，对于二维和一维的纹理来说就是他的数组元素个数。这样的话我们是不能够使用三维纹理的数组的。
+- `MipLevels`: `Mipmap Level`，明细层次。我们将会在第9章介绍他。对于深度模板缓冲，我们只需要设置为1就好了。
+- `Format`: 纹理的格式，`DXGI_FORMAT`类型。对于深度模板缓冲，我们从[**4.1.5**](#4.1.5)中提到的格式中选一个。
+- `SampleDesc`: 多重采样的等级等信息。具体你可以参见[**4.1.7**](#4.1.7)和[**4.1.8**](#4.1.8)。如果你在创建交换链的时候使用了多重采样，那么你的深度缓冲也要和后台缓冲一样使用同样的设置。
+- `Layout`: 他确定了纹理的布局，现在我们没必要了解，我们设置为`D3D12_TEXTURE_LAYOUT_UNKNOWN`。
+- `MiscFlags`: 各种混杂的资源标志，用于描述资源其他属性。对于深度模板缓冲来说，我们设置为`D3D12_RESOURCE_MISC_DEPTH_STENCIL`。
+
+`GPU`资源存储在堆中，本质上来说就是一部分带有具体数据信息的显存。
+`ID3D12Device::CreateCommittedResource`创建一个资源并且将其提交到我们指定的堆中。
+
+```C++
+    HRESULT ID3D12Device::CreateCommittedResource(
+        const D3D12_HEAP_PROPERTIES *pHeapProperties,
+        D3D12_HEAP_MISC_FLAG HeapMiscFlags,
+        const D3D12_RESOURCE_DESC *pResourceDesc,
+        D3D12_RESOURCE_USAGE InitialResourceState,
+        const D3D12_CLEAR_VALUE *pOptimizedClearValue,
+        REFIID riidResource,
+        void **ppResource);
+
+    struct D3D12_HEAP_PROPERTIES
+    {
+        D3D12_HEAP_TYPE Type;
+        D3D12_CPU_PAGE_PROPERTIES CPUPageProperties;
+        D3D12_MEMORY_POOL MemoryPoolPreference;
+        UINT CreationNodeMask;
+        UINT VisibleNodeMask;
+    }
+```
+
+- `pHeapProperties`: 我们想要将资源提交到的堆的属性。
+
