@@ -1,68 +1,68 @@
 # <element id = "10"> Chapter 10 Blending </element>
 
-¹Û²ìÏÂ·½Í¼Æ¬[10.1](#Image10.1)¡£
-ÎÒÃÇÔÚÕâÒ»Ö¡ÖÐ×î¿ªÊ¼äÖÈ¾µÄÊÇµØÐÎºÍÄ¾Ïä£¬Òò´ËµØÐÎºÍÄ¾ÏäµÄÏñËØ¾Í±»´¢´æÔÚºóÌ¨»º³åÖÐ¡£
-È»ºóÎÒÃÇÊ¹ÓÃ»ìºÏ¼¼ÊõÀ´»æÖÆÒ»¸öË®Ãæµ½ºóÌ¨»º³å£¬Òò´ËË®µÄÏñËØºÍµØÐÎÒÔ¼°Ä¾ÏäµÄÏñËØÔÚºóÌ¨»º³åÖÐµÃµ½ÁË»ìºÏ£¬¿´ÆðÀ´¾ÍÊÇÄ¾ÏäºÍµØÐÎ´©¹ýÁËË®Ãæ¡£
-ÔÚ±¾ÕÂÖÐ£¬ÎÒÃÇ³¢ÊÔ»ìºÏ¼¼Êõ£¬Õâ¸ö¼¼ÊõÄÜ¹»¾ÍÊÇ»ìºÏ(×éºÏ)ÏÖÔÚÕýÔÚ¹âÕ¤»¯µÄÏñËØ(ÎÒÃÇ³ÆÖ®ÎªÔ´)ºÍÖ®Ç°ÒÑ¾­Íê³É¹âÕ¤»¯²¢´æ´¢ÔÚºóÌ¨»º³åÖÐµÄÏñËØ(ÎÒÃÇ³ÆÖ®ÎªÄ¿±ê)¡£
-Õâ¸ö¼¼ÊõÄÜ¹»ÈÃÎÒÃÇÈ¥äÖÈ¾Í¸Ã÷µÄÎïÌå£¬ÀýÈçË®ºÍ²£Á§¡£
+è§‚å¯Ÿä¸‹æ–¹å›¾ç‰‡[10.1](#Image10.1)ã€‚
+æˆ‘ä»¬åœ¨è¿™ä¸€å¸§ä¸­æœ€å¼€å§‹æ¸²æŸ“çš„æ˜¯åœ°å½¢å’Œæœ¨ç®±ï¼Œå› æ­¤åœ°å½¢å’Œæœ¨ç®±çš„åƒç´ å°±è¢«å‚¨å­˜åœ¨åŽå°ç¼“å†²ä¸­ã€‚
+ç„¶åŽæˆ‘ä»¬ä½¿ç”¨æ··åˆæŠ€æœ¯æ¥ç»˜åˆ¶ä¸€ä¸ªæ°´é¢åˆ°åŽå°ç¼“å†²ï¼Œå› æ­¤æ°´çš„åƒç´ å’Œåœ°å½¢ä»¥åŠæœ¨ç®±çš„åƒç´ åœ¨åŽå°ç¼“å†²ä¸­å¾—åˆ°äº†æ··åˆï¼Œçœ‹èµ·æ¥å°±æ˜¯æœ¨ç®±å’Œåœ°å½¢ç©¿è¿‡äº†æ°´é¢ã€‚
+åœ¨æœ¬ç« ä¸­ï¼Œæˆ‘ä»¬å°è¯•æ··åˆæŠ€æœ¯ï¼Œè¿™ä¸ªæŠ€æœ¯èƒ½å¤Ÿå°±æ˜¯æ··åˆ(ç»„åˆ)çŽ°åœ¨æ­£åœ¨å…‰æ …åŒ–çš„åƒç´ (æˆ‘ä»¬ç§°ä¹‹ä¸ºæº)å’Œä¹‹å‰å·²ç»å®Œæˆå…‰æ …åŒ–å¹¶å­˜å‚¨åœ¨åŽå°ç¼“å†²ä¸­çš„åƒç´ (æˆ‘ä»¬ç§°ä¹‹ä¸ºç›®æ ‡)ã€‚
+è¿™ä¸ªæŠ€æœ¯èƒ½å¤Ÿè®©æˆ‘ä»¬åŽ»æ¸²æŸ“é€æ˜Žçš„ç‰©ä½“ï¼Œä¾‹å¦‚æ°´å’ŒçŽ»ç’ƒã€‚
 
 <img src="Images/10.1.png" id = "Image10.1"> </img>
 
-**Ä¿±ê**
+**ç›®æ ‡**
 
-- Àí½âÈçºÎÊ¹ÓÃ»ìºÏ£¬²¢ÇÒÄÜ¹»ÔÚ`Direct3D`ÖÐÊ¹ÓÃËü¡£
-- Ñ§Ï°`Direct3D`Ö§³ÖµÄ²»Í¬µÄ»ìºÏÄ£Ê½¡£
-- ·¢ÏÖÈçºÎÍ¨¹ýÊ¹ÓÃAlphaÈ¥¿ØÖÆÍ¼ÔªµÄÍ¸Ã÷¶È¡£
-- Ñ§Ï°ÈçºÎÊ¹ÓÃHLSLÖÐµÄClipº¯Êý×èÖ¹Ò»¸öÏñËØ»æÖÆµ½ºóÌ¨»º³åÖÐ¡£
+- ç†è§£å¦‚ä½•ä½¿ç”¨æ··åˆï¼Œå¹¶ä¸”èƒ½å¤Ÿåœ¨`Direct3D`ä¸­ä½¿ç”¨å®ƒã€‚
+- å­¦ä¹ `Direct3D`æ”¯æŒçš„ä¸åŒçš„æ··åˆæ¨¡å¼ã€‚
+- å‘çŽ°å¦‚ä½•é€šè¿‡ä½¿ç”¨AlphaåŽ»æŽ§åˆ¶å›¾å…ƒçš„é€æ˜Žåº¦ã€‚
+- å­¦ä¹ å¦‚ä½•ä½¿ç”¨HLSLä¸­çš„Clipå‡½æ•°é˜»æ­¢ä¸€ä¸ªåƒç´ ç»˜åˆ¶åˆ°åŽå°ç¼“å†²ä¸­ã€‚
 
 ## <element id = "10.1">  10.1 THE BLENDING EQUATION </element>
 
-ÎÒÃÇÉè**C<sub>src**</sub>±íÊ¾´ÓÎÒÃÇµÄÏñËØ×ÅÉ«Æ÷(**PixelShader**)Êä³öµÄµÚ**i**,**j**¸öÏñËØ£¬Ò²¾ÍÊÇÎÒÃÇÕýÔÚ¹âÕ¤»¯µÄÏñËØ£¬È»ºóÎÒÃÇÉè**C<sub>dst**</sub>±íÊ¾ÏÖÔÚÔÚºóÌ¨»º³åÖÐµÚ**i**,**j**¸öÏñËØ¡£
-Èç¹û²»Ê¹ÓÃ»ìºÏ¼¼ÊõµÄ»°£¬ÏñËØ**C<sub>src**</sub>½«»áÌæ´ú**C<sub>dst**</sub>(Ç°ÌáÊÇËûÄÜ¹»Í¨¹ýÉî¶ÈºÍÄ£°å²âÊÔ)¡£
-µ«ÊÇÔÚÊ¹ÓÃ»ìºÏµÄÇé¿öÏÂ£¬**C<sub>src**</sub>ºÍ**C<sub>dst**</sub>½«»á»ìºÏ³ÉÒ»¸öÐÂµÄÑÕÉ«**C**£¬²¢ÇÒ**C**½«»áÌæ´ú**C<sub>dst**</sub>×÷ÎªºóÌ¨»º³åÀïÃæµÄÏñËØ(Äã¿ÉÒÔÈÏÎªÐÂµÄÑÕÉ«**C**½«»á±»Ð´Èëµ½ºóÌ¨»º³åÖÐÈ¥)¡£
-`Direct3D`Ê¹ÓÃÏÂÃæµÄÕâ¸ö·½³ÌÀ´»ìºÏÔ´ºÍÄ¿±êÏñËØµÄÑÕÉ«:
+æˆ‘ä»¬è®¾**C<sub>src**</sub>è¡¨ç¤ºä»Žæˆ‘ä»¬çš„åƒç´ ç€è‰²å™¨(**PixelShader**)è¾“å‡ºçš„ç¬¬**i**,**j**ä¸ªåƒç´ ï¼Œä¹Ÿå°±æ˜¯æˆ‘ä»¬æ­£åœ¨å…‰æ …åŒ–çš„åƒç´ ï¼Œç„¶åŽæˆ‘ä»¬è®¾**C<sub>dst**</sub>è¡¨ç¤ºçŽ°åœ¨åœ¨åŽå°ç¼“å†²ä¸­ç¬¬**i**,**j**ä¸ªåƒç´ ã€‚
+å¦‚æžœä¸ä½¿ç”¨æ··åˆæŠ€æœ¯çš„è¯ï¼Œåƒç´ **C<sub>src**</sub>å°†ä¼šæ›¿ä»£**C<sub>dst**</sub>(å‰ææ˜¯ä»–èƒ½å¤Ÿé€šè¿‡æ·±åº¦å’Œæ¨¡æ¿æµ‹è¯•)ã€‚
+ä½†æ˜¯åœ¨ä½¿ç”¨æ··åˆçš„æƒ…å†µä¸‹ï¼Œ**C<sub>src**</sub>å’Œ**C<sub>dst**</sub>å°†ä¼šæ··åˆæˆä¸€ä¸ªæ–°çš„é¢œè‰²**C**ï¼Œå¹¶ä¸”**C**å°†ä¼šæ›¿ä»£**C<sub>dst**</sub>ä½œä¸ºåŽå°ç¼“å†²é‡Œé¢çš„åƒç´ (ä½ å¯ä»¥è®¤ä¸ºæ–°çš„é¢œè‰²**C**å°†ä¼šè¢«å†™å…¥åˆ°åŽå°ç¼“å†²ä¸­åŽ»)ã€‚
+`Direct3D`ä½¿ç”¨ä¸‹é¢çš„è¿™ä¸ªæ–¹ç¨‹æ¥æ··åˆæºå’Œç›®æ ‡åƒç´ çš„é¢œè‰²:
 
-**<center>C = C<sub>src</sub> ¡Á F<sub>src</sub> ^ C<sub>dst</sub> ¡Á F<sub>dst</sub></center>**
+**<center>C = C<sub>src</sub> Ã— F<sub>src</sub> ^ C<sub>dst</sub> Ã— F<sub>dst</sub></center>**
 
-F½«»áÔÚÏÂÃæ½éÉÜ£¬Ö÷ÒªÊÇÍ¨¹ýFÀ´ÈÃÎÒÃÇÓÐ¸ü¶àµÄ·½Ê½È¥ÊµÏÖ¸ü¶àµÄÐ§¹û¡£
-`¡Á` ·ûºÏ±íÊ¾µÄÊÇÏòÁ¿µÄµã»ý£¬`^`(ËûÄÇ¸ö·ûºÏÎÒ´ò²»³ö£¬ÎÒÃÇÔÝÇÒ½Ð×ö»ìºÏ²Ù×÷)·ûºÅÊÇÒ»ÖÖÓÉÎÒÃÇ×ÔÖ÷¶¨ÒåµÄÔËËã£¬¾ßÌåÏÂÃæ»á½éÉÜ¡£
+Få°†ä¼šåœ¨ä¸‹é¢ä»‹ç»ï¼Œä¸»è¦æ˜¯é€šè¿‡Fæ¥è®©æˆ‘ä»¬æœ‰æ›´å¤šçš„æ–¹å¼åŽ»å®žçŽ°æ›´å¤šçš„æ•ˆæžœã€‚
+`Ã—` ç¬¦åˆè¡¨ç¤ºçš„æ˜¯å‘é‡çš„ç‚¹ç§¯ï¼Œ`^`(ä»–é‚£ä¸ªç¬¦åˆæˆ‘æ‰“ä¸å‡ºï¼Œæˆ‘ä»¬æš‚ä¸”å«åšæ··åˆæ“ä½œ)ç¬¦å·æ˜¯ä¸€ç§ç”±æˆ‘ä»¬è‡ªä¸»å®šä¹‰çš„è¿ç®—ï¼Œå…·ä½“ä¸‹é¢ä¼šä»‹ç»ã€‚
 
-ÉÏÃæµÄ·½³ÌÊÇÓÃÓÚ´¦ÀíÑÕÉ«·ÖÁ¿ÖÐµÄ**RGB**µÄ£¬¶ÔÓÚ**Alpha**ÖµÎÒÃÇµ¥¶ÀÊ¹ÓÃÏÂÃæµÄ·½³Ì´¦Àí£¬Õâ¸ö·½³ÌºÍÉÏÃæµÄÊÇ¼«ÎªÏàËÆµÄ£º
+ä¸Šé¢çš„æ–¹ç¨‹æ˜¯ç”¨äºŽå¤„ç†é¢œè‰²åˆ†é‡ä¸­çš„**RGB**çš„ï¼Œå¯¹äºŽ**Alpha**å€¼æˆ‘ä»¬å•ç‹¬ä½¿ç”¨ä¸‹é¢çš„æ–¹ç¨‹å¤„ç†ï¼Œè¿™ä¸ªæ–¹ç¨‹å’Œä¸Šé¢çš„æ˜¯æžä¸ºç›¸ä¼¼çš„ï¼š
 
 **<center>A = A<sub>src</sub>F<sub>src</sub> ^ A<sub>dst</sub>F<sub>dst</sub></center>**
 
-Õâ¸ö·½³Ì»ù±¾ÉÏÊÇÒ»ÑùµÄ£¬µ«ÊÇÕâÑù·Ö¿ª´¦ÀíµÄ»°¾Í¿ÉÒÔÈÃ`^`ÔËËã¿ÉÒÔ²»Í¬ÁË¡£ÎÒÃÇ½«RGBºÍAlpha·Ö¿ª´¦ÀíµÄ¶¯»ú¾ÍÊÇÈÃÎÒÃÇÄÜ¹»µ¥¶À´¦ÀíRGBºÍAlphaÖµ£¬¶øÁ½Õß²»»¥ÏàÓ°Ïì¡£
+è¿™ä¸ªæ–¹ç¨‹åŸºæœ¬ä¸Šæ˜¯ä¸€æ ·çš„ï¼Œä½†æ˜¯è¿™æ ·åˆ†å¼€å¤„ç†çš„è¯å°±å¯ä»¥è®©`^`è¿ç®—å¯ä»¥ä¸åŒäº†ã€‚æˆ‘ä»¬å°†RGBå’ŒAlphaåˆ†å¼€å¤„ç†çš„åŠ¨æœºå°±æ˜¯è®©æˆ‘ä»¬èƒ½å¤Ÿå•ç‹¬å¤„ç†RGBå’ŒAlphaå€¼ï¼Œè€Œä¸¤è€…ä¸äº’ç›¸å½±å“ã€‚
 
 
 ## <element id = "10.2"> 10.2 BLEND OPERATIONTS </element>
 
-- `D3D12_BLEND_OP_ADD`: **C = C<sub>src</sub> ¡Á F<sub>src</sub> + C<sub>dst</sub> ¡Á F<sub>dst</sub>**
-- `D3D12_BLEND_OP_SUBTRACT`: **C = C<sub>dst</sub> ¡Á F<sub>dst</sub> - C<sub>src</sub> ¡Á F<sub>src</sub>**
-- `D3D12_BLEND_OP_REV_SUBTRACT`: **C = C<sub>src</sub> ¡Á F<sub>src</sub> - C<sub>dst</sub> ¡Á F<sub>dst</sub>** 
+- `D3D12_BLEND_OP_ADD`: **C = C<sub>src</sub> Ã— F<sub>src</sub> + C<sub>dst</sub> Ã— F<sub>dst</sub>**
+- `D3D12_BLEND_OP_SUBTRACT`: **C = C<sub>dst</sub> Ã— F<sub>dst</sub> - C<sub>src</sub> Ã— F<sub>src</sub>**
+- `D3D12_BLEND_OP_REV_SUBTRACT`: **C = C<sub>src</sub> Ã— F<sub>src</sub> - C<sub>dst</sub> Ã— F<sub>dst</sub>** 
 - `D3D12_BLEND_OP_MIN`: **C = min(C<sub>src</sub>, C<sub>dst</sub>)**
 - `D3D12_BLEND_OP_MAX`: **C = max(C<sub>src</sub>, C<sub>dst</sub>)**
 
-AlphaµÄ»ìºÏ²Ù×÷Ò²ÊÇÒ»ÑùµÄ¡£
-µ±È»Äã¿ÉÒÔÊ¹ÓÃ²»Í¬µÄ²Ù×÷À´·Ö±ð´¦ÀíRGBºÍAlphaµÄ»ìºÏ¡£
-¾Ù¸öÀý×ÓÀ´Ëµ£¬Äã¿ÉÒÔÔÚRGBµÄ»ìºÏÖÐÊ¹ÓÃ`+`£¬È»ºóÔÚAlphaµÄ»ìºÏÖÐÊ¹ÓÃ`-`¡£
+Alphaçš„æ··åˆæ“ä½œä¹Ÿæ˜¯ä¸€æ ·çš„ã€‚
+å½“ç„¶ä½ å¯ä»¥ä½¿ç”¨ä¸åŒçš„æ“ä½œæ¥åˆ†åˆ«å¤„ç†RGBå’ŒAlphaçš„æ··åˆã€‚
+ä¸¾ä¸ªä¾‹å­æ¥è¯´ï¼Œä½ å¯ä»¥åœ¨RGBçš„æ··åˆä¸­ä½¿ç”¨`+`ï¼Œç„¶åŽåœ¨Alphaçš„æ··åˆä¸­ä½¿ç”¨`-`ã€‚
 
-**<center>C = C<sub>src</sub> ¡Á F<sub>src</sub> + C<sub>dst</sub> ¡Á F<sub>dst</sub></center>** 
+**<center>C = C<sub>src</sub> Ã— F<sub>src</sub> + C<sub>dst</sub> Ã— F<sub>dst</sub></center>** 
 
 **<center>A = A<sub>dst</sub>F<sub>dst</sub> - A<sub>src</sub>F<sub>src</sub></center>**
 
 
-×î½üÔÚ`Direct3D`ÖÐ¼ÓÈëÁËÒ»¸öÐÂµÄÌØÕ÷(`D3D12_LOGIC_OP`)£¬ÎÒÃÇ¿ÉÒÔÊ¹ÓÃÂß¼­ÔËËã·ûÀ´´úÌæÉÏÃæµÄ»ìºÏ²Ù×÷¡£
-¾ßÌåµÄÎÒ¾ÍÃ»±ØÒª·Å½øÈ¥ÁË£¬±Ï¾¹ºÜ¼òµ¥Àí½â¡£
+æœ€è¿‘åœ¨`Direct3D`ä¸­åŠ å…¥äº†ä¸€ä¸ªæ–°çš„ç‰¹å¾(`D3D12_LOGIC_OP`)ï¼Œæˆ‘ä»¬å¯ä»¥ä½¿ç”¨é€»è¾‘è¿ç®—ç¬¦æ¥ä»£æ›¿ä¸Šé¢çš„æ··åˆæ“ä½œã€‚
+å…·ä½“çš„æˆ‘å°±æ²¡å¿…è¦æ”¾è¿›åŽ»äº†ï¼Œæ¯•ç«Ÿå¾ˆç®€å•ç†è§£ã€‚
 
-µ«ÊÇÄãÐèÒª×¢ÒâµÄÊÇ£¬Èç¹ûÄãÊ¹ÓÃÂß¼­ÔËËã·û´úÌæ»ìºÏ²Ù×÷£¬ÄãÐèÒª×¢ÒâµÄÊÇÂß¼­ÔËËã·ûºÍ´«Í³ÔËËã·ûÊÇ²»ÄÜÍ¬Ê±Ê¹ÓÃµÄ£¬Äã±ØÐëÔÚÕâÁ½ÖÖÀïÃæÑ¡ÔñÒ»ÖÖÊ¹ÓÃ¡£
-²¢ÇÒÄãÊ¹ÓÃÂß¼­ÔËËã·ûµÄ»°£¬ÄãÐèÒªÈ·±£ÄãµÄ`Render Target`µÄ¸ñÊ½Ö§³Ö(Ö§³ÖµÄ¸ñÊ½Ó¦µ±ÊÇ`UINT`µÄ±äÖÖ)¡£
+ä½†æ˜¯ä½ éœ€è¦æ³¨æ„çš„æ˜¯ï¼Œå¦‚æžœä½ ä½¿ç”¨é€»è¾‘è¿ç®—ç¬¦ä»£æ›¿æ··åˆæ“ä½œï¼Œä½ éœ€è¦æ³¨æ„çš„æ˜¯é€»è¾‘è¿ç®—ç¬¦å’Œä¼ ç»Ÿè¿ç®—ç¬¦æ˜¯ä¸èƒ½åŒæ—¶ä½¿ç”¨çš„ï¼Œä½ å¿…é¡»åœ¨è¿™ä¸¤ç§é‡Œé¢é€‰æ‹©ä¸€ç§ä½¿ç”¨ã€‚
+å¹¶ä¸”ä½ ä½¿ç”¨é€»è¾‘è¿ç®—ç¬¦çš„è¯ï¼Œä½ éœ€è¦ç¡®ä¿ä½ çš„`Render Target`çš„æ ¼å¼æ”¯æŒ(æ”¯æŒçš„æ ¼å¼åº”å½“æ˜¯`UINT`çš„å˜ç§)ã€‚
 ## <element id = "10.3"> 10.3 BLEND FACTORS </element>
 
-Í¨¹ý¸Ä±ä`Factors(ÒòËØ)`£¬ÎÒÃÇ¿ÉÒÔÉèÖÃ¸ü¶àµÄ²»Í¬µÄ»ìºÏ×éºÏ£¬´Ó¶øÀ´ÊµÏÖ¸ü¶àµÄ²»Í¬µÄÐ§¹û¡£
-ÎÒÃÇ½«»áÔÚÏÂÃæ½âÊÍÒ»Ð©»ìºÏ×éºÏ£¬µ«ÊÇÄã»¹ÊÇÒªÈ¥ÌåÑéÒ»ÏÂËûÃÇµÄÐ§¹û£¬´Ó¶øÄÜ¹»ÓÐÒ»¸ö¸ÅÄî¡£
-ÏÂÃæ½«»á½éÉÜÒ»Ð©»ù´¡µÄ`Factors`¡£Äã¿ÉÒÔÈ¥¿´**SDK**ÎÄµµÀïÃæµÄ`D3D12_BLEND`Ã¶¾ÙÁË½âµ½¸ü¶à¸ß¼¶µÄ`Factors`¡£
-ÎÒÃÇÉè**C<sub>src</sub> = (r<sub>src</sub>, g<sub>src</sub>, b<sub>src</sub>)**£¬**A<sub>src</sub> = a<sub>src</sub>**(Õâ¸öRGBAÖµÊÇÓÉÏñËØ×ÅÉ«Æ÷Êä³öµÄ)£¬
-**C<sub>dst</sub> = (r<sub>dst</sub>, g<sub>dst</sub>, b<sub>dst</sub>)**£¬**A<sub>dst</sub> = a<sub>dst</sub>**(Õâ¸öRGBAÖµÊÇ´æ´¢ÔÚºóÌ¨»º³åÖÐµÄ)¡£
+é€šè¿‡æ”¹å˜`Factors(å› ç´ )`ï¼Œæˆ‘ä»¬å¯ä»¥è®¾ç½®æ›´å¤šçš„ä¸åŒçš„æ··åˆç»„åˆï¼Œä»Žè€Œæ¥å®žçŽ°æ›´å¤šçš„ä¸åŒçš„æ•ˆæžœã€‚
+æˆ‘ä»¬å°†ä¼šåœ¨ä¸‹é¢è§£é‡Šä¸€äº›æ··åˆç»„åˆï¼Œä½†æ˜¯ä½ è¿˜æ˜¯è¦åŽ»ä½“éªŒä¸€ä¸‹ä»–ä»¬çš„æ•ˆæžœï¼Œä»Žè€Œèƒ½å¤Ÿæœ‰ä¸€ä¸ªæ¦‚å¿µã€‚
+ä¸‹é¢å°†ä¼šä»‹ç»ä¸€äº›åŸºç¡€çš„`Factors`ã€‚ä½ å¯ä»¥åŽ»çœ‹**SDK**æ–‡æ¡£é‡Œé¢çš„`D3D12_BLEND`æžšä¸¾äº†è§£åˆ°æ›´å¤šé«˜çº§çš„`Factors`ã€‚
+æˆ‘ä»¬è®¾**C<sub>src</sub> = (r<sub>src</sub>, g<sub>src</sub>, b<sub>src</sub>)**ï¼Œ**A<sub>src</sub> = a<sub>src</sub>**(è¿™ä¸ªRGBAå€¼æ˜¯ç”±åƒç´ ç€è‰²å™¨è¾“å‡ºçš„)ï¼Œ
+**C<sub>dst</sub> = (r<sub>dst</sub>, g<sub>dst</sub>, b<sub>dst</sub>)**ï¼Œ**A<sub>dst</sub> = a<sub>dst</sub>**(è¿™ä¸ªRGBAå€¼æ˜¯å­˜å‚¨åœ¨åŽå°ç¼“å†²ä¸­çš„)ã€‚
 
 - `D3D12_BLEND_ZERO`: **F = (0, 0, 0, 0)**
 - `D3D12_BLEND_ONE`: **F = (1, 1, 1, 1)**
@@ -77,19 +77,19 @@ AlphaµÄ»ìºÏ²Ù×÷Ò²ÊÇÒ»ÑùµÄ¡£
 - `D3D12_BLEND_SRC_ALPHA_SAT`: **F = (a'<sub>src</sub>, a'<sub>src</sub>, a'<sub>src</sub>, a'<sub>src</sub>), a'<sub>src</sub> = clamp(a<sub>src</sub>, 0, 1)**
 - `D3D12_BLEND_BLEND_FACTOR`: **F = (r, g, b, a)**
 
-×îºóÒ»¸öÃ¶¾ÙÀàÐÍÖÐµÄ²ÎÊý **(r ,g ,b ,a)** Í¨¹ýÏÂÃæÕâ¸öº¯ÊýÉèÖÃ¡£
+æœ€åŽä¸€ä¸ªæžšä¸¾ç±»åž‹ä¸­çš„å‚æ•° **(r ,g ,b ,a)** é€šè¿‡ä¸‹é¢è¿™ä¸ªå‡½æ•°è®¾ç½®ã€‚
 
 `ID3D12GraphicsCommandList::OMSetBlendFactor`
 
-²ÎÊýÊÇÒ»¸ö`Float[4]`£¬±íÊ¾4¸ö·ÖÁ¿µÄÖµ£¬Èç¹ûÉèÖÃÎª`nullptr`ÄÇÃ´¾ÍÄ¬ÈÏÈ«ÊÇ1¡£
+å‚æ•°æ˜¯ä¸€ä¸ª`Float[4]`ï¼Œè¡¨ç¤º4ä¸ªåˆ†é‡çš„å€¼ï¼Œå¦‚æžœè®¾ç½®ä¸º`nullptr`é‚£ä¹ˆå°±é»˜è®¤å…¨æ˜¯1ã€‚
 
 ## <element id = "10.4"> 10.4 BLEND STATE </element>
 
-ÎÒÃÇÒÑ¾­ÌÖÂÛ¹ýÁË»ìºÏ²Ù×÷·ûºÍ»ìºÏÒòËØ£¬µ«ÊÇÎÒÃÇÈçºÎÔÚ`Direct3D`ÀïÃæÉèÖÃÕâÐ©²ÎÊýÄØ£¿
-ºÍÆäËûµÄ`Direct3D`µÄ×´Ì¬Ò»Ñù£¬»ìºÏ×´Ì¬Ò²ÊÇ`PSO(äÖÈ¾¹ÜµÀ)`µÄÒ»¸ö²¿·Ö¡£
-Ö®Ç°ÎÒÃÇÊ¹ÓÃµÄ¶¼ÊÇÄ¬ÈÏµÄ»ìºÏ×´Ì¬(½ûÓÃ×´Ì¬)¡£
+æˆ‘ä»¬å·²ç»è®¨è®ºè¿‡äº†æ··åˆæ“ä½œç¬¦å’Œæ··åˆå› ç´ ï¼Œä½†æ˜¯æˆ‘ä»¬å¦‚ä½•åœ¨`Direct3D`é‡Œé¢è®¾ç½®è¿™äº›å‚æ•°å‘¢ï¼Ÿ
+å’Œå…¶ä»–çš„`Direct3D`çš„çŠ¶æ€ä¸€æ ·ï¼Œæ··åˆçŠ¶æ€ä¹Ÿæ˜¯`PSO(æ¸²æŸ“ç®¡é“)`çš„ä¸€ä¸ªéƒ¨åˆ†ã€‚
+ä¹‹å‰æˆ‘ä»¬ä½¿ç”¨çš„éƒ½æ˜¯é»˜è®¤çš„æ··åˆçŠ¶æ€(ç¦ç”¨çŠ¶æ€)ã€‚
 
-ÎÒÃÇÈç¹ûÒªÊ¹ÓÃ·ÇÄ¬ÈÏµÄ»ìºÏ×´Ì¬£¬ÎÒÃÇ±ØÐëÌî³ä`D3D12_BLEND_DESC`½á¹¹¡£
+æˆ‘ä»¬å¦‚æžœè¦ä½¿ç”¨éžé»˜è®¤çš„æ··åˆçŠ¶æ€ï¼Œæˆ‘ä»¬å¿…é¡»å¡«å……`D3D12_BLEND_DESC`ç»“æž„ã€‚
 
 ```C++
     struct D3D12_BLEND_DESC{
@@ -99,14 +99,14 @@ AlphaµÄ»ìºÏ²Ù×÷Ò²ÊÇÒ»ÑùµÄ¡£
     };
 ```
 
-- `AlphaToCoverageEnable`:ÉèÖÃ³É`true`¿ªÆô`alpha-to-coverage`¼¼Êõ£¬Õâ¸ö¼¼ÊõÊÇ¶àÖØ²ÉÑù¼¼ÊõÔÚäÖÈ¾Ä³Ð©ÎÆÀí **(ÕâÀïµÄ·­ÒëÎÞ·¨±£Ö¤ÕýÈ·ÐÔ£¬Òò´Ë¾ÍÊ¹ÓÃÄ³Ð©ÎÆÀí´úÌæ)** µÄÊ±ºòÊ¹ÓÃµÄ¡£ÉèÖÃ³É`false`À´¹Ø±ÕÕâ¸ö¼¼Êõ¡£`alpha-to-coverage`¼¼ÊõÐèÒª¶àÖØ²ÉÑù¿ªÆô²ÅÄÜÊ¹ÓÃ(»»ÑÔÖ®¾ÍÊÇ±ØÐëÔÚ´´½¨ºóÌ¨»º³åºÍÉî¶È»º³åµÄÊ±ºò¿ªÆô¶àÖØ²ÉÑù)¡£
+- `AlphaToCoverageEnable`:è®¾ç½®æˆ`true`å¼€å¯`alpha-to-coverage`æŠ€æœ¯ï¼Œè¿™ä¸ªæŠ€æœ¯æ˜¯å¤šé‡é‡‡æ ·æŠ€æœ¯åœ¨æ¸²æŸ“æŸäº›çº¹ç† **(è¿™é‡Œçš„ç¿»è¯‘æ— æ³•ä¿è¯æ­£ç¡®æ€§ï¼Œå› æ­¤å°±ä½¿ç”¨æŸäº›çº¹ç†ä»£æ›¿)** çš„æ—¶å€™ä½¿ç”¨çš„ã€‚è®¾ç½®æˆ`false`æ¥å…³é—­è¿™ä¸ªæŠ€æœ¯ã€‚`alpha-to-coverage`æŠ€æœ¯éœ€è¦å¤šé‡é‡‡æ ·å¼€å¯æ‰èƒ½ä½¿ç”¨(æ¢è¨€ä¹‹å°±æ˜¯å¿…é¡»åœ¨åˆ›å»ºåŽå°ç¼“å†²å’Œæ·±åº¦ç¼“å†²çš„æ—¶å€™å¼€å¯å¤šé‡é‡‡æ ·)ã€‚
 
-- `IndependentBlendEnable`:`Direct3D`×î¶àÖ§³ÖÍ¬Ê±äÖÈ¾8¸ö`Render Target`¡£Èç¹ûÕâ¸öÊôÐÔÉèÖÃ³É`true`£¬ÄÇÃ´¾Í¿ÉÒÔÔÚäÖÈ¾²»Í¬µÄ`Render Target`µÄÊ±ºòÊ¹ÓÃ²»Í¬µÄ»ìºÏ²ÎÊý(ÀýÈç»ìºÏÒòËØ£¬»ìºÏ²Ù×÷·û£¬»ìºÏÊÇ·ñ¿ªÆôµÈ)¡£Èç¹ûÉèÖÃ³É`false`£¬ÄÇÃ´ËùÓÐµÄ`Render Target`¾Í»áÊ¹ÓÃÍ¬ÑùµÄ»ìºÏ·½·¨(¾ßÌåÀ´Ëµ¾ÍÊÇ`D3D12_BLEND_DESC::RenderTarget`ÖÐµÄµÚÒ»¸öÔªËØ×÷ÎªËùÓÐµÄ`Render Target`Ê¹ÓÃµÄ»ìºÏ·½·¨)¡£¶ÔÓÚÏÖÔÚÀ´Ëµ£¬ÎÒÃÇÒ»´ÎÖ»Ê¹ÓÃÒ»¸ö`Render Target`¡£
+- `IndependentBlendEnable`:`Direct3D`æœ€å¤šæ”¯æŒåŒæ—¶æ¸²æŸ“8ä¸ª`Render Target`ã€‚å¦‚æžœè¿™ä¸ªå±žæ€§è®¾ç½®æˆ`true`ï¼Œé‚£ä¹ˆå°±å¯ä»¥åœ¨æ¸²æŸ“ä¸åŒçš„`Render Target`çš„æ—¶å€™ä½¿ç”¨ä¸åŒçš„æ··åˆå‚æ•°(ä¾‹å¦‚æ··åˆå› ç´ ï¼Œæ··åˆæ“ä½œç¬¦ï¼Œæ··åˆæ˜¯å¦å¼€å¯ç­‰)ã€‚å¦‚æžœè®¾ç½®æˆ`false`ï¼Œé‚£ä¹ˆæ‰€æœ‰çš„`Render Target`å°±ä¼šä½¿ç”¨åŒæ ·çš„æ··åˆæ–¹æ³•(å…·ä½“æ¥è¯´å°±æ˜¯`D3D12_BLEND_DESC::RenderTarget`ä¸­çš„ç¬¬ä¸€ä¸ªå…ƒç´ ä½œä¸ºæ‰€æœ‰çš„`Render Target`ä½¿ç”¨çš„æ··åˆæ–¹æ³•)ã€‚å¯¹äºŽçŽ°åœ¨æ¥è¯´ï¼Œæˆ‘ä»¬ä¸€æ¬¡åªä½¿ç”¨ä¸€ä¸ª`Render Target`ã€‚
 
-- `RenderTarget`:µÚi¸öÔªËØÃèÊöµÚi¸ö`Render Target`Ê¹ÓÃµÄ»ìºÏ·½·¨£¬Èç¹û`IndependentBlendEnable`ÉèÖÃ³É`false`£¬ÄÇÃ´ËùÓÐµÄ`Render Target`¾ÍÈ«²¿Ê¹ÓÃ`RenderTarget[0]`Õâ¸ö»ìºÏ·½·¨È¥½øÐÐ»ìºÏ¡£
+- `RenderTarget`:ç¬¬iä¸ªå…ƒç´ æè¿°ç¬¬iä¸ª`Render Target`ä½¿ç”¨çš„æ··åˆæ–¹æ³•ï¼Œå¦‚æžœ`IndependentBlendEnable`è®¾ç½®æˆ`false`ï¼Œé‚£ä¹ˆæ‰€æœ‰çš„`Render Target`å°±å…¨éƒ¨ä½¿ç”¨`RenderTarget[0]`è¿™ä¸ªæ··åˆæ–¹æ³•åŽ»è¿›è¡Œæ··åˆã€‚
 
 
-`D3D12_RENDER_TARGET_BLEND_DESC`½á¹¹ÈçÏÂËùÊ¾:
+`D3D12_RENDER_TARGET_BLEND_DESC`ç»“æž„å¦‚ä¸‹æ‰€ç¤º:
 
 ```C++
     struct D3D12_RENDER_TARGET_BLEND_DESC{
@@ -123,52 +123,52 @@ AlphaµÄ»ìºÏ²Ù×÷Ò²ÊÇÒ»ÑùµÄ¡£
     };
 ```
 
-- `BlendEnable`: ÉèÖÃ³É`true`¾Í¿ªÆô»ìºÏ·ñÔò¾ÍÊÇ¹Ø±Õ£¬×¢ÒâµÄÊÇ`LogicOpEnable`ºÍ`BlendEnable`²»ÄÜÍ¬Ê±¿ªÆô£¬Äã±ØÐëÊ¹ÓÃÆäÖÐµÄÒ»¸öÀ´½øÐÐ»ìºÏ¡£
-- `LogicOpEnable`: ÉèÖÃ³É`true`¾Í¿ªÆôÊ¹ÓÃÂß¼­ÔËËã·ûµÄ»ìºÏ£¬È»ºóºÍ`BlendEnable`²»ÄÜÍ¬Ê±Ê¹ÓÃ¡£
-- `SrcBlend`: **RGB**»ìºÏÖÐµÄ**F<sub>src</sub>**¡£
-- `DestBlend`:  **RGB**»ìºÏÖÐµÄ**F<sub>dst</sub>**¡£
-- `BlendOp`: **RGB**»ìºÏÖÐÊ¹ÓÃµÄ²Ù×÷·û¡£
-- `SrcBlendAlpha`: **Alpha**»ìºÏÖÐµÄ**F<sub>src</sub>**¡£
-- `DestBlendAlpha`: **Alpha**»ìºÏÖÐµÄ**F<sub>dst</sub>**¡£
-- `BlendOpAlpha`: **Alpha**»ìºÏÖÐÊ¹ÓÃµÄ²Ù×÷·û¡£
-- `LogicOp`: »ìºÏÖÐÊ¹ÓÃµÄÂß¼­ÔËËã·û¡£
-- `RenderTargetWriteMask`: ÓÃÓÚ¿ØÖÆ»ìºÏ½áÊøºóÄÄÐ©ÑÕÉ«(**R,G,B,A**)¿ÉÒÔÐ´Èëµ½ºóÌ¨»º³åÖÐÈ¥¡£¾Ù¸öÀý×ÓÀ´Ëµ¾ÍÊÇÈç¹ûÎÒÃÇÏë½ûÖ¹½«**RGB**Ð´Èëµ½ºóÌ¨»º³åÖÐÈ¥µÄ»°£¬ÎÒÃÇ¾Í¿ÉÒÔÉèÖÃ³É`D3D12_COLOR_WRITE_ENABLE_ALPHA`¡£Èç¹û»ìºÏÊÇ¹Ø±ÕµÄ£¬ÄÇÃ´¾ÍÃ»ÓÐÈÎºÎÏÞÖÆÊä³öµ½ºóÌ¨»º³åÖÐÈ¥¡£
+- `BlendEnable`: è®¾ç½®æˆ`true`å°±å¼€å¯æ··åˆå¦åˆ™å°±æ˜¯å…³é—­ï¼Œæ³¨æ„çš„æ˜¯`LogicOpEnable`å’Œ`BlendEnable`ä¸èƒ½åŒæ—¶å¼€å¯ï¼Œä½ å¿…é¡»ä½¿ç”¨å…¶ä¸­çš„ä¸€ä¸ªæ¥è¿›è¡Œæ··åˆã€‚
+- `LogicOpEnable`: è®¾ç½®æˆ`true`å°±å¼€å¯ä½¿ç”¨é€»è¾‘è¿ç®—ç¬¦çš„æ··åˆï¼Œç„¶åŽå’Œ`BlendEnable`ä¸èƒ½åŒæ—¶ä½¿ç”¨ã€‚
+- `SrcBlend`: **RGB**æ··åˆä¸­çš„**F<sub>src</sub>**ã€‚
+- `DestBlend`:  **RGB**æ··åˆä¸­çš„**F<sub>dst</sub>**ã€‚
+- `BlendOp`: **RGB**æ··åˆä¸­ä½¿ç”¨çš„æ“ä½œç¬¦ã€‚
+- `SrcBlendAlpha`: **Alpha**æ··åˆä¸­çš„**F<sub>src</sub>**ã€‚
+- `DestBlendAlpha`: **Alpha**æ··åˆä¸­çš„**F<sub>dst</sub>**ã€‚
+- `BlendOpAlpha`: **Alpha**æ··åˆä¸­ä½¿ç”¨çš„æ“ä½œç¬¦ã€‚
+- `LogicOp`: æ··åˆä¸­ä½¿ç”¨çš„é€»è¾‘è¿ç®—ç¬¦ã€‚
+- `RenderTargetWriteMask`: ç”¨äºŽæŽ§åˆ¶æ··åˆç»“æŸåŽå“ªäº›é¢œè‰²(**R,G,B,A**)å¯ä»¥å†™å…¥åˆ°åŽå°ç¼“å†²ä¸­åŽ»ã€‚ä¸¾ä¸ªä¾‹å­æ¥è¯´å°±æ˜¯å¦‚æžœæˆ‘ä»¬æƒ³ç¦æ­¢å°†**RGB**å†™å…¥åˆ°åŽå°ç¼“å†²ä¸­åŽ»çš„è¯ï¼Œæˆ‘ä»¬å°±å¯ä»¥è®¾ç½®æˆ`D3D12_COLOR_WRITE_ENABLE_ALPHA`ã€‚å¦‚æžœæ··åˆæ˜¯å…³é—­çš„ï¼Œé‚£ä¹ˆå°±æ²¡æœ‰ä»»ä½•é™åˆ¶è¾“å‡ºåˆ°åŽå°ç¼“å†²ä¸­åŽ»ã€‚
 
-**Notice:** ÓÉÓÚ»ìºÏÐèÒª´¦ÀíÃ¿Ò»¸öÏñËØ£¬ËùÒÔËûµÄ¿ªÏúºÜ´ó¡£Äã×îºÃÖ»ÔÚÐèÒªµÄÊ±ºò²Å´ò¿ªËü¡£
+**Notice:** ç”±äºŽæ··åˆéœ€è¦å¤„ç†æ¯ä¸€ä¸ªåƒç´ ï¼Œæ‰€ä»¥ä»–çš„å¼€é”€å¾ˆå¤§ã€‚ä½ æœ€å¥½åªåœ¨éœ€è¦çš„æ—¶å€™æ‰æ‰“å¼€å®ƒã€‚
 
 ## <element id = "10.5"> 10.5 EXAMPLES </element>
 
-ÔÚÕâ¸ö²¿·Ö£¬ÎÒÃÇ¿´Ò»Ð©»ìºÏ²Ù×÷µÄÌØÐ§Àý×Ó¡£µ±È»ÎÒÃÇÖ»¿´¹ØÓÚ**RGB**»ìºÏµÄÀý×Ó¡£
+åœ¨è¿™ä¸ªéƒ¨åˆ†ï¼Œæˆ‘ä»¬çœ‹ä¸€äº›æ··åˆæ“ä½œçš„ç‰¹æ•ˆä¾‹å­ã€‚å½“ç„¶æˆ‘ä»¬åªçœ‹å…³äºŽ**RGB**æ··åˆçš„ä¾‹å­ã€‚
 
 ### <element id = "10.5.1"> 10.5.1 No Color Write </element>
 
-Èç¹ûÎÒÃÇÖ»ÊÇÏëµ¥´¿µÄÁôÏÂÄ¿±êÏñËØ£¬¼´Ô´ÏñËØ²»»áºÍÄ¿±êÏñËØ½øÐÐ»ìºÏÒÔ¼°¸²¸Ç£¬ÄÇÃ´¾Í¿ÉÒÔÊ¹ÓÃÕâ¸ö·½·¨¡£
-¾Ù¸öÀý×ÓÀ´Ëµ¾ÍÊÇ£¬½«Ä¿±êÏñËØÊä³öµ½`Depth/Stencil Buffer`ÖÐÈ¥¡£·½³ÌÔÚÏÂÃæ£º
+å¦‚æžœæˆ‘ä»¬åªæ˜¯æƒ³å•çº¯çš„ç•™ä¸‹ç›®æ ‡åƒç´ ï¼Œå³æºåƒç´ ä¸ä¼šå’Œç›®æ ‡åƒç´ è¿›è¡Œæ··åˆä»¥åŠè¦†ç›–ï¼Œé‚£ä¹ˆå°±å¯ä»¥ä½¿ç”¨è¿™ä¸ªæ–¹æ³•ã€‚
+ä¸¾ä¸ªä¾‹å­æ¥è¯´å°±æ˜¯ï¼Œå°†ç›®æ ‡åƒç´ è¾“å‡ºåˆ°`Depth/Stencil Buffer`ä¸­åŽ»ã€‚æ–¹ç¨‹åœ¨ä¸‹é¢ï¼š
 
-**<center>C = C<sub>src</sub> ¡Á (0, 0, 0) + C<sub>dst</sub> ¡Á (1, 1, 1)</center>**
+**<center>C = C<sub>src</sub> Ã— (0, 0, 0) + C<sub>dst</sub> Ã— (1, 1, 1)</center>**
 
 **<center>C = C<sub>dst</sub></center>**
 
-ÁíÍâÒ»¸ö·½·¨¾ÍÊÇ½«`RenderTargetWriteMask`ÉèÖÃ³É0¡£
-ÕâÑùµÄ»°¾Í½ûÖ¹ÁËËùÓÐµÄÑÕÉ«Êä³öµ½`Back Buffer`ÖÐ¡£
+å¦å¤–ä¸€ä¸ªæ–¹æ³•å°±æ˜¯å°†`RenderTargetWriteMask`è®¾ç½®æˆ0ã€‚
+è¿™æ ·çš„è¯å°±ç¦æ­¢äº†æ‰€æœ‰çš„é¢œè‰²è¾“å‡ºåˆ°`Back Buffer`ä¸­ã€‚
 
 
 ### <element id = "10.5.2"> 10.5.2 Adding/Subtracting </element>
 
 <img src = "Images/10.2.png" id = "Image10.2"></img>
 
-Èç¹ûÎÒÃÇÏë½«Ô´ÏñËØºÍÄ¿±êÏñËØ¼ÓÆðÀ´(²Î¼û[10.2](#Image10.2))¡£·½³ÌÈçÏÂ£º
+å¦‚æžœæˆ‘ä»¬æƒ³å°†æºåƒç´ å’Œç›®æ ‡åƒç´ åŠ èµ·æ¥(å‚è§[10.2](#Image10.2))ã€‚æ–¹ç¨‹å¦‚ä¸‹ï¼š
 
-**<center>C = C<sub>src</sub> ¡Á (1, 1, 1) + C<sub>dst</sub> ¡Á (1, 1, 1)</center>**
+**<center>C = C<sub>src</sub> Ã— (1, 1, 1) + C<sub>dst</sub> Ã— (1, 1, 1)</center>**
 
 **<center>C = C<sub>src</sub> + C<sub>dst</sub></center>**
 
 <img src = "Images/10.3.png" id = "Image10.3"></img>
 
 
-ÎÒÃÇµ±È»Ò²¿ÉÒÔÏà¼õ°¡(²Î¼û[10.3](#Image10.3))¡£·½³ÌÈçÏÂ£º
+æˆ‘ä»¬å½“ç„¶ä¹Ÿå¯ä»¥ç›¸å‡å•Š(å‚è§[10.3](#Image10.3))ã€‚æ–¹ç¨‹å¦‚ä¸‹ï¼š
 
-**<center>C = C<sub>src</sub> ¡Á (1, 1, 1) - C<sub>dst</sub> ¡Á (1, 1, 1)</center>**
+**<center>C = C<sub>src</sub> Ã— (1, 1, 1) - C<sub>dst</sub> Ã— (1, 1, 1)</center>**
 
 **<center>C = C<sub>src</sub> - C<sub>dst</sub></center>**
 
@@ -176,42 +176,42 @@ AlphaµÄ»ìºÏ²Ù×÷Ò²ÊÇÒ»ÑùµÄ¡£
 
 <img src = "Images/10.4.png" id = "Image10.4"></img>
 
-Èç¹ûÎÒÃÇÏë½«Ô´ÏñËØºÍÄ¿±êÏñËØÏà³Ë(²Î¼û[10.4](#Image10.4))¡£·½³ÌÈçÏÂ£º
+å¦‚æžœæˆ‘ä»¬æƒ³å°†æºåƒç´ å’Œç›®æ ‡åƒç´ ç›¸ä¹˜(å‚è§[10.4](#Image10.4))ã€‚æ–¹ç¨‹å¦‚ä¸‹ï¼š
 
-**<center>C = C<sub>src</sub> ¡Á (0, 0, 0) x C<sub>dst</sub> ¡Á C<sub>src</sub></center>**
+**<center>C = C<sub>src</sub> Ã— (0, 0, 0) x C<sub>dst</sub> Ã— C<sub>src</sub></center>**
 
 **<center>C = C<sub>src</sub> x C<sub>dst</sub></center>**
 
 ### <element id = "10.5.4"> 10.5.4 Transparency </element>
 
-ÏÖÔÚÎÒÃÇ¼ÙÉè**Alpha**·ÖÁ¿ÓÃÀ´¿ØÖÆÔ´ÏñËØµÄ²»Í¸Ã÷¶È(0¾ÍÊÇ**0%**,0.4¾ÍÊÇ**40%**)¡£
-ÎÒÃÇÉè²»Í¸Ã÷¶ÈÎª**A**£¬Í¸Ã÷¶ÈÎª**T**¡£ÄÇÃ´Í¸Ã÷¶ÈºÍ²»Í¸Ã÷¶ÈµÄ¹ØÏµ¾ÍÊÇ**T = 1 - A**¡£
-±ÈÈç²»Í¸Ã÷¶ÈÊÇ0.4,ÄÇÃ´Í¸Ã÷¶È¾ÍÊÇ0.6¡£ÏÖÔÚÎÒÃÇÏë½«Ô´ÏñËØºÍÄ¿±êÏñËØÔÚ±£ÁôÔ´ÏñËØµÄ²»Í¸Ã÷¶ÈµÄÇé¿öÏÂ£¬½«Ä¿±êÏñËØÍ¸Ã÷¡£·½³ÌÈçÏÂ£º
+çŽ°åœ¨æˆ‘ä»¬å‡è®¾**Alpha**åˆ†é‡ç”¨æ¥æŽ§åˆ¶æºåƒç´ çš„ä¸é€æ˜Žåº¦(0å°±æ˜¯**0%**,0.4å°±æ˜¯**40%**)ã€‚
+æˆ‘ä»¬è®¾ä¸é€æ˜Žåº¦ä¸º**A**ï¼Œé€æ˜Žåº¦ä¸º**T**ã€‚é‚£ä¹ˆé€æ˜Žåº¦å’Œä¸é€æ˜Žåº¦çš„å…³ç³»å°±æ˜¯**T = 1 - A**ã€‚
+æ¯”å¦‚ä¸é€æ˜Žåº¦æ˜¯0.4,é‚£ä¹ˆé€æ˜Žåº¦å°±æ˜¯0.6ã€‚çŽ°åœ¨æˆ‘ä»¬æƒ³å°†æºåƒç´ å’Œç›®æ ‡åƒç´ åœ¨ä¿ç•™æºåƒç´ çš„ä¸é€æ˜Žåº¦çš„æƒ…å†µä¸‹ï¼Œå°†ç›®æ ‡åƒç´ é€æ˜Žã€‚æ–¹ç¨‹å¦‚ä¸‹ï¼š
 
-**<center>C = C<sub>src</sub> ¡Á (a<sub>src</sub>, a<sub>src</sub>, a<sub>src</sub>) + C<sub>dst</sub> ¡Á (1 - a<sub>src</sub>, 1 - a<sub>src</sub>, 1 - a<sub>src</sub>)</center>**
+**<center>C = C<sub>src</sub> Ã— (a<sub>src</sub>, a<sub>src</sub>, a<sub>src</sub>) + C<sub>dst</sub> Ã— (1 - a<sub>src</sub>, 1 - a<sub>src</sub>, 1 - a<sub>src</sub>)</center>**
 
-**<center>C = a<sub>src</sub> ¡Á C<sub>src</sub> + (1 - a<sub>src</sub>) ¡Á C<sub>dst</sub></center>**
+**<center>C = a<sub>src</sub> Ã— C<sub>src</sub> + (1 - a<sub>src</sub>) Ã— C<sub>dst</sub></center>**
 
-¾Ù¸öÀý×Ó¾ÍÊÇ£¬ÎÒÃÇ¼ÙÉè**a<sub>src</sub> = 0.25**£¬¾ÍÊÇ²»Í¸Ã÷¶ÈÎª**25%**¡£
-µ±Ô´ÏñËØºÍÄ¿±êÏñËØ»ìºÏµÄÊ±ºò£¬ÎÒÃÇÏ£Íû±£Áô **25%** µÄÔ´ÏñËØ£¬**75%** µÄÄ¿±êÏñËØ(ÕâÀïÄ¿±êÏñËØÔÚÔ´ÏñËØµÄÇ°Ãæ£¬ÆäÊµ¾ÍÊÇËµ¾ö¶¨Ä¿±êÏñËØµÄÎïÌåÔÚ¾ö¶¨Ô´ÏñËØµÄÎïÌåÇ°Ãæ)¡£·½³ÌÈçÏÂ£º
+ä¸¾ä¸ªä¾‹å­å°±æ˜¯ï¼Œæˆ‘ä»¬å‡è®¾**a<sub>src</sub> = 0.25**ï¼Œå°±æ˜¯ä¸é€æ˜Žåº¦ä¸º**25%**ã€‚
+å½“æºåƒç´ å’Œç›®æ ‡åƒç´ æ··åˆçš„æ—¶å€™ï¼Œæˆ‘ä»¬å¸Œæœ›ä¿ç•™ **25%** çš„æºåƒç´ ï¼Œ**75%** çš„ç›®æ ‡åƒç´ (è¿™é‡Œç›®æ ‡åƒç´ åœ¨æºåƒç´ çš„å‰é¢ï¼Œå…¶å®žå°±æ˜¯è¯´å†³å®šç›®æ ‡åƒç´ çš„ç‰©ä½“åœ¨å†³å®šæºåƒç´ çš„ç‰©ä½“å‰é¢)ã€‚æ–¹ç¨‹å¦‚ä¸‹ï¼š
 
-**<center>C = C<sub>src</sub> ¡Á (a<sub>src</sub>, a<sub>src</sub>, a<sub>src</sub>) + C<sub>dst</sub> ¡Á (1 - a<sub>src</sub>, 1 - a<sub>src</sub>, 1 - a<sub>src</sub>)</center>**
+**<center>C = C<sub>src</sub> Ã— (a<sub>src</sub>, a<sub>src</sub>, a<sub>src</sub>) + C<sub>dst</sub> Ã— (1 - a<sub>src</sub>, 1 - a<sub>src</sub>, 1 - a<sub>src</sub>)</center>**
 
-**<center>C = 0.25 ¡Á C<sub>src</sub> + 0.75 ¡Á C<sub>dst</sub></center>**
+**<center>C = 0.25 Ã— C<sub>src</sub> + 0.75 Ã— C<sub>dst</sub></center>**
 
-Í¨¹ýÊ¹ÓÃ»ìºÏµÄ·½·¨£¬ÎÒÃÇ¾Í¿ÉÒÔ»æÖÆÈç[10.1](#Image10.1)µÄÎïÌåÁË¡£ÕâÀïÄã¾ÍÐèÒªÔÚ»ìºÏµÄÊ±ºò×¢ÒâÒ»Ð©¶«Î÷£¬·ñÔòÄã¾Í»á»æÖÆµÄÊ±ºò³öÏÖÎÊÌâ¡£
-ÎÒÃÇ±ØÐë×ñÊØÈçÏÂ¹æÔò£º
+é€šè¿‡ä½¿ç”¨æ··åˆçš„æ–¹æ³•ï¼Œæˆ‘ä»¬å°±å¯ä»¥ç»˜åˆ¶å¦‚[10.1](#Image10.1)çš„ç‰©ä½“äº†ã€‚è¿™é‡Œä½ å°±éœ€è¦åœ¨æ··åˆçš„æ—¶å€™æ³¨æ„ä¸€äº›ä¸œè¥¿ï¼Œå¦åˆ™ä½ å°±ä¼šç»˜åˆ¶çš„æ—¶å€™å‡ºçŽ°é—®é¢˜ã€‚
+æˆ‘ä»¬å¿…é¡»éµå®ˆå¦‚ä¸‹è§„åˆ™ï¼š
 
-**Ê×ÏÈ»æÖÆÄÇÐ©²»ÐèÒª»ìºÏµÄÎïÌå¡£
-È»ºó½«ÐèÒª»ìºÏµÄÎïÌå°´ÕÕËûÃÇºÍÉãÏñ»úµÄ¾àÀëÅÅÐò¡£
-È»ºó°´ÕÕ´ÓºóÍùÇ°µÄË³Ðò»æÖÆÎïÌå¡£**
+**é¦–å…ˆç»˜åˆ¶é‚£äº›ä¸éœ€è¦æ··åˆçš„ç‰©ä½“ã€‚
+ç„¶åŽå°†éœ€è¦æ··åˆçš„ç‰©ä½“æŒ‰ç…§ä»–ä»¬å’Œæ‘„åƒæœºçš„è·ç¦»æŽ’åºã€‚
+ç„¶åŽæŒ‰ç…§ä»ŽåŽå¾€å‰çš„é¡ºåºç»˜åˆ¶ç‰©ä½“ã€‚**
 
-´ÓºóÍùÇ°»æÖÆÎïÌåµÄÔ­ÒòÎÒ²»ÏþµÃÈçºÎÓÃÖÐÎÄÃèÊöÁË£¬Õâ¸öÎÒ¾õµÃºÜÏÔÈ»°¡¡£ËùÒÔÏÂÃæÊÇÎÒµÄ**BB**£º
+ä»ŽåŽå¾€å‰ç»˜åˆ¶ç‰©ä½“çš„åŽŸå› æˆ‘ä¸æ™“å¾—å¦‚ä½•ç”¨ä¸­æ–‡æè¿°äº†ï¼Œè¿™ä¸ªæˆ‘è§‰å¾—å¾ˆæ˜¾ç„¶å•Šã€‚æ‰€ä»¥ä¸‹é¢æ˜¯æˆ‘çš„**BB**ï¼š
 
-¶ÔÓÚÒ»¸öÎïÌåÀ´Ëµ£¬ÎÒÃÇÒª½«Ëû½øÐÐ»ìºÏµÄ»°£¬ÎÒÃÇ±£ÁôµÄÊÇºóÃæµÄÏñËØ£¬Òò´ËÎÒÃÇÐèÒªÏÈ»æÖÆ±£ÁôµÄÏñËØ£¬È»ºóÔÚ»æÖÆÆäËûµÄÏñËØ¡£
+å¯¹äºŽä¸€ä¸ªç‰©ä½“æ¥è¯´ï¼Œæˆ‘ä»¬è¦å°†ä»–è¿›è¡Œæ··åˆçš„è¯ï¼Œæˆ‘ä»¬ä¿ç•™çš„æ˜¯åŽé¢çš„åƒç´ ï¼Œå› æ­¤æˆ‘ä»¬éœ€è¦å…ˆç»˜åˆ¶ä¿ç•™çš„åƒç´ ï¼Œç„¶åŽåœ¨ç»˜åˆ¶å…¶ä»–çš„åƒç´ ã€‚
 
-¶ÔÓÚ[**10.5.1**](#10.5.1)£¬»æÖÆµÄË³ÐòÒÑ¾­Ã»ÓÐÒâÒåÁË£¬·´Õý²»»áÊä³ö¡£¶ÔÓÚ[**10.5.2**](#10.5.2)ºÍ[**10.5.3**](#10.5.3)ÎÒÃÇÈÔÈ»ÏÈ»æÖÆ²»ÐèÒª»ìºÏµÄÎïÌå£¬È»ºó»æÖÆÐèÒª»ìºÏµÄÎïÌå¡£
-ÕâÊÇÒòÎªÎÒÃÇÐèÒªÔÚ¿ªÊ¼»ìºÏÖ®Ç°½«ËùÓÐµÄ²»½øÐÐ»ìºÏµÄÏñËØÈ·¶¨ÏÂÀ´¡£ÔÚÕâÀïÎÒÃÇ²¢²»ÐèÒªÅÅÐòÐèÒª»ìºÏµÄÎïÌå¡£ÒòÎªÕâ¸öÔËËãÊÇÂú×ã½»»»ÂÉµÄ¡£ÎÒÃÇÉèÔ´ÏñËØÎª**B**¡£
+å¯¹äºŽ[**10.5.1**](#10.5.1)ï¼Œç»˜åˆ¶çš„é¡ºåºå·²ç»æ²¡æœ‰æ„ä¹‰äº†ï¼Œåæ­£ä¸ä¼šè¾“å‡ºã€‚å¯¹äºŽ[**10.5.2**](#10.5.2)å’Œ[**10.5.3**](#10.5.3)æˆ‘ä»¬ä»ç„¶å…ˆç»˜åˆ¶ä¸éœ€è¦æ··åˆçš„ç‰©ä½“ï¼Œç„¶åŽç»˜åˆ¶éœ€è¦æ··åˆçš„ç‰©ä½“ã€‚
+è¿™æ˜¯å› ä¸ºæˆ‘ä»¬éœ€è¦åœ¨å¼€å§‹æ··åˆä¹‹å‰å°†æ‰€æœ‰çš„ä¸è¿›è¡Œæ··åˆçš„åƒç´ ç¡®å®šä¸‹æ¥ã€‚åœ¨è¿™é‡Œæˆ‘ä»¬å¹¶ä¸éœ€è¦æŽ’åºéœ€è¦æ··åˆçš„ç‰©ä½“ã€‚å› ä¸ºè¿™ä¸ªè¿ç®—æ˜¯æ»¡è¶³äº¤æ¢å¾‹çš„ã€‚æˆ‘ä»¬è®¾æºåƒç´ ä¸º**B**ã€‚
 
 **<center>B' = B + C<sub>0</sub> + ... + C<sub>n-1</sub></center>**
 
@@ -221,112 +221,112 @@ AlphaµÄ»ìºÏ²Ù×÷Ò²ÊÇÒ»ÑùµÄ¡£
 
 ### <element id = "10.5.5"> 10.5.5 Blending and the Depth Buffer </element>
 
-µ±ÎÒÃÇ½øÐÐÇ°ÃæËµµÄ¼¸ÖÖ»ìºÏ(²»°üÀ¨µÚÒ»ÖÖ)µÄÊ±ºò£¬ÔÚÉî¶È²âÊÔµÄÊ±ºò¿ÉÄÜ»áÓÐÒ»µãÎÊÌâ¡£
-ÕâÀïÎÒÃÇÒÔ¼Ó·¨»ìºÏ×÷ÎªÀý×Ó£¬ÆäËûµÄ»ìºÏÊÇ²î²»¶àµÄË¼Â·¡£
+å½“æˆ‘ä»¬è¿›è¡Œå‰é¢è¯´çš„å‡ ç§æ··åˆ(ä¸åŒ…æ‹¬ç¬¬ä¸€ç§)çš„æ—¶å€™ï¼Œåœ¨æ·±åº¦æµ‹è¯•çš„æ—¶å€™å¯èƒ½ä¼šæœ‰ä¸€ç‚¹é—®é¢˜ã€‚
+è¿™é‡Œæˆ‘ä»¬ä»¥åŠ æ³•æ··åˆä½œä¸ºä¾‹å­ï¼Œå…¶ä»–çš„æ··åˆæ˜¯å·®ä¸å¤šçš„æ€è·¯ã€‚
 
-Ô­ÎÄËµÁËÄÇÃ´¶àÆäÊµ¾ÍÊÇÏë¸æËßÄãÈç¹ûÄã¿ªÆôÁËÉî¶È²âÊÔµÄ»°£¬Äã²»°´ÕÕ´ÓºóÍùÇ°µÄË³Ðò»æÖÆµÄ»°£¬ÄÇÃ´¾Í¿ÉÄÜÓÐÏñËØÒòÎªÉî¶È²âÊÔ¶ø¶ªÆú£¬´Ó¶øÃ»ÓÐÀÛ¼Óµ½»ìºÏµÄ·½³ÌÖÐÈ¥£¬µ¼ÖÂ×îºóµÄÑÕÉ«ÓÐµãÐ¡ÎÊÌâ¡£
-Òò´ËÎÒ¾Í²»Ö±½Ó·­ÒëÔ­ÎÄÁË(Ô­ÎÄÀïÃæÓÐÒ»²¿·Öµ¥´ÊÓï·¨Ã»Àí½â£¬ÎÒÓ¢ÓïÊÇ¸öÔü£¬µ«ÊÇÒâË¼ÊÇÕâ¸öÒâË¼Ã»´í)¡£
+åŽŸæ–‡è¯´äº†é‚£ä¹ˆå¤šå…¶å®žå°±æ˜¯æƒ³å‘Šè¯‰ä½ å¦‚æžœä½ å¼€å¯äº†æ·±åº¦æµ‹è¯•çš„è¯ï¼Œä½ ä¸æŒ‰ç…§ä»ŽåŽå¾€å‰çš„é¡ºåºç»˜åˆ¶çš„è¯ï¼Œé‚£ä¹ˆå°±å¯èƒ½æœ‰åƒç´ å› ä¸ºæ·±åº¦æµ‹è¯•è€Œä¸¢å¼ƒï¼Œä»Žè€Œæ²¡æœ‰ç´¯åŠ åˆ°æ··åˆçš„æ–¹ç¨‹ä¸­åŽ»ï¼Œå¯¼è‡´æœ€åŽçš„é¢œè‰²æœ‰ç‚¹å°é—®é¢˜ã€‚
+å› æ­¤æˆ‘å°±ä¸ç›´æŽ¥ç¿»è¯‘åŽŸæ–‡äº†(åŽŸæ–‡é‡Œé¢æœ‰ä¸€éƒ¨åˆ†å•è¯è¯­æ³•æ²¡ç†è§£ï¼Œæˆ‘è‹±è¯­æ˜¯ä¸ªæ¸£ï¼Œä½†æ˜¯æ„æ€æ˜¯è¿™ä¸ªæ„æ€æ²¡é”™)ã€‚
 
 
 ## <element id = "10.6"> 10.6 ALPHA CHANNELS </element>
 
-´Ó[**10.5.4**](#10.5.4)ÖÐÎÒÃÇÊ¹ÓÃ**Alpha**·ÖÁ¿ÔÚ**RGB**»ìºÏÖÐÈ¥¿ØÖÆÎïÌåµÄ²»Í¸Ã÷¶È¡£
-ÓÃÓÚ»ìºÏµÄÔ´ÏñËØµÄÑÕÉ«À´×ÔÏñËØ×ÅÉ«Æ÷¡£
-»Ø¹ËÉÏÒ»¸öÕÂ½Ú£¬ÎÒÃÇ·µ»Ø`Diffuse`²ÄÖÊµÄ**Alpha**Öµ×÷ÎªÏñËØ×ÅÉ«Æ÷Êä³öµÄ**Alpha**Öµ¡£
-Òò´Ë`Diffuse Map`µÄ**Alpha**Í¨µÀµÄÖµ¾ÍÊÇÓÃÓÚÍ¸Ã÷¶ÈµÄ¡£
+ä»Ž[**10.5.4**](#10.5.4)ä¸­æˆ‘ä»¬ä½¿ç”¨**Alpha**åˆ†é‡åœ¨**RGB**æ··åˆä¸­åŽ»æŽ§åˆ¶ç‰©ä½“çš„ä¸é€æ˜Žåº¦ã€‚
+ç”¨äºŽæ··åˆçš„æºåƒç´ çš„é¢œè‰²æ¥è‡ªåƒç´ ç€è‰²å™¨ã€‚
+å›žé¡¾ä¸Šä¸€ä¸ªç« èŠ‚ï¼Œæˆ‘ä»¬è¿”å›ž`Diffuse`æè´¨çš„**Alpha**å€¼ä½œä¸ºåƒç´ ç€è‰²å™¨è¾“å‡ºçš„**Alpha**å€¼ã€‚
+å› æ­¤`Diffuse Map`çš„**Alpha**é€šé“çš„å€¼å°±æ˜¯ç”¨äºŽé€æ˜Žåº¦çš„ã€‚
 
-Äã¿ÉÒÔÊ¹ÓÃÍ¼Æ¬±à¼­Èí¼þ(ÀýÈçPS)¸øÈÎºÎÍ¼Æ¬¼ÓÈë**Alpha**Í¨µÀ£¬È»ºó½«Í¼Æ¬´æ´¢ÎªÖ§³Ö**Alpha**Í¨µÀµÄÍ¼Æ¬¸ñÊ½£¬ÀýÈç**DDS**¡£
+ä½ å¯ä»¥ä½¿ç”¨å›¾ç‰‡ç¼–è¾‘è½¯ä»¶(ä¾‹å¦‚PS)ç»™ä»»ä½•å›¾ç‰‡åŠ å…¥**Alpha**é€šé“ï¼Œç„¶åŽå°†å›¾ç‰‡å­˜å‚¨ä¸ºæ”¯æŒ**Alpha**é€šé“çš„å›¾ç‰‡æ ¼å¼ï¼Œä¾‹å¦‚**DDS**ã€‚
 
 ## <element id = "10.7"> 10.7 CLIPPING PIXELS </element>
 
-ÓÐÊ±ºòÎÒÃÇÏë´ÓÕýÔÚ´¦ÀíµÄÔ´ÏñËØÖÐÍêÈ«ÌÞ³ýÒ»²¿·ÖÏñËØ¡£
-ÎÒÃÇ¿ÉÒÔÍ¨¹ýÊ±ºò`HLSL`ÄÚÖÃµÄº¯Êý`Clip(x)`(**Õâ¸öº¯ÊýÖ»ÄÜÔÚÏñËØ×ÅÉ«Æ÷ÖÐÊ¹ÓÃ**)¡£
-Õâ¸öº¯ÊýÔÚ**x < 0**µÄÊ±ºò½«»á¶ªÆúÏÖÔÚÕýÔÚ´¦ÀíµÄÏñËØ£¬¼´Õâ¸öÏñËØ²»»á±»»æÖÆµ½ºóÌ¨»º³åÖÐÈ¥£¬Ò²²»»á½øÐÐÖ®ºóµÄÒ»ÏµÁÐ´¦Àí¡£
-Õâ¸ö·½·¨Í¨³£ÓÃÓÚ»æÖÆµçÏß»òÕßÀé°ÊÌùÍ¼¡£²Î¼û[10.6](#Image10.6)¡£ÎÒÃÇ¿ÉÒÔÍ¨¹ýÕâÑùµÄ·½·¨»æÖÆµÄÊ±ºòÒ»Ð©µØ·½²»Í¸Ã÷Ò»Ð©µØ·½Í¸Ã÷¡£
+æœ‰æ—¶å€™æˆ‘ä»¬æƒ³ä»Žæ­£åœ¨å¤„ç†çš„æºåƒç´ ä¸­å®Œå…¨å‰”é™¤ä¸€éƒ¨åˆ†åƒç´ ã€‚
+æˆ‘ä»¬å¯ä»¥é€šè¿‡æ—¶å€™`HLSL`å†…ç½®çš„å‡½æ•°`Clip(x)`(**è¿™ä¸ªå‡½æ•°åªèƒ½åœ¨åƒç´ ç€è‰²å™¨ä¸­ä½¿ç”¨**)ã€‚
+è¿™ä¸ªå‡½æ•°åœ¨**x < 0**çš„æ—¶å€™å°†ä¼šä¸¢å¼ƒçŽ°åœ¨æ­£åœ¨å¤„ç†çš„åƒç´ ï¼Œå³è¿™ä¸ªåƒç´ ä¸ä¼šè¢«ç»˜åˆ¶åˆ°åŽå°ç¼“å†²ä¸­åŽ»ï¼Œä¹Ÿä¸ä¼šè¿›è¡Œä¹‹åŽçš„ä¸€ç³»åˆ—å¤„ç†ã€‚
+è¿™ä¸ªæ–¹æ³•é€šå¸¸ç”¨äºŽç»˜åˆ¶ç”µçº¿æˆ–è€…ç¯±ç¬†è´´å›¾ã€‚å‚è§[10.6](#Image10.6)ã€‚æˆ‘ä»¬å¯ä»¥é€šè¿‡è¿™æ ·çš„æ–¹æ³•ç»˜åˆ¶çš„æ—¶å€™ä¸€äº›åœ°æ–¹ä¸é€æ˜Žä¸€äº›åœ°æ–¹é€æ˜Žã€‚
 
 <img src = "Images/10.6.png" id = "Image10.6"></img>
 
 ```HLSL
 float4 PS(VertexOut pIn) : SV_TARGET
 {
-    clip(pIn.color.a - x); //Èç¹ûµ±Ç°ÏñËØµÄAlphaÐ¡ÓÚx£¬ÄÇÃ´¾ÍÌÞ³ýËû¡£
-    return pIn.color; //·µ»ØÑÕÉ«¡£
+    clip(pIn.color.a - x); //å¦‚æžœå½“å‰åƒç´ çš„Alphaå°äºŽxï¼Œé‚£ä¹ˆå°±å‰”é™¤ä»–ã€‚
+    return pIn.color; //è¿”å›žé¢œè‰²ã€‚
 }
 ```
 
-×¢ÒâµÄÊÇ`clip`¿ªÏúÒ²ÊÇÓÐµÄ£¬ËùÒÔ½¨ÒéÖ»ÔÚÐèÒªÊ¹ÓÃµÄÊ±ºòÊ¹ÓÃ¡£
+æ³¨æ„çš„æ˜¯`clip`å¼€é”€ä¹Ÿæ˜¯æœ‰çš„ï¼Œæ‰€ä»¥å»ºè®®åªåœ¨éœ€è¦ä½¿ç”¨çš„æ—¶å€™ä½¿ç”¨ã€‚
 
-ÎÒÃÇ¿ÉÒÔÊ¹ÓÃ»ìºÏ×öµ½Í¬ÑùµÄÐ§¹û£¬µ«ÊÇÕâÖÖ·½·¨Ïà±È½ÏÀ´Ëµ¸üÎªÓÐÐ§¡£
-¶ÔÓÚÒ»¸ö±»ÌÞ³ýµÄÏñËØÀ´Ëµ£¬Ö®ºóµÄ¹ØÓÚËûµÄ²Ù×÷»á±»Ìø¹ý(ÀýÈç»ìºÏ£¬Éî¶È²âÊÔÊ²Ã´µÄ)¡£
+æˆ‘ä»¬å¯ä»¥ä½¿ç”¨æ··åˆåšåˆ°åŒæ ·çš„æ•ˆæžœï¼Œä½†æ˜¯è¿™ç§æ–¹æ³•ç›¸æ¯”è¾ƒæ¥è¯´æ›´ä¸ºæœ‰æ•ˆã€‚
+å¯¹äºŽä¸€ä¸ªè¢«å‰”é™¤çš„åƒç´ æ¥è¯´ï¼Œä¹‹åŽçš„å…³äºŽä»–çš„æ“ä½œä¼šè¢«è·³è¿‡(ä¾‹å¦‚æ··åˆï¼Œæ·±åº¦æµ‹è¯•ä»€ä¹ˆçš„)ã€‚
 
-Í¼Æ¬[10.7](#Image10.7)ÏÔÊ¾ÁËÒ»¸ö»ìºÏÀý×Ó¡£
-ËûÊ¹ÓÃÍ¸Ã÷»ìºÏÀ´»æÖÆ°ëÍ¸Ã÷µÄË®£¬Ê¹ÓÃÌÞ³ý²âÊÔ(`Clip Test`)À´»æÖÆÕ¤À¸ºÐ¡£
-ÖµµÃ×¢ÒâµÄÊÇ£¬ÓÉÓÚÎÒÃÇ¿ÉÒÔÍ¸¹ýºÐ×Ó¿´µ½ºÐ×ÓµÄ±³Ãæ£¬ËùÒÔÎÒÃÇÒª¹Ø±Õ±³ÃæÌÞ³ý¡£
+å›¾ç‰‡[10.7](#Image10.7)æ˜¾ç¤ºäº†ä¸€ä¸ªæ··åˆä¾‹å­ã€‚
+ä»–ä½¿ç”¨é€æ˜Žæ··åˆæ¥ç»˜åˆ¶åŠé€æ˜Žçš„æ°´ï¼Œä½¿ç”¨å‰”é™¤æµ‹è¯•(`Clip Test`)æ¥ç»˜åˆ¶æ …æ ç›’ã€‚
+å€¼å¾—æ³¨æ„çš„æ˜¯ï¼Œç”±äºŽæˆ‘ä»¬å¯ä»¥é€è¿‡ç›’å­çœ‹åˆ°ç›’å­çš„èƒŒé¢ï¼Œæ‰€ä»¥æˆ‘ä»¬è¦å…³é—­èƒŒé¢å‰”é™¤ã€‚
 
 <img src = "Images/10.7.png" id = "Image10.7"></img>
 
 
 ## <element id = "10.8"> 10.8 FOG</element>
 
-ÎªÁËÔÚÓÎÏ·ÖÐÄ£·Â×¼È·µÄÌìÆø»·¾³£¬ÎÒÃÇÐèÒªÄÜ¹»ÊµÏÖÒ»¸öÎíµÄÌØÐ§¡£
-²Î¼ûÍ¼Æ¬[10.8](#Image10.8)¡£¿ÉÒÔÏÔÈ»¿´³öÎíµÄÐ§¹û¡£
-Îí¿ÉÒÔÕÚÑÚÔ­´¦µÄÎïÌå£¬²¢ÇÒ×èÖ¹`Popping`¡£
-`Popping`¾ÍÊÇµ±Ò»¸öÎïÌåÔ­±¾ÔÚ¿ÉÊÓ·¶Î§(`Far Plane`)ÍâµÄÊ±ºò£¬È»ºóÒòÎªÉãÏñ»úµÄÒÆ¶¯µ¼ÖÂÕâ¸öÎïÌåÒÆ¶¯µ½ÁË¿ÉÊÓ·¶Î§(`Frustum`)ÄÚ£¬Òò´ËÕâ¸öÎïÌå¾Í¿ÉÒÔ±»¿´¼û¡£
-ÕâÑùÎïÌåÍ»È»³öÏÖ£¬»áÓÐÒ»ÖÖ±È½ÏÆæ¹ÖµÄ¸Ð¾õ¡£
-µ«ÊÇÈç¹ûÊ¹ÓÃÎí²ãµÄ»°£¬ÄÇÃ´Ô¶´¦µÄÎïÌå¼´Ê¹³öÏÖÒ²»áÒòÎªÎíµÄÐ§¹ûÄ£ºý£¬´Ó¶ø²»»áÏÔµÃÄÇÃ´Í»È»¡£
-×¢Òâ¼´Ê¹ÄãµÄ³¡¾°·¢ÉúÔÚÇçÌì£¬ÄãÒ²×îºÃÔÚÔ¶´¦±£³ÖÒ»²ãÎí²ã£¬ÒòÎª¼´Ê¹ÔÚÇçÌì£¬Ô¶´¦µÄÎïÌåµÄ³öÏÖºÍÏûÊ§Ò²ÊÇÒ»¸öºÍ¾àÀëÓÐ¹ØµÄº¯Êý¡£ÎÒÃÇ¿ÉÒÔÊ¹ÓÃÎíÀ´Ä£·ÂÕâÒ»¸ö´óÆø»·¾³ÏÖÏó¡£
+ä¸ºäº†åœ¨æ¸¸æˆä¸­æ¨¡ä»¿å‡†ç¡®çš„å¤©æ°”çŽ¯å¢ƒï¼Œæˆ‘ä»¬éœ€è¦èƒ½å¤Ÿå®žçŽ°ä¸€ä¸ªé›¾çš„ç‰¹æ•ˆã€‚
+å‚è§å›¾ç‰‡[10.8](#Image10.8)ã€‚å¯ä»¥æ˜¾ç„¶çœ‹å‡ºé›¾çš„æ•ˆæžœã€‚
+é›¾å¯ä»¥é®æŽ©åŽŸå¤„çš„ç‰©ä½“ï¼Œå¹¶ä¸”é˜»æ­¢`Popping`ã€‚
+`Popping`å°±æ˜¯å½“ä¸€ä¸ªç‰©ä½“åŽŸæœ¬åœ¨å¯è§†èŒƒå›´(`Far Plane`)å¤–çš„æ—¶å€™ï¼Œç„¶åŽå› ä¸ºæ‘„åƒæœºçš„ç§»åŠ¨å¯¼è‡´è¿™ä¸ªç‰©ä½“ç§»åŠ¨åˆ°äº†å¯è§†èŒƒå›´(`Frustum`)å†…ï¼Œå› æ­¤è¿™ä¸ªç‰©ä½“å°±å¯ä»¥è¢«çœ‹è§ã€‚
+è¿™æ ·ç‰©ä½“çªç„¶å‡ºçŽ°ï¼Œä¼šæœ‰ä¸€ç§æ¯”è¾ƒå¥‡æ€ªçš„æ„Ÿè§‰ã€‚
+ä½†æ˜¯å¦‚æžœä½¿ç”¨é›¾å±‚çš„è¯ï¼Œé‚£ä¹ˆè¿œå¤„çš„ç‰©ä½“å³ä½¿å‡ºçŽ°ä¹Ÿä¼šå› ä¸ºé›¾çš„æ•ˆæžœæ¨¡ç³Šï¼Œä»Žè€Œä¸ä¼šæ˜¾å¾—é‚£ä¹ˆçªç„¶ã€‚
+æ³¨æ„å³ä½¿ä½ çš„åœºæ™¯å‘ç”Ÿåœ¨æ™´å¤©ï¼Œä½ ä¹Ÿæœ€å¥½åœ¨è¿œå¤„ä¿æŒä¸€å±‚é›¾å±‚ï¼Œå› ä¸ºå³ä½¿åœ¨æ™´å¤©ï¼Œè¿œå¤„çš„ç‰©ä½“çš„å‡ºçŽ°å’Œæ¶ˆå¤±ä¹Ÿæ˜¯ä¸€ä¸ªå’Œè·ç¦»æœ‰å…³çš„å‡½æ•°ã€‚æˆ‘ä»¬å¯ä»¥ä½¿ç”¨é›¾æ¥æ¨¡ä»¿è¿™ä¸€ä¸ªå¤§æ°”çŽ¯å¢ƒçŽ°è±¡ã€‚
 
 <img src = "Images/10.8.png" id = "Image10.8"></img>
 
-ÎÒÃÇÊµÏÖÎíµÄ·½·¨£ºÎÒÃÇÐèÒªÈ·¶¨ÎíµÄÑÕÉ«£¬ÎíµÄÆðÊ¼Î»ÖÃ¾àÀëÉãÏñ»ú¶àÔ¶£¬ÎíµÄ·¶Î§(Õâ¸ö·¶Î§´ÓÎíµÄÆðÊ¼µã¿ªÊ¼µ½ÍêÈ«ÕÚÑÚÎïÌå)¡£
-ÔÚÈý½ÇÐÎÉÏÃæµÄÒ»¸öµãµÄÑÕÉ«ÊÇÒ»¸öÈ¨ÖØµÄÆ½¾ùÖµ£º
+æˆ‘ä»¬å®žçŽ°é›¾çš„æ–¹æ³•ï¼šæˆ‘ä»¬éœ€è¦ç¡®å®šé›¾çš„é¢œè‰²ï¼Œé›¾çš„èµ·å§‹ä½ç½®è·ç¦»æ‘„åƒæœºå¤šè¿œï¼Œé›¾çš„èŒƒå›´(è¿™ä¸ªèŒƒå›´ä»Žé›¾çš„èµ·å§‹ç‚¹å¼€å§‹åˆ°å®Œå…¨é®æŽ©ç‰©ä½“)ã€‚
+åœ¨ä¸‰è§’å½¢ä¸Šé¢çš„ä¸€ä¸ªç‚¹çš„é¢œè‰²æ˜¯ä¸€ä¸ªæƒé‡çš„å¹³å‡å€¼ï¼š
 
 <img src = "Images/10.9.png" id = "Image10.9"></img>
 
  **<center>foggedColor = litColor + s(fogColor - litColor)</center>**
  
- **<center>foggedColor = (1 - s) ¡Á litColor + s ¡Á fogColor</center>**
+ **<center>foggedColor = (1 - s) Ã— litColor + s Ã— fogColor</center>**
 
- ²ÎÊý**s**µÄ·¶Î§ÔÚ **[0,1]** Ö®¼äËûÊÇÒ»¸ö¹ØÓÚÉãÏñ»úµ½ÎïÌåÄ³Ò»¸öÃæÉÏÃæµÄÒ»¸öµãµÄ¾àÀëµÄº¯Êý¡£
- Ëæ×Å¾àÀëµÄÖð½¥Ôö´ó£¬Õâ¸öµã»áÖð½¥±»ÎíÕÚ×¡¡£**s**µÄ¶¨Òå£º
+ å‚æ•°**s**çš„èŒƒå›´åœ¨ **[0,1]** ä¹‹é—´ä»–æ˜¯ä¸€ä¸ªå…³äºŽæ‘„åƒæœºåˆ°ç‰©ä½“æŸä¸€ä¸ªé¢ä¸Šé¢çš„ä¸€ä¸ªç‚¹çš„è·ç¦»çš„å‡½æ•°ã€‚
+ éšç€è·ç¦»çš„é€æ¸å¢žå¤§ï¼Œè¿™ä¸ªç‚¹ä¼šé€æ¸è¢«é›¾é®ä½ã€‚**s**çš„å®šä¹‰ï¼š
 
  **<center>s = saturate((dist(p,E) - fogStart) / fogRange)</center>**
 
- **dist(p,E)** ±íÊ¾µÄÊÇÉãÏñ»úµ½µãµÄ¾àÀë¡£**saturate** ½«²ÎÊý±£³ÖÔÚ **[0,1]** ·¶Î§ÄÚ(**´óÓÚ1¾ÍÊÇ1£¬Ð¡ÓÚ0¾ÍÊÇ0£¬·ñÔò¾ÍÊÇÔ­±¾µÄÖµ**)¡£(¿´Í¼¶¼ÄÜ¿´Ã÷°×...)
+ **dist(p,E)** è¡¨ç¤ºçš„æ˜¯æ‘„åƒæœºåˆ°ç‚¹çš„è·ç¦»ã€‚**saturate** å°†å‚æ•°ä¿æŒåœ¨ **[0,1]** èŒƒå›´å†…(**å¤§äºŽ1å°±æ˜¯1ï¼Œå°äºŽ0å°±æ˜¯0ï¼Œå¦åˆ™å°±æ˜¯åŽŸæœ¬çš„å€¼**)ã€‚(çœ‹å›¾éƒ½èƒ½çœ‹æ˜Žç™½...)
 
- Í¼Æ¬[10.10](#Image10.10)¾Í»æÖÆÁËÕâ¸öº¯Êý**s**¡£ÎÒÃÇ¿ÉÒÔ¿´µ½µ±**dist(p, E) <= fogStart**µÄÊ±ºò£¬**s = 0**£¬²¢ÇÒ×îÖÕµÄÑÕÉ«¾ÍµÈÓÚÔ­±¾µÄÑÕÉ«ÁË(**foggedColor = litColor**)¡£
+ å›¾ç‰‡[10.10](#Image10.10)å°±ç»˜åˆ¶äº†è¿™ä¸ªå‡½æ•°**s**ã€‚æˆ‘ä»¬å¯ä»¥çœ‹åˆ°å½“**dist(p, E) <= fogStart**çš„æ—¶å€™ï¼Œ**s = 0**ï¼Œå¹¶ä¸”æœ€ç»ˆçš„é¢œè‰²å°±ç­‰äºŽåŽŸæœ¬çš„é¢œè‰²äº†(**foggedColor = litColor**)ã€‚
 
 <img src = "Images/10.10.png" id = "Image10.10"></img>
 
 
-»»¾ä»°À´Ëµ£¬Îí²¢Ã»ÓÐÐÞ¸Ä¾àÀëÉãÏñ»úÐ¡ÓÚ**fogStart**µÄ¶¥µãµÄÑÕÉ«¡£
-ÎíÖ»»á¶ÔÄÇÐ©¾àÀëÉãÏñ»ú´óÓÚ**fogStart**µÄÎïÌåÆð×÷ÓÃ¡£
+æ¢å¥è¯æ¥è¯´ï¼Œé›¾å¹¶æ²¡æœ‰ä¿®æ”¹è·ç¦»æ‘„åƒæœºå°äºŽ**fogStart**çš„é¡¶ç‚¹çš„é¢œè‰²ã€‚
+é›¾åªä¼šå¯¹é‚£äº›è·ç¦»æ‘„åƒæœºå¤§äºŽ**fogStart**çš„ç‰©ä½“èµ·ä½œç”¨ã€‚
 
-ÎÒÃÇÉè**fogEnd = fogStart + fogRange**¡£µ±**dist(p, E) >= fogEnd,s = 1**µÄÊ±ºò×îÖÕµÄÑÕÉ«¾ÍÊÇÎíµÄÑÕÉ«ÁË(**foggedColor = fogColor**)¡£
+æˆ‘ä»¬è®¾**fogEnd = fogStart + fogRange**ã€‚å½“**dist(p, E) >= fogEnd,s = 1**çš„æ—¶å€™æœ€ç»ˆçš„é¢œè‰²å°±æ˜¯é›¾çš„é¢œè‰²äº†(**foggedColor = fogColor**)ã€‚
 
-»»¾ä»°À´Ëµ£¬ÎíÍêÈ«ÕÚ×¡ÁË¾àÀëÉãÏñ»ú´óÓÚµÈÓÚ**FogEnd**µÄµãµÄÑÕÉ«£¬ËùÒÔÄãÖ»ÄÜ¿´¼ûÎíµÄÑÕÉ«¡£
+æ¢å¥è¯æ¥è¯´ï¼Œé›¾å®Œå…¨é®ä½äº†è·ç¦»æ‘„åƒæœºå¤§äºŽç­‰äºŽ**FogEnd**çš„ç‚¹çš„é¢œè‰²ï¼Œæ‰€ä»¥ä½ åªèƒ½çœ‹è§é›¾çš„é¢œè‰²ã€‚
 
-µ±**FogStart < dist(p, E) < fogEnd**µÄÊ±ºò£¬ÎÒÃÇ¿ÉÒÔ¿´µ½**s**Ëæ×Å **dist(p, E)** µÄÔö³¤¶øÏßÐÔÔö³¤¡£
-ÕâÒâÎ¶×Å£¬µ±¾àÀëÔ½À´Ô½Ô¶µÄÊ±ºò£¬ÎíµÄÑÕÉ«ÔÚ×îºóµÄÑÕÉ«ÖÐÕ¼µÄ±ÈÖØÔ½À´Ô½´ó£¬Ô­±¾µÄÑÕÉ«Õ¼µÄ±ÈÖØÔ½À´Ô½Ð¡ÁË¡£
-µ±È»£¬Ëæ×Å¾àÀëÔ½À´Ô½Ô¶£¬ÎíÔì³ÉµÄÄ£ºýÔ½À´Ô½¾çÁÒ¡£
+å½“**FogStart < dist(p, E) < fogEnd**çš„æ—¶å€™ï¼Œæˆ‘ä»¬å¯ä»¥çœ‹åˆ°**s**éšç€ **dist(p, E)** çš„å¢žé•¿è€Œçº¿æ€§å¢žé•¿ã€‚
+è¿™æ„å‘³ç€ï¼Œå½“è·ç¦»è¶Šæ¥è¶Šè¿œçš„æ—¶å€™ï¼Œé›¾çš„é¢œè‰²åœ¨æœ€åŽçš„é¢œè‰²ä¸­å çš„æ¯”é‡è¶Šæ¥è¶Šå¤§ï¼ŒåŽŸæœ¬çš„é¢œè‰²å çš„æ¯”é‡è¶Šæ¥è¶Šå°äº†ã€‚
+å½“ç„¶ï¼Œéšç€è·ç¦»è¶Šæ¥è¶Šè¿œï¼Œé›¾é€ æˆçš„æ¨¡ç³Šè¶Šæ¥è¶Šå‰§çƒˆã€‚
 
-...Ê¡ÂÔÏÂÃæµÄ´úÂë²¿·Ö¡£
+...çœç•¥ä¸‹é¢çš„ä»£ç éƒ¨åˆ†ã€‚
 
-ÓÐÐ©³¡¾°²¢²»ÏëÊ¹ÓÃÎí£¬ÎÒÃÇ¿ÉÒÔ¶¨ÒåÒ»¸öºê¶¨ÒåÀ´ÔÚ±àÒë×ÅÉ«Æ÷µÄÊ±ºò¾ö¶¨ÊÇ·ñ¿ªÆôÎíÐ§¡£
-ÕâÑùµÄ»°£¬Èç¹ûÎÒÃÇ²»ÏëÊ¹ÓÃÎíÐ§µÄ»°£¬¾Í²»»á²úÉú¶îÍâµÄÔËËã¿ªÏúÁË¡£¾ßÌå²Î¼û`D3D_SHADER_MACRO`¡£
+æœ‰äº›åœºæ™¯å¹¶ä¸æƒ³ä½¿ç”¨é›¾ï¼Œæˆ‘ä»¬å¯ä»¥å®šä¹‰ä¸€ä¸ªå®å®šä¹‰æ¥åœ¨ç¼–è¯‘ç€è‰²å™¨çš„æ—¶å€™å†³å®šæ˜¯å¦å¼€å¯é›¾æ•ˆã€‚
+è¿™æ ·çš„è¯ï¼Œå¦‚æžœæˆ‘ä»¬ä¸æƒ³ä½¿ç”¨é›¾æ•ˆçš„è¯ï¼Œå°±ä¸ä¼šäº§ç”Ÿé¢å¤–çš„è¿ç®—å¼€é”€äº†ã€‚å…·ä½“å‚è§`D3D_SHADER_MACRO`ã€‚
 
 
 ## <element id = "10.9"> 10.9 SUMMARY</element>
 
-- »ìºÏÊÇÒ»ÏîÄÜ¹»ÈÃÎÒÃÇ½«ÕýÔÚ´¦ÀíµÄÏñËØ(**Source Pixel**)ºÍÒÑ¾­´¦ÀíºÃµÄÏñËØ(**Destination Pixel**)½øÐÐ»ìºÏµÄ¼¼Êõ¡£
-- »ìºÏÊÇÓÐÒ»¸ö»ìºÏ·½³ÌµÄ£¬×¢ÒâµÄÊÇ**RGB**ºÍ**Alpha**»ìºÏÊÇ¶ÀÁ¢µÄ¡£
-- **F<sub>src</sub>, F<sub>dst</sub>...** ³Æ×÷»ìºÏÒòËØ(`Blend Factors`)£¬ËûÌá¹©ÁË·½·¨ÈÃÎÒÃÇ×Ô¼º¶¨Òå»ìºÏ·½³Ì¡£¶ÔÓÚ**Alpha**»ìºÏÊÇ²»ÄÜÊ¹ÓÃ´øÓÐ **_COLOR** ¹Ø¼ü×ÖµÄ²ÎÊý¡£
-- Ô´**Alpha**ÖµÀ´×ÔÓÚÂþ·´Éä²ÄÖÊ¡£ÔÚÎÒÃÇµÄ¿ò¼ÜÖÐ£¬Âþ·´Éä²ÄÖÊ¶¨ÒåÎªÒ»ÕÅÎÆÀí£¬²¢ÇÒÎÆÀíµÄ**Alpha**Í¨µÀ´æ´¢ÁË**Alpha**ÐÅÏ¢¡£
-- Ô´ÏñËØ¿ÉÒÔÍ¨¹ýÊ¹ÓÃ`HLSL`º¯Êý`Clip(x)`À´½«Æä¶ªÆú£¬´Ó¶ø²»¶ÔÆä½øÐÐ½øÒ»²½´¦Àí¡£Õâ¸öº¯ÊýÖ»ÄÜÔÚÏñËØ×ÅÉ«Æ÷ÀïÊ¹ÓÃ£¬Èç¹û**x < 0**µÄ»°£¬ÄÇÃ´ÏÖÔÚ´¦ÀíµÄÏñËØ¾Í»á±»¶ªÆú¡£
-- Ê¹ÓÃÎíÀ´Ä£Äâ¸÷ÖÖ¸÷ÑùµÄÌìÆøºÍ´óÆøÔ¶¾°¡£ÔÚÎÒÃÇµÄÏßÐÔÎíÄ£ÐÍÖÐ£¬ÎÒÃÇ¶¨ÒåÒ»¸öÎíµÄÑÕÉ«£¬Ò»¸öÎíµÄÆðÊ¼µã(¾àÀëÉãÏñ»úµÄ¾àÀë)£¬Ò»¸öÎíµÄ·¶Î§¡£Ò»¸öÃæÉÏµÄµãµÄÑÕÉ«½«Ê¹ÓÃ·½³ÌÀ´¼ÆËãËûµÄÑÕÉ«¡£
+- æ··åˆæ˜¯ä¸€é¡¹èƒ½å¤Ÿè®©æˆ‘ä»¬å°†æ­£åœ¨å¤„ç†çš„åƒç´ (**Source Pixel**)å’Œå·²ç»å¤„ç†å¥½çš„åƒç´ (**Destination Pixel**)è¿›è¡Œæ··åˆçš„æŠ€æœ¯ã€‚
+- æ··åˆæ˜¯æœ‰ä¸€ä¸ªæ··åˆæ–¹ç¨‹çš„ï¼Œæ³¨æ„çš„æ˜¯**RGB**å’Œ**Alpha**æ··åˆæ˜¯ç‹¬ç«‹çš„ã€‚
+- **F<sub>src</sub>, F<sub>dst</sub>...** ç§°ä½œæ··åˆå› ç´ (`Blend Factors`)ï¼Œä»–æä¾›äº†æ–¹æ³•è®©æˆ‘ä»¬è‡ªå·±å®šä¹‰æ··åˆæ–¹ç¨‹ã€‚å¯¹äºŽ**Alpha**æ··åˆæ˜¯ä¸èƒ½ä½¿ç”¨å¸¦æœ‰ **_COLOR** å…³é”®å­—çš„å‚æ•°ã€‚
+- æº**Alpha**å€¼æ¥è‡ªäºŽæ¼«åå°„æè´¨ã€‚åœ¨æˆ‘ä»¬çš„æ¡†æž¶ä¸­ï¼Œæ¼«åå°„æè´¨å®šä¹‰ä¸ºä¸€å¼ çº¹ç†ï¼Œå¹¶ä¸”çº¹ç†çš„**Alpha**é€šé“å­˜å‚¨äº†**Alpha**ä¿¡æ¯ã€‚
+- æºåƒç´ å¯ä»¥é€šè¿‡ä½¿ç”¨`HLSL`å‡½æ•°`Clip(x)`æ¥å°†å…¶ä¸¢å¼ƒï¼Œä»Žè€Œä¸å¯¹å…¶è¿›è¡Œè¿›ä¸€æ­¥å¤„ç†ã€‚è¿™ä¸ªå‡½æ•°åªèƒ½åœ¨åƒç´ ç€è‰²å™¨é‡Œä½¿ç”¨ï¼Œå¦‚æžœ**x < 0**çš„è¯ï¼Œé‚£ä¹ˆçŽ°åœ¨å¤„ç†çš„åƒç´ å°±ä¼šè¢«ä¸¢å¼ƒã€‚
+- ä½¿ç”¨é›¾æ¥æ¨¡æ‹Ÿå„ç§å„æ ·çš„å¤©æ°”å’Œå¤§æ°”è¿œæ™¯ã€‚åœ¨æˆ‘ä»¬çš„çº¿æ€§é›¾æ¨¡åž‹ä¸­ï¼Œæˆ‘ä»¬å®šä¹‰ä¸€ä¸ªé›¾çš„é¢œè‰²ï¼Œä¸€ä¸ªé›¾çš„èµ·å§‹ç‚¹(è·ç¦»æ‘„åƒæœºçš„è·ç¦»)ï¼Œä¸€ä¸ªé›¾çš„èŒƒå›´ã€‚ä¸€ä¸ªé¢ä¸Šçš„ç‚¹çš„é¢œè‰²å°†ä½¿ç”¨æ–¹ç¨‹æ¥è®¡ç®—ä»–çš„é¢œè‰²ã€‚
 
 
 
-ÖÕÓÚÐ´ÍêÁË¡£ËäÈ»¸Ð¾õºÍÔ­°æ²î¾àºÃ´ó¡£µ«ÊÇÎÒ¾õµÃÓ¦¸ÃÄÜ¹»¿´¶®°É£¿**2333**¡£
-¸Ð¾õÔ­°æµÄÊé¼°Æä†ªàÂ°¡£¬ËäÈ»ºÜÀ÷º¦¾ÍÊÇÁË¡£
+ç»ˆäºŽå†™å®Œäº†ã€‚è™½ç„¶æ„Ÿè§‰å’ŒåŽŸç‰ˆå·®è·å¥½å¤§ã€‚ä½†æ˜¯æˆ‘è§‰å¾—åº”è¯¥èƒ½å¤Ÿçœ‹æ‡‚å§ï¼Ÿ**2333**ã€‚
+æ„Ÿè§‰åŽŸç‰ˆçš„ä¹¦åŠå…¶å•°å—¦å•Šï¼Œè™½ç„¶å¾ˆåŽ‰å®³å°±æ˜¯äº†ã€‚
 
