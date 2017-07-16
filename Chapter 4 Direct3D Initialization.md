@@ -520,7 +520,7 @@ D3D12 ERROR: ID3D12CommandList:: {Create,Reset}CommandList: The command allocato
 如果读者看完了本书，我们推荐去学习**Multithreading12 SDK sample** 来了解多线程。
 一个应用程序想最大化使用系统资源的话，对于多核`CPU`来说，使用多线程是很有优势的。
 
-## <element id = "4.3"> INITIALIZING DIRECT3D </element>
+## <element id = "4.3"> 4.3 INITIALIZING DIRECT3D </element>
 
 接下来将要介绍如何初始化`Direct3D`。
 步骤稍微多，不过并不需要一次性完成。
@@ -536,7 +536,7 @@ D3D12 ERROR: ID3D12CommandList:: {Create,Reset}CommandList: The command allocato
 - 创建`Depth/Stencil Buffer`和`Depth/Stencil View`。
 - 设置视口和裁剪矩形。
 
-### <element id = "4.3.1"> Create the Device </element>
+### <element id = "4.3.1"> 4.3.1 Create the Device </element>
 
 初始化`Direct3D`的第一步就是创建`Direct3D 12`设备(**device**)。
 一个设备就表示了一个显示适配器，通常来说一个显示适配器就表示了一块3D硬件(显卡)。
@@ -671,7 +671,7 @@ D3D12 ERROR: ID3D12CommandList:: {Create,Reset}CommandList: The command allocato
 
 下面是代码。
 
-### <element id = "4.3.6"> Create the Descriptor Heaps</element>
+### <element id = "4.3.6"> 4.3.6 Create the Descriptor Heaps</element>
 
 我们需要创建描述符堆去存储我们程序需要的描述符。
 一个描述符堆使用的是`ID3D12DescriptorHeap`接口。
@@ -693,7 +693,7 @@ D3D12 ERROR: ID3D12CommandList:: {Create,Reset}CommandList: The command allocato
     rtvHandle += rtvDescriptorSize; //第二个描述符
 ```
 
-### <element id = "4.3.7"> Create the Render Target View </element>
+### <element id = "4.3.7"> 4.3.7 Create the Render Target View </element>
 
 在<a href="#4.1.6">**4.1.6**</a>中，我们并没有直接将一个资源绑定到渲染管道中去。
 相反，我们给资源创建了一个描述符(**Descriptor**)或者视图(**View**)，然后将描述符和视图绑定到渲染管道上去。
@@ -797,5 +797,24 @@ D3D12 ERROR: ID3D12CommandList:: {Create,Reset}CommandList: The command allocato
     }
 ```
 
-- `pHeapProperties`: 我们想要将资源提交到的堆的属性。
+- `pHeapProperties`: 我们想要将资源提交到的堆的属性。现在我们主要关心的是堆的类型(**D3D12_HEAP_TYPE**)。
+  - `D3D12_HEAP_TYPE_DEFAULT`: 存储只能被`GPU`读取的资源的堆。深度模板缓冲就是一个例子，`GPU`需要读写深度模板缓冲的数据，而`CPU`并不需要，因此我们就使用默认的堆。
+  - `D3D12_HEAP_TYPE_UPLOAD`: 存储即能够被`CPU`有能够被`GPU`访问的资源的堆，严格来说他是以`CPU`资源的形式存在，然后使用的时候上传数据作为`GPU`资源被`GPU`读取。
+  - `D3D12_HEAP_TYPE_READBACK`: 存储只能被`CPU`读取的资源的堆。
+  - `D3D12_HEAP_TYPE_CUSTOM`: 有一些其他用途，具体可以去参考**MSDN**。
+- `HeapMiscFlags`: 我们将资源提交到的堆的属性。通常我们并不需要使用，设置为`D3D12_HEAP_MISC_NONE`。
+- `pResourceDesc`: 我们要创建的资源的属性的指针。
+- `InitialResourceState`: 资源的初始状态。我们在[**4.2.3**](#4.2.3)讨论过资源的状态。对于深度模板缓冲来说我们首先设置为`D3D12_RESOURCE_USAGE_INITIAL`，之后再去转换为`D3D12_RESOURCE_USAGE_DEPTH`，这样他就可以作为深度模板缓冲绑定到渲染管道上去了。
+- `pOptimizedClearValue`: 设置最佳的清理值，清理资源的时候(指的是将资源的值全部变成给定值)使用的值如果是在这里设置的值，那么就会比不是这里设定的值快很多。这里可以认为是一个优化。你可以设置为`nullptr`。
+- `riidResource`:`ID3D12Resource`的**COM ID**。
+- `ppvResource`: 返回创建的资源。
+
+资源通常来说都会放到默认堆中，这样的话性能上也是最好的。只有在必须的时候才放在上传堆等堆中。
+
+在使用深度模板缓冲前，我们需要创建一个视图去绑定到渲染管道上。
+这个和创建`Render Target`的视图**差不多**。
+
+接下来是代码。
+
+
 
