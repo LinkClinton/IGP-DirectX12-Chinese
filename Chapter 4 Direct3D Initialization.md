@@ -756,7 +756,7 @@ D3D12 ERROR: ID3D12CommandList:: {Create,Reset}CommandList: The command allocato
         DXGI_SAMPLE_DESC SampleDesc;
         D3D12_TEXTURE_LAYOUT Layout;
         D3D12_RESOURCE_MISC_FLAG MiscFlags;
-    }
+    };
 ```
 
 - `Dimension`: 确定资源的类型。
@@ -794,7 +794,7 @@ D3D12 ERROR: ID3D12CommandList:: {Create,Reset}CommandList: The command allocato
         D3D12_MEMORY_POOL MemoryPoolPreference;
         UINT CreationNodeMask;
         UINT VisibleNodeMask;
-    }
+    };
 ```
 
 - `pHeapProperties`: 我们想要将资源提交到的堆的属性。现在我们主要关心的是堆的类型(**D3D12_HEAP_TYPE**)。
@@ -816,5 +816,74 @@ D3D12 ERROR: ID3D12CommandList:: {Create,Reset}CommandList: The command allocato
 
 接下来是代码。
 
+### <element id ="4.3.9"> 4.3.9 Set the ViewPort </element>
+
+通常来说我们会把3D场景绘制到整个后台缓冲中去，即在全屏模式下绘制到整个屏幕，窗口模式下绘制到整个窗口的客户区。
+但有时候我们可能会需要将其绘制到后台缓冲的一个子矩形去。参见图片[4.9](#Image4.9)。
+
+<img src="Images/4.9.png" id = "Image4.9"> </img>
+
+我们可以绘制3D场景到后台缓冲的一个子矩形里面去，而后台缓冲仍然占据整个客户区。
+
+这个后台缓冲的子矩形我们称之为视口(**ViewPort**)。
+
+```C++
+    struct D3D12_VIEWPORT
+    {
+        FLOAT TopLeftX;
+        FLOAT TopLeftY;
+        FLOAT Width;
+        FLOAT Height;
+        FLOAT MinDepth;
+        FLOAT MaxDepth;
+    };
+```
+
+前面4个成员描述这个子矩形(可以发现我们的视口大小是浮点类型，也就是说我们指定的范围的边界可以包含一个像素的一部分)。
+在`Direct3D`中，深度值存储在深度缓冲中，并且范围会限定在 **[0, 1]** 之间。然后`MinDepth`和`MaxDepth`就将会把深度值放缩到 **[MinDepth, MaxDepth]**。
+有时候放缩深度值可以实现一些特别的特效。
+
+在我们填充完这个结构后，我们通过`ID3D12CommandList::RSSetViewports`来设置视口。
+
+```C++
+    ViewPort.TopLeftX = 0.0f;
+    ViewPort.TopLeftY = 0.0f;
+    ViewPort.Width = width;
+    ViewPort.Height = height;
+    ViewPort.MinDepth = 0.0f;
+    ViewPort.MaxDepth = 1.0f;
+
+    CommandList->RSSetViewports(1, &ViewPort);
+```
+
+第一个参数是绑定的视口的个数(某些高级效果可能需要多个视口)，第二个参数就是视口数组的第一个元素的地址。
+
+你可以使用视口来实现分屏游戏。
+即你创建两个视口，一个用于窗口的左半部分，一个用于右半部分。那么你就可以设置第一个视口来渲染玩家1的场景，然后设置第二个视口来渲染玩家2的场景。
+
+### <element id = "4.3.10"> 4.3.10 Set the Scissor Rectangles </element>
+
+我们可以定义一个裁剪矩形来将后台缓冲中超出这个矩形范围的像素裁剪掉。
+这是一个优化的方法，即我们知道整个屏幕是会在最顶层包含一些**UI**元素的，**UI**存在的地方是没有必要处理像素信息的，因为最后会被**UI**覆盖掉。
+
+一个裁剪矩形定义如下。
+
+```C++
+    typedef struct tagRect
+    {
+        LONG left;
+        LONG top;
+        LONG right;
+        LONG bottom;
+    } RECT;
+```
 
 
+我们使用`ID3D12CommandList::RSSetScissorRects`设置裁剪矩形。
+
+```C++
+    rect = { 0, 0, width, height };
+    CommandList->RSSetScissorRects(1, &rect);
+```
+
+和设置视口类似，第一个参数是个数，第二个参数是数组头元素的指针。
