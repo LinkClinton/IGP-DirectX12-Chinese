@@ -57,3 +57,22 @@
 
 虽然这都是日常中很常见的情况，但是这能够帮助我们明确和整理清楚这些东西，也能让我们在学习和使用3D计算机图形的时候将这些现象保留在脑海里面不至于遗忘或者忽略。
 
+## <element id = "5.2"> 5.2 MODEL REPRESENTATION </element>
+
+一个单纯的3D物体可以近似的用三角形网格去呈现。
+因此三角形就是我们构建模型的基础的部分。
+图片[5.7](#Image5.7)我们可以看到一些3D物体使用三角形网格来绘制。
+通常来说如果你使用的三角形数量越多，你就可以让你的模型的细节更加丰富。
+但同样的也会带来效率上的负担，你需要处理的三角形就会越多。因此两者之间需要平衡好。
+在另外的一些情况下，我们可能需要绘制的是点和线，例如我们需要绘制一条曲线，我们就会使用多个线段来逼近这个曲线。
+
+<img src="Images/5.7.png" id = "Image5.7"> </img>
+
+可以看出图片[5.7](#Image5.7)中的模型是由三角形描绘而成的。
+由于很多模型的三角形数量很多，因此构建一个模型就变得及其麻烦。
+也因此出现了一些特殊的程序用来设计和构建模型。
+这些软件能够让我们使用很多工具并且可视化的设计和构建模型。
+例如[3D Studio Max](https://www.autodesk.com/products/3ds-max/overview), [LightWave 3D](https://www.lightwave3d.com/), [Maya](https://www.autodesk.com/products/maya/overview), [Softimage|XSI](https://www.autodesk.com/products/softimage/overview), [Blender](https://www.blender.org/)(免费开源)。
+
+在本书中，我们通常手工构建模型或者使用数学公式构建一些简单模型，例如球体，圆锥，圆柱等。
+在本书的第三部分，我们将会演示如何加载一个模型并且绘制他。
