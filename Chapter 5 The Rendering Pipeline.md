@@ -189,35 +189,35 @@
 
 注意下面说的点是允许重复的。
 
-#### <element id = "5.2.2.1"> 5.2.2.1 Point List </element>
+#### <element id = "5.5.2.1"> 5.5.2.1 Point List </element>
 
 直接绘制顶点，具体参见图片[5.13](#Image5.13)的a部分。
 
-#### <element id = "5.2.2.2"> 5.2.2.2 Line Strip </element>
+#### <element id = "5.5.2.2"> 5.5.2.2 Line Strip </element>
 
 将顶点按照顺序用线连接起来，具体参见图片[5.13](#Image5.13)的b部分。
 即n+1个点会构成n条线。
 
-#### <element id = "5.2.2.3"> 5.2.2.3 Line List </element>
+#### <element id = "5.5.2.3"> 5.5.2.3 Line List </element>
 
 将给的点按照顺序两个两个一组用线连接起来，具体参见图片[5.13](#Image5.13)的c部分。
 即2n个点构成了n条线。
 
-#### <element id = "5.2.2.4"> 5.2.2.4 Triangle Strip </element>
+#### <element id = "5.5.2.4"> 5.5.2.4 Triangle Strip </element>
 
 将顶点按照顺序连接成三角形，具体参见图片[5.13](#Image5.13)的d部分。
 即n+2个点构成了n个三角形。
 
 <img src="Images/5.13.png" id = "Image5.13"> </img>
 
-#### <element id = "5.2.2.5"> 5.2.2.5 Triangle List </element>
+#### <element id = "5.5.2.5"> 5.5.2.5 Triangle List </element>
 
 将给点的点按照顺序三个三个一组构成三角形，具体参见图片[5.14](#Image5.14)的a部分。
 即3n个点构成了n个三角形。
 
 <img src="Images/5.14.png" id = "Image5.14"> </img>
 
-#### <element id = "5.2.2.6"> 5.2.2.6 Primitives with Adjacency </element>
+#### <element id = "5.5.2.6"> 5.5.2.6 Primitives with Adjacency </element>
 
 我们在几何着色器中使用一些算法的时候可能需要去找一个三角形的邻边三角形。
 对于邻边三角形具体参见图片[5.14](#Image5.14)的b部分。
@@ -228,7 +228,7 @@
 
 具体细节你可以参见文档。
 
-#### <element id = "5.2.2.7"> 5.2.2.7 Control Point Patch List </element>
+#### <element id = "5.5.2.7"> 5.5.2.7 Control Point Patch List </element>
 
 具体在14章讨论。
 
