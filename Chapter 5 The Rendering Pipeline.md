@@ -422,7 +422,7 @@
 
 因此如果一个点他在这个平截头体里面的话，那么它投影后的点必然在投影窗口内，当然这个点的Z轴坐标必然要在 **(n, f)** 内。
 
-#### <element id = "5.6.3.3"> Normalized Device Coordinates (NDC) </element>
+#### <element id = "5.6.3.3"> 5.6.3.3 Normalized Device Coordinates (NDC) </element>
 
 我们在先前的章节计算了一个顶点投影后的坐标。
 并且我们知道在视角空间中，投影窗口的高度是**2**，他的宽度是**2r**(`r`是长宽比)。
@@ -437,7 +437,7 @@
 
 
 经过这样的变换后的坐标系我们称之为标准化设备坐标系(**Normalized Device Coordinates,NDC**)，注意的是我们并没有对Z轴坐标进行任何改变。
-这样的话，如果一个点 **(x, y, z)* 在平截头体里的话，就必须满足如下条件:
+这样的话，如果一个点 **(x, y, z)** 在平截头体里的话，就必须满足如下条件:
 
 **<center>-1 ≤ x' / r ≤ 1</center>**
 
@@ -535,7 +535,7 @@
 因此在`Direct3D 11`以前并不怎么提倡使用曲面细分，但是我们在`Direct3D 11`中提供了使用显卡去完成曲面细分的API。
 我们将会在第14章的时候继续讨论曲面细分。
 
-## <element id = "5.8"> THE GEOMETRY SHADER STAGE </element>
+## <element id = "5.8"> 5.8 THE GEOMETRY SHADER STAGE </element>
 
 我们在第12章之前不会使用几何着色器，因此这里我们只简单的介绍下什么是几何着色器。
 我们在使用几何着色器的时候会将整个图形的所有的图元作为输入数据。例如我们绘制的是方式是`Triangle List`，几何着色器的输入数据就是三角形的三个顶点(**这些顶点都已经通过了顶点着色器阶段**)。
@@ -561,3 +561,5 @@
 但是我们仍然建议读者去阅读`Sutherland-Hodgeman`裁减算法，他是通过找到平面和边的交点然后将这些交点排序从而得到被裁减的图形。
 
 <img src="Images/5.28.png" id = "Image5.28"> </img>
+
+## <element id = "5.10"> 5.10 </element> 
