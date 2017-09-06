@@ -562,4 +562,45 @@
 
 <img src="Images/5.28.png" id = "Image5.28"> </img>
 
-## <element id = "5.10"> 5.10 </element> 
+我们接下来将会介绍如果在4D齐次裁剪空间内进行裁剪。
+我们假设有一个在NDC空间的点 **(x/w , y/w, z/w, 1)**。
+其中满足如下条件：
+
+**<center> -1 ≤ x/w ≤ 1</center>**
+
+**<center> -1 ≤ y/w ≤ 1</center>**
+
+**<center> 0 ≤ z/w ≤ 1</center>**
+
+在齐次裁剪空间内，这些点还没有进行透视除法，因此这个点就是 **(x, y, z, w)**。
+并且满足如下条件：
+
+**<center> -w ≤ x ≤ w</center>**
+
+**<center> -w ≤ y ≤ w</center>**
+
+**<center> 0 ≤ z ≤ w</center>**
+
+也就是说，这些点的边界是可以确定的。
+
+**<center>Left : w = -x</center>**
+
+**<center>Right : w = x</center>**
+
+**<center>Bottom : w = -y</center>**
+
+**<center>Top : w = y</center>**
+
+**<center>Near : z = 0</center>**
+
+**<center>Far : z = w</center>**
+
+
+
+## <element id = "5.10"> 5.10 THE RASTERIZATION STAGE </element> 
+
+光栅化阶段的主要目的就是通过投影的3D图形来计算像素的颜色。
+
+### <element id = "5.10.1"> 5.10.1 Viewport Transform</element>
+
+在裁剪后，硬件可以进行透视除法来将点从齐次裁剪空间转移到NDC空间中去。
