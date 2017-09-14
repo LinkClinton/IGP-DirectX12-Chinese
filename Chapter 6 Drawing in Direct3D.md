@@ -34,3 +34,19 @@ struct Vertex2
 
 ```
 
+我们虽然定义了顶点格式，但是我们同样需要告诉`Direct3D`我们的顶点格式，不然的话`Direct3D`是没法知道我们给顶点附加了哪些额外的数据。
+我们使用`D3D12_INPUT_LAYOUT_DESC`来做这件事。
+
+```C++
+
+struct D3D12_INPUT_LAYOUT_DESC 
+{
+    const D3D12_INPUT_ELEMENT_DESC *pInputElementDescs;
+    UINT NumElements;
+};
+
+```
+
+- `pInputElementDescs`: 一个数组，告诉`Direct3D`我们的顶点附加的数据信息。
+- `NumElements`: 数组的大小。
+
