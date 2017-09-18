@@ -50,3 +50,27 @@ struct D3D12_INPUT_LAYOUT_DESC
 - `pInputElementDescs`: 一个数组，告诉`Direct3D`我们的顶点附加的数据信息。
 - `NumElements`: 数组的大小。
 
+`pInputElementDescs`里面的每一个元素都相当于顶点格式的一个附加数据信息。
+因此如果我们的一个顶点格式他有两个附加数据信息的话，那么这个数组的大小就需要是两个。
+
+```C++
+struct D3D12_INPUT_ELEMENT_DESC
+{
+    LPCSTR SemanticName;
+    UINT SemanticIndex;
+    DXGI_FORMAT Format;
+    UINT InputSlot;
+    UINT AlignedByteOffset;
+    D3D12_INPUT_CLASSIFICATION InputSlotClass;
+    UINT InstanceDataStepRate;
+};
+```
+
+- `SemanticName`: 一个用于联系元素的字符串。他的值必须在合法的范围内。我们使用这个来将顶点中的元素映射到着色器的输入数据中去。参见图片[6.1](#Image6.1)。
+<img src="Images/6.1.png" id = "Image6.1"> </img>
+- `SemanticIndex`: 索引值，具体可以参见图片[6.1](#Image6.1)。例如一个顶点可能会有不止一个纹理坐标，我们必须区分这些纹理坐标，因此我们就加入了索引值来区分一个顶点里面的多个纹理坐标。如果一个`semanticName`没有加上索引的话就默认为索引值为0。例如`POSITION`就是`POSITION0`。
+- `Format`: 附加的数据信息的格式，类型是`DXGI_FORMAT`。
+- `InputSlot`: 指定这个元素从哪个输入口进入，`Direct3D`支持16个输入口(0-15)输入顶点数据。对于现在来说，我们只使用0输入口。
+- `AlignedByteOffset`: 内存偏移量，单位是字节。从顶点结构的开端到这个元素的开端的字节大小。
+
+ 
