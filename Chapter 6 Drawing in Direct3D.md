@@ -71,6 +71,49 @@ struct D3D12_INPUT_ELEMENT_DESC
 - `SemanticIndex`: 索引值，具体可以参见图片[6.1](#Image6.1)。例如一个顶点可能会有不止一个纹理坐标，我们必须区分这些纹理坐标，因此我们就加入了索引值来区分一个顶点里面的多个纹理坐标。如果一个`semanticName`没有加上索引的话就默认为索引值为0。例如`POSITION`就是`POSITION0`。
 - `Format`: 附加的数据信息的格式，类型是`DXGI_FORMAT`。
 - `InputSlot`: 指定这个元素从哪个输入口进入，`Direct3D`支持16个输入口(0-15)输入顶点数据。对于现在来说，我们只使用0输入口。
-- `AlignedByteOffset`: 内存偏移量，单位是字节。从顶点结构的开端到这个元素的开端的字节大小。
+- `AlignedByteOffset`: 内存偏移量，单位是字节。从顶点结构的开端到这个元素的开端的字节大小。下面是一个例子。
+    ```C++
+    struct Vertex
+    {
+        Float3 Pos; // 0-byte offset
+        Float3 Normal; // 12-byte offset
+        Float2 Tex0; // 24-byte offset
+        Float2 Tex1; // 32-byte offset
+    };
+    ```
+- `InputSlotClass`: 现在默认使用`D3D12_INPUT_PER_VERTEX_DATA`。另外的一个类型是用于`Instancing`技术的。
 
+这里我们给一个例子: 
+
+```C++
+struct Vertex
+{
+    Float3 Pos; // 0-byte offset
+    Float3 Normal; // 12-byte offset
+    Float2 Tex0; // 24-byte offset
+    Float2 Tex1; // 32-byte offset
+};
+
+D3D12_INPUT_ELEMENT_DESC desc [] = 
+{
+    	{“POSITION”, 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D12_INPUT_PER_VERTEX_DATA, 0},
+        {“NORMAL”,   0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_PER_VERTEX_DATA, 0},
+        {“TEXCOORD”, 0, DXGI_FORMAT_R32G32_FLOAT,    0, 24, D3D12_INPUT_PER_VERTEX_DATA, 0},
+        {“TEXCOORD”, 1, DXGI_FORMAT_R32G32_FLOAT,    0, 32, D3D12_INPUT_PER_VERTEX_DATA, 0}     
+};
+```
  
+ ## <element id = "6.2"> 6.2 VERTEX BUFFERS </element>
+
+ 为了能够让`GPU`访问一组顶点的数据信息，我们需要将顶点信息放入到`GPU`资源中去(**ID3D12Resource**)，我们称之为缓冲。
+ 我们将存储顶点数据的缓冲称之为顶点缓冲(`Vertex Buffer`)。
+ 缓冲比纹理简单一些，他只有一维，并且他没有纹理明细(`MipMaps`)，过滤器(`filters`)，多重采样(`multisampling`)这些东西。
+ 无论在什么时候，如果我们要给`GPU`提供一组数据信息例如顶点数据信息，我们都会使用缓冲来实现。
+
+ 我们在之前讲过通过填充`D3D12_RESOURCE_DESC`类型来创建一个`ID3D12Resource`。
+ 因此我们也会通过这样的方式来创建一个缓冲，即填充`D3D12_RESOURCE_DESC`结构来描述我们要创建的缓冲的属性，然后使用`ID3D12Device::CreateCommittedResource`创建缓冲。
+
+ 在`d3dx12.h`中提供了一个简便的类型`CD3D12_RESOURCE_DESC`来创建资源，具体可以去参见`d3dx12.h`。
+
+ **注意我们在`Direct3D 12`中并没有定义一个具体的类型来表示这个资源是一个缓冲或者是一个纹理(`Direct3D 11`中是这样做的)。
+ 因此我们在创建资源的时候需要通过`	D3D12_RESOURCE_DESC::D3D12_RESOURCE_DIMENSION`来指定资源的类型。**
