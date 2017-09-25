@@ -159,3 +159,63 @@ struct D3D12_VERTEX_BUFFER_VIEW
 在我们创建完缓冲和缓冲的描述符后，我们可以将他们绑定到渲染管道的输入口，然后在输入装配阶段将顶点缓冲输入进去。
 
 
+```C++
+    void ID3D12GraphicsCommandList::IASetVertexBuffers(
+        UINT StartSlot,
+        UINT NumBuffers,
+        const D3D12_VERTEX_BUFFER_VIEW *pViews);
+```
+
+- `StartSlot`: 绑定的顶点缓冲的输入口的起始位置，总共有16个，范围在0-15之间。
+- `NumBuffers`: 我们要绑定的顶点缓冲的个数，我们假设我们绑定n个顶点缓冲，输入口的起始位置是k，那么第i个顶点缓冲的输入口就是`k + i - 1`。
+- `pViews`: 我们要绑定的顶点缓冲的描述符数组的首元素的地址。
+
+**官网中说的是DX12最大支持的输入口个数是32。**
+
+由于要支持多个顶点缓冲从任意一个输入口输入数据，这个函数设计的就有点复杂了。
+但是在这里我们只使用一个输入口。在章节最后的练习中我们会使用到两个输入口。
+
+只有当我们改变这个输入口绑定的顶点缓冲的时候，原本的顶点缓冲才会取消绑定。
+因此我们虽然只使用一个输入口但是我们仍然可以使用多个顶点缓冲。例如这样。
+
+```C++
+    D3D12_VERTEX_BUFFER_VIEW_DESC BufferView1;
+    D3D12_VERTEX_BUFFER_VIEW_DESC BufferView2;
+
+    /*Create Vertex Buffer Views*/
+
+    commandList->IASetVertexBuffers(0, 1, &BufferView1);
+
+    /*Draw by using VertexBuffer1*/
+
+    commandList->IASetVertexBuffers(0, 1, &BufferView2);
+
+    /*Draw by using VertexBuffer2*/
+```
+
+绑定一个顶点缓冲到输入口并不代表我们绘制了这个缓冲，我们只是准备好让顶点输入到渲染管道中而已。
+因此最后我们还需要使用绘制函数来绘制这些顶点。
+
+```C++
+    void ID3D12CommandList::DrawInstanced(
+        UINT VertexCountPerInstance,
+        UINT InstanceCount,
+        UINT StartVertexLocation,
+        UINT StartInstanceLocation);
+```
+
+- `VertexCountPerInstance`: 我们需要绘制的顶点个数(对于每个实例来说)。
+- `InstanceCount`: 我们要绘制的实例个数，这里我们设置为1。
+- `StartVertexLocation`: 指定从顶点缓冲中的第几个顶点开始绘制。
+- `StartInstanceLocation`: 这里我们设置为0。
+
+`VertexCountPerInstance`和`StartVertexLocation`一起决定了我们要绘制顶点缓冲中的哪个范围。
+图片[6.2](#Image6.2)给出了例子。
+
+<img src="Images/6.2.png" id = "Image6.2"> </img>
+
+`StartVertexLocation`指定了我们要绘制第一个顶点在顶点缓冲中的位置，`VertexCountPerInstance`指定了我们要绘制的顶点个数。
+
+`DrawInstanced`并没有让我们指定我们绘制的时候使用的图元的类型。
+因此我们需要使用`ID3D12GraphicsCommandList::IASetPrimitiveTopology`去设置。
+
