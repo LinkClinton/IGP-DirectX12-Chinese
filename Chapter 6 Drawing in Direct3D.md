@@ -219,3 +219,47 @@ struct D3D12_VERTEX_BUFFER_VIEW
 `DrawInstanced`并没有让我们指定我们绘制的时候使用的图元的类型。
 因此我们需要使用`ID3D12GraphicsCommandList::IASetPrimitiveTopology`去设置。
 
+## <element id = "6.3"> 6.3 INDICES AND INDEX BUFFERS</element>
+
+和顶点类似，为了能够让`GPU`能够访问到索引数据，我们同样需要将索引数据放到缓冲中去。
+我们称之为索引缓冲。索引缓冲的创建方式和顶点缓冲是一样的，因此这里就不再讨论了。
+
+我们同样需要将索引缓冲绑定到渲染管道中去，因此我们也要为索引缓冲创建描述符，并且和顶点缓冲一样，我们不需要使用到描述符堆。
+
+```C++
+struct D3D12_INDEX_BUFFER_VIEW
+{
+    D3D12_GPU_VIRTUAL_ADDRESS BufferLocation;
+    UINT SizeInBytes;
+    DXGI_FORMAT Format; 
+};
+```
+
+- `BufferLocation`: 和顶点缓冲的一样。
+- `SizeInBytes`: 和顶点缓冲的一样。
+- `Format`: 一个索引占据的字节大小，必须设置为`DXGI_FORMAT_R16_UINT`或者`DXGI_FORMAT_R32_UINT`。
+
+和顶点缓冲一样，以及其他的`Direct3D`资源我们如果想要使用他们的话，一般都需要将其绑定到渲染管道中去。
+这里我们同样也需要将索引缓冲绑定到和顶点缓冲一样的阶段(使用`ID3D12CommandList::SetIndexBuffer`)，即输入装配阶段。
+
+
+下面的代码是一个例子，你可以去自己看看。
+
+如果你需要使用索引缓冲的话，我们就不能够使用`DrawInstanced`来绘制图形了，而必须使用`DrawIndexedInstanced`来绘制。
+
+```C++
+    ID3D12GraphicsCommandList::DrawIndexedInstanced(
+        UINT IndexCountPerInstance,
+        UINT InstanceCount,
+        UINT StartIndexLocation,
+        INT BaseVertexLocation,
+        UINT StartInstanceLocation);
+```
+
+- `IndexCountPerInstance`: 我们绘制的时候使用的索引个数。
+- `InstanceCount`: 实例个数，这里我们设置为1。
+- `StartIndexLocation`: 指定从顶点缓冲中的哪个索引位置开始绘制。
+- `BaseVertexLocation`: 指定我们绘制的时候使用的第一个顶点在顶点缓冲中的位置，即在顶点缓冲中这个顶点之前的顶点我们并不使用，我们从这个顶点开始重新编号。
+- `StartInstanceLocation`: 我们这里设置为0。
+
+
