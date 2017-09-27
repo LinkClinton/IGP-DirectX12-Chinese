@@ -262,4 +262,48 @@ struct D3D12_INDEX_BUFFER_VIEW
 - `BaseVertexLocation`: 指定我们绘制的时候使用的第一个顶点在顶点缓冲中的位置，即在顶点缓冲中这个顶点之前的顶点我们并不使用，我们从这个顶点开始重新编号。
 - `StartInstanceLocation`: 我们这里设置为0。
 
+假设我们有一个球体，一个长方体，一个圆柱体。
+首先每个物体都有他自己的顶点缓冲和索引缓冲。
+然后我们将每个物体的索引缓冲和顶点缓冲连接起来，即拼接起来变成一个索引缓冲和一个顶点缓冲，暂且叫做全局缓冲吧，可以参见图片[6.3](#Image6.3)(将顶点缓冲和索引缓冲拼起来也有一些不好的地方，当我们需要改变其中一个物体的顶点缓冲或者索引缓冲的时候，性能开销会比分开来说要多，但是在大多数情况下来说并起来后的优化会比分开来说大)。
+在将它们拼接起来后，那么就会出现一个问题，我们索引缓冲中存储的索引值是相对于原本的那个顶点缓冲来说的，它里面记录的顶点编号也是相对于原本的顶点缓冲来说的，但是我们这里将顶点缓冲拼接起来后，肯定有一些顶点的编号是改变的了。
+因此我们需要重新计算索引缓冲。
 
+<img src="Images/6.3.png" id = "Image6.3"> </img>
+
+值得庆幸的是我们的顶点缓冲和索引缓冲并不是分散的，一个物体的顶点缓冲或者索引缓冲都是全局缓冲中的一段缓冲。
+因此我们能够很容易的就知道一个物体它的顶点缓冲的范围和索引缓冲的范围。
+但是由于索引缓冲他的值是相对于原本的顶点缓冲来说的，如果我们要重新计算索引缓冲的话显然并不划算，但是如果我们假设这个索引缓冲对应的顶点缓冲的第一个顶点的编号在全局缓冲中的编号为0的话，那么就刚好可以对上。
+因此我们就有了`BaseVertexLocation`参数来将全局缓冲中的一个顶点的编号暂时看作为0。
+
+```C++
+    commandList->DrawIndexedInstanced(numSphereIndices, 1, 0, 0, 0);
+    
+    commandList->DrawIndexedInstanced(numBoxIndices, 1, 
+        firstBoxIndex, firstBoxVertexPos, 0);
+
+    commandList->DrawIndexedInstanced(numCylIndices, 1, 
+        firstCylIndex, firstCylVertexPos, 0);
+```
+
+
+
+## <element id = "6.4"> EXAMPLE VERTEX SHADER </element>
+
+```hlsl
+
+cbuffer PerObject : register(b0)
+{
+    float4x4 gWorldViewProj;
+};
+
+void VSMain(float3 pos : POSITION,
+    float4 inputColor : COLOR, 
+    out float4 posH : SV_POSITION,
+    out float4 outColor : COLOR)
+{
+    posH = mul(float4(pos, 1.0f), gWorldViewProj);
+    
+    outColor = inputColor;
+}
+
+```
