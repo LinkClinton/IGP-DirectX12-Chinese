@@ -328,3 +328,49 @@ void VSMain(float3 pos : POSITION,
 因为`GPU`是需要知道这些顶点的位置的，从而才能够进行一些需要顶点位置信息的操作，例如裁剪，深度测试以及光栅化。
 除了系统值外我们需要使用指定的标志，其余的标志名我们是可以任意取的，只需要你到时候能够对应上就好了。
 
+第一行代码中，我们做的就是使用一个矩阵将顶点坐标从模型空间转换到齐次裁剪空间。
+
+```hlsl
+    posH = mul(float4(pos, 1.0f), gWorldViewProj);
+```
+
+`float4`既是数据类型也是构造函数，`mul`则有多个重载，支持各种类型的乘法。
+
+然后一行代码我们只是将输入的颜色作为输出的颜色而已。
+
+```hlsl
+    outColor = inputColor;
+```
+
+我们同样也可以在着色器中加入结构体来充当输入和输出的参数，只要能够互相对应就可以了。
+
+```hlsl
+cbuffer PerObject : register(b0)
+{
+    float4x4 gWorldViewProj;
+};
+
+struct InputVertex
+{
+    float3 pos : POSITION;
+    float4 inputColor : COLOR;
+};
+
+struct OutputVertex
+{
+    float4 posH : SV_POSITION;
+    float4 outColor : COLOR;
+};
+
+OutputVertex VSMain(InputVertex input)
+{
+    OutputVertex output;
+
+    output.posH = mul(float4(input.pos, 1.0f), gWorldViewProj);
+    
+    output.outColor = input.inputColor;
+
+    return output;
+}
+```
+
