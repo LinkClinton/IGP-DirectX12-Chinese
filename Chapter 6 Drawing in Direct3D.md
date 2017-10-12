@@ -296,7 +296,7 @@ cbuffer PerObject : register(b0)
     float4x4 gWorldViewProj;
 };
 
-void VSMain(float3 pos : POSITION,
+void VsMain(float3 pos : POSITION,
     float4 inputColor : COLOR, 
     out float4 posH : SV_POSITION,
     out float4 outColor : COLOR)
@@ -362,7 +362,7 @@ struct OutputVertex
     float4 outColor : COLOR;
 };
 
-OutputVertex VSMain(InputVertex input)
+OutputVertex VsMain(InputVertex input)
 {
     OutputVertex output;
 
@@ -390,6 +390,43 @@ OutputVertex VSMain(InputVertex input)
 像素着色器类似顶点着色器，他也同样是一个函数。
 并且我们会对每个像素运行一次来计算出这个像素的颜色。
 但是你需要注意这里我们处理的像素并不是最后放到后台缓冲中的像素，这些像素可能会被`Clip`函数裁剪掉，或者被另外一个深度值更小的像素覆盖。
+
+一些已经确定不可能出现在后台缓冲中的像素会被硬件直接优化掉，即直接不对这个像素运行像素着色器。
+例如没有通过深度测试的像素就没有必要去运行像素着色器了，因为无论如何这个像素都不会被写入到后台缓冲中去。
+
+```hlsl
+cbuffer PerObject : register(b0)
+{
+    float4x4 gWorldViewProj;
+};
+
+void VsMain(float3 pos : POSITION,
+    float4 inputColor : COLOR, 
+    out float4 posH : SV_POSITION,
+    out float4 outColor : COLOR)
+{
+    posH = mul(float4(pos, 1.0f), gWorldViewProj);
+    
+    outColor = inputColor;
+}
+
+float4 PsMain(float4 posH : SV_POSITION,
+    float4 color : COLOR) : SV_TARGET
+{
+    return color;
+
+    //lol, 原文这里返回的是pin.Color，我简直是醉了。
+}
+```
+
+在上面的例子中，我们就直接了返回插值后的颜色。
+并且你需要注意的是像素着色器的输入参数要和顶点着色器的输出参数一致。
+通常来说像素着色器的返回值是一个4维向量，`SV_TARGET`标志意味着我们的返回值的类型要能够和`Render Target`的格式一致。
+
+
+
+
+
 
 
 

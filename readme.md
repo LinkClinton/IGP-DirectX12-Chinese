@@ -1,10 +1,10 @@
-# IGP-DirectX12-Chinese
+ï»¿# IGP-DirectX12-Chinese
 
-ÆäÊµ¾ÍÊÇ¸öÈË¶Ô`Introduction to 3D Game Programming with DirectX 12`Õâ±¾ÊéµÄÀí½âºÍ·­Òë¡£¿ÉÄÜ»áÓÐºÜ¶à²»¶ÔµÄµØ·½ÇëÁÂ½â¡£Èç¹ûÓÐÊ²Ã´²»¶ÔµÄµØ·½»¶Ó­Ìá³öÀ´£¬ÎÒ»á¸ÄÕýµÄ¡£
+å…¶å®žå°±æ˜¯ä¸ªäººå¯¹`Introduction to 3D Game Programming with DirectX 12`è¿™æœ¬ä¹¦çš„ç†è§£å’Œç¿»è¯‘ã€‚å¯èƒ½ä¼šæœ‰å¾ˆå¤šä¸å¯¹çš„åœ°æ–¹è¯·è°…è§£ã€‚å¦‚æžœæœ‰ä»€ä¹ˆä¸å¯¹çš„åœ°æ–¹æ¬¢è¿Žæå‡ºæ¥ï¼Œæˆ‘ä¼šæ”¹æ­£çš„ã€‚
 
 ##
 
-Ä¿Ç°À´Ëµ¿Ï¶¨»á·­ÒëµÄÕÂ½Ú£º
+ç›®å‰æ¥è¯´è‚¯å®šä¼šç¿»è¯‘çš„ç« èŠ‚ï¼š
 
 - [Chapter 4 Direct3D Initialization](/Chapter%204%20Direct3D%20Initialization.md)
 - [Chapter 5 The Rendering Pipeline](/Chapter%205%20The%20Rendering%20Pipeline.md)
@@ -19,15 +19,10 @@
 
 ##
 
-Ê×ÏÈËµºÃÏûÏ¢£¬ÓÐÈË¶ÔÕâ±¾ÊéÕýÊ½·­ÒëÁË¡£¸ø¸ö[Link](http://www.epubit.com.cn/book/details/4617)(2333)¡£
+\(ï¿£ï¸¶ï¿£*\))*)ï¼ŒHi~ o(*ï¿£â–½ï¿£*)ãƒ–ã€‚
 
-ÓÉÓÚÓÐÈË¼ÈÈ»×öÁËÕý¹æµÄ·­Òë£¬ÎÒÒ²²»ÓÃÈ¥¾À½áÔ­ÎÄµÄÄÚÈÝÁË£¬½ÓÏÂÀ´µÄ²¿·ÖËù±í´ïµÄÒâË¼ºÍÄÚÈÝ²»»áÓÐºÜ´óÇø±ð£¬µ«ÊÇÎÒ»áÊ¹ÓÃ½ÏÎª³£ÓÃµÄÓïÑÔÀ´Ð´¡£~~Äã¿ÉÒÔÈÏÎªÕâ»áÊÇÒ»¸öÄ§¸Ä°æ±¾~~¡£
+ãƒ¾(â‰§â–½â‰¦*)o*)ï¼Œ(â‰§âˆ€â‰¦)ã‚žã€‚
 
-È»ºóËäÈ»À´Ëµ×öÕâ¼þÊÂµÄÄ¿µÄÊÇ¶ÍÁ¶×Ô¼ººÍÑ§Ï°µÄ£¬µ«ÊÇÈ·ÊµÊÇÒ»¼þ²»¶ÔµÄÊÂÇé¡£ÑÏ¸ñÀ´ËµµÄÈ·ÇÖ·¸ÁË**Frank D. Luna**´óÀÐµÄÈ¨Òæ¡£
+(â—'â—¡'â—)ï¼Œo(*ï¿£â–½ï¿£*)oã€‚
 
-Òò´Ë±§×Å´óÀÐ²»»á¹ØÐÄÐ¡ÊÂÇéµÄÐÄÌ¬À´£¬ÔÚ±»ÄÇÉ¶Ö®Ç°ÎÒ»¹ÊÇ»á½«×Ô¼º·­ÒëµÄÄÚÈÝÉÏ´«¡£
-
-
-
-
-
+å¥½äº†è¯´äº†é‚£ä¹ˆå¤šï¼Œæ¬¢è¿Žå„ä½å¤§ä½¬åŠ ä¸ªå‹é“¾ï¼Œèƒ½å¤Ÿè®©æ›´å¤šæƒ³å­¦ä¹ DX12çš„äººæ‰¾åˆ°ä¸€æœ¬è¿˜èƒ½çœ‹å¾—è¿‡åŽ»çš„ä¸­æ–‡ç¿»è¯‘ã€‚
