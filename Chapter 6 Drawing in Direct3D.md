@@ -423,9 +423,44 @@ float4 PsMain(float4 posH : SV_POSITION,
 并且你需要注意的是像素着色器的输入参数要和顶点着色器的输出参数一致。
 通常来说像素着色器的返回值是一个4维向量，`SV_TARGET`标志意味着我们的返回值的类型要能够和`Render Target`的格式一致。
 
+我们同样也可以使用结构体来代替上面的顶点和像素着色器的输入输出数据。
 
+```C++
+cbuffer cbPerObject : register(b0)
+{
+    float4x4 gWorldViewProj;
+};
 
+struct VertexIn
+{
+    float3 Pos : POSITION;
+    float4 Color : COLOR;
+};
 
+struct VertexOut
+{
+    float4 PosH : SV_POSITION;
+    float4 Color : COLOR;
+};
+
+VertexOut Vs(VertexIn inPut)
+{
+    Vertex outPut;
+
+    outPut.posH = mul(float4(inPut.Pos, 1.0f)), gWorldViewProj);
+
+    outPut.Color = inPut.Color;
+
+    return outPut;
+}
+
+float4 Ps(VertexOut inPut) : SV_Target
+{
+    return inPut.Color;
+}
+```
+
+## <element id = "6.6"> 6.6 CONSTANT BUFFERS </element>
 
 
 
