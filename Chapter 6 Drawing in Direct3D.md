@@ -462,6 +462,20 @@ float4 Ps(VertexOut inPut) : SV_Target
 
 ## <element id = "6.6"> 6.6 CONSTANT BUFFERS </element>
 
+### <element id = "6.6.1"> 6.6.1 Creating Constant Buffers </element>
+
+常缓冲就是一种能够被着色器程序引用的`GPU`资源。
+在我们之后的学习中，我们会知道纹理以及其他类型的缓冲资源都能够被着色器程序引用。
+
+```C++
+cbuffer cbPerObject : register(b0)
+{
+    float4x4 gWorldViewProj;
+}
+```
+
+这里我们定义了一个叫做`cbPerObject`的`cbuffer`(**Constant Buffer**)。
+在这里，我们的常缓冲中存储了一个4x4的矩阵，将世界变换矩阵，视角矩阵以及投影矩阵组合起来了，用于将一个顶点从模型空间中转换到齐次裁剪空间中去。
 
 
 
