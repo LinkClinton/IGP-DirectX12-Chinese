@@ -477,5 +477,40 @@ cbuffer cbPerObject : register(b0)
 这里我们定义了一个叫做`cbPerObject`的`cbuffer`(**Constant Buffer**)。
 在这里，我们的常缓冲中存储了一个4x4的矩阵，将世界变换矩阵，视角矩阵以及投影矩阵组合起来了，用于将一个顶点从模型空间中转换到齐次裁剪空间中去。
 
+不像顶点和索引缓冲，常缓冲通常需要在每一帧的时候都通过`CPU`去更新数据。
+例如，如果我们的摄像机在每一帧的时候都在移动，那么我们就需要在每一帧中使用新的视角矩阵更新我们的缓冲。
+因此我们创建常缓冲的时候可以将他放到上传堆(**Upload Heap**)而不是默认堆中，这样的话我们就可以直接使用`CPU`去更新常缓冲了。
+
+注意的是，常缓冲的空间大小必须是硬件能够分配的最小的空间大小的倍数，即**256bytes**的倍数。
+
+我们通常可能需要使用多个同样类型的缓冲，例如我们之前代码里的那个缓冲，我们每个不同的物体都需要使用到。
+
+在`Direct3D 12`中我们可以使用`Shader Model 5.1`，因此我们可以使用下面的方法定义一个常缓冲。
+
+```hlsl
+struct ObjectConstants 
+{
+    float4x4 gWorldViewProj;
+    uint matIndex;
+};
+
+ConstantBuffer<ObjectConstants> gObjConstants : register(b0); 
+```
+
+### <element id = "6.6.2"> 6.6.2 Updating Constant Buffers </element>
+
+由于我们的常缓冲是创建在上传堆中的，因此我们可以直接用`CPU`中更新缓冲。
+具体来说我们需要先获取资源数据的指针，我们可以使用`Map`函数来获取。
+
+```C++
+    ComPtr<ID3D12Resource> uploadBuffer;
+    BYTE* data = nullptr;
+    uploadBuffer.Map(0, nullptr, reinterpret_cast<void**>(&data));
+```
+
+`Map`函数的第一个参数就是表示我们要获取的是资源中第几个子资源的指针。
+对于缓冲来说，他只有一个子资源就是他自己，因此我们就设置为0。
+第二个参数的类型是`D3D12_RANGE`来表示我们要映射的内存范围，设置为`null`的话就代表我们要映射的是整个资源。
+第三个参数的话就是返回我们要的资源的指针。
 
 
