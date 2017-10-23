@@ -513,4 +513,48 @@ ConstantBuffer<ObjectConstants> gObjConstants : register(b0);
 第二个参数的类型是`D3D12_RANGE`来表示我们要映射的内存范围，设置为`null`的话就代表我们要映射的是整个资源。
 第三个参数的话就是返回我们要的资源的指针。
 
+我们可以使用下面的方法将数据复制到常缓冲中去:
+
+```C++
+    memcpy(data, &SourceData, DataSize);
+```
+
+当我们完成更新不需要再更新的时候，我们应该使用`Unmap`函数去释放内存。
+
+```C++
+    if (uploadBuffer != nullptr)
+        uploadBuffer->Unmap(0, nullptr);
+
+    data = nullptr;
+```
+
+第一个参数是我们要对哪个子资源进行释放，对于缓冲来说我们只需要设置为**0**就好了。
+第二个参数的类型是`D3D12_RANGE`表示这个子资源中我们要释放的内存范围，设置为`nullptr`表示整个资源。
+
+### <element id = "6.6.3"> 6.6.3 Upload Buffer Helper </element>
+
+Nullptr!!!
+
+### <element id = "6.6.4"> 6.6.4 Constant Buffer Descriptors </element>
+
+回顾4.1.6，我们是通过描述符将资源绑定到渲染管道中去的。
+到现在为止我们绑定渲染目标(**Render Target**)，深度模板缓冲(**Depth/Stencil Buffer**)以及顶点和索引缓冲(**Vertex/Index Buffer**)都是使用的描述符。
+因此我们要绑定常缓冲到管道上去的话还是需要创建描述符。
+常缓冲的描述符在的描述符堆的类型是`D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV`，也就是说这个堆能够存储常缓冲(**Constant Buffer**)，着色器资源(**Shader Resource**)和无序资源(**unordered	access**)的描述符。
+为了存储这些描述符，我们需要创建一个这样的类型的堆来存储。
+
+```C++
+    D3D12_DESCRIPTOR_HEAP_DESC	desc;
+
+    desc.NumDescriptors = 1;
+    desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+    desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+    desc.NodeMask = 0;
+
+    ComPtr<ID3D12DescriptorHeap> cbvHeap;
+
+    device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&cbvHeap));
+```
+
+虽然创建这个类型的堆的代码和我们之前创建其他类型的堆的代码是差不多的，但是我们需要注意设定`D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE`这个标志(`Flags`)来声明这个堆里面的描述符能够被着色器程序访问。
 
