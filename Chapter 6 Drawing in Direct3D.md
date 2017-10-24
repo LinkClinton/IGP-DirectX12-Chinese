@@ -558,3 +558,58 @@ Nullptr!!!
 
 虽然创建这个类型的堆的代码和我们之前创建其他类型的堆的代码是差不多的，但是我们需要注意设定`D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE`这个标志(`Flags`)来声明这个堆里面的描述符能够被着色器程序访问。
 
+
+我们需要填充`D3D12_CONSTANT_BUFFER_VIEW_DESC`结构才可以创建常缓冲描述符，然后使用`ID3D12Device::CreateConstantBufferView`函数创建它。
+
+```C++
+    D3D12_CONSTANT_BUFFER_VIEW_DESC desc;
+
+    desc.BufferLocation = bufferVisualAddress;
+    desc.SizeInBytes = bufferSize;
+
+    device->CreateConstantBufferView(&desc,
+        heap->GetCPUDescriptorHandleForHeapStart());
+```
+
+我们通常使用`D3D12_CONSTANT_BUFFER_VIEW_DESC`来将缓冲中的一个子资源或者一个缓冲绑定到着色器中对应的常缓冲结构体中。
+之前我们也提到过一个常量缓冲可以存储多个物体的数据信息，具体使用某一个资源的时候，我们可以使用`BufferLocation`以及`SizeInBytes`来做到。
+并且你需要注意`D3D12_CONSTANT_BUFFER_VIEW_DESC::SizeInBytes`和`D3D12_CONSTANT_BUFFER_VIEW_DESC::OffsetInBytes`的大小必须是`256bytes`的倍数。
+
+### <element id = "6.6.5">  6.6.5 Root Signature and Descriptor Tables </element>
+
+通常来说，不同的着色器程序在绘制指令执行前需要绑定到管道的资源都会有所不同。
+并且资源一般来说都会被绑定到管道中的一个具体的输入点(**register slots**)，这样我们就可以通过着色器访问被绑定的资源了。
+
+我们之前使用的着色器都只使用了一个常缓冲而已，但在之后我们会使用到更多的资源，例如纹理，采样器等，这些都是需要绑定到管道上的。
+
+```C++
+SamplerState gsamPointWrap : register(s0); 
+SamplerState gsamPointClamp : register(s1); 
+SamplerState gsamLinearWrap	 : register(s2); 
+SamplerState gsamLinearClamp : register(s3); 
+SamplerState gsamAnisotropicWrap : register(s4);
+SamplerState gsamAnisotropicClamp : register(s5);
+	
+cbuffer PerObject : register(b0)
+{
+    float4x4 gWorld;
+    float4x4 gTexTransform;
+};
+
+cbuffer Pass : register(b1)
+{
+    float4x4 gView;
+    float4x4 gProj;
+
+    //Other 
+};
+
+cbuffer Material : register(b2)
+{
+    float4 gDiffuseAlbedo;
+    float3 gFresnelR0;
+    float gRoughness;
+    float4x4 gMatTransform;
+}
+```
+
