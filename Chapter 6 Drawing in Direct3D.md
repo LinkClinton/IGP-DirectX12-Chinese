@@ -613,3 +613,46 @@ cbuffer Material : register(b2)
 }
 ```
 
+来源标记(**Root Signature**)存储我们在绘制指令执行前要绑定到渲染管道的资源有哪些，以及这些资源将会被映射到着色器的哪个输入寄存器中。
+来源标记存储的内容必须和我们使用的着色器内容相吻合(即在绘制指令执行之前，我们必须在来源标记中声明那些被着色器声明以及使用的资源)。
+我们将会在创建渲染管道的时候验证两者的内容是否吻合。注意不同的绘制指令可能需要不同的着色器程序以及不同的来源标记。
+
+我们可以假设着色器程序是一个函数，在着色器中使用的资源是参数，那么我们可以认为来源标记就是用来声明参数的。
+
+在`Direct3D`中我们使用`ID3D12RootSignature`来表示一个来源标记。
+它将存储一组来源参数来描述我们要在着色器中使用哪些资源。
+一个来源参数可以是常量，描述符或者描述符表。
+我们在之后会讲到常量和描述符，但是在本章中我们会使用到描述符表。
+描述符表是在描述符堆的基础上，指定堆的一段范围作为我们要使用的一组描述符。
+
+```C++
+//这里给出大致代码
+
+    D3D12_DESCRIPTOR_RANGE cbvRange;
+    D3D12_ROOT_PARAMETER rootParameter[1];
+
+    cbvRange.RangeType = 
+    cbvRange.NumDescriptors = 1;
+    cbvRange.BaseShaderRegister = 0;
+
+    rootParameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    rootParameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+    rootParameter.DescriptorTable.NumDescriptorRanges = 1;
+    rootParameter.DescriptorTable.pDescriptorRanges = &cbvRange;
+
+//代码先坑着，网速不好没法上MSDN看参数。
+```
+
+
+之前说过来源标记只是定义了我们要绑定到渲染管道的资源。
+并不意味我们需要在创建它的时候就将资源绑定到渲染管道上。
+我们会使用指令列表来设置我们要使用的资源，准确来说是函数`ID3D12GraphicsCommandList::SetGraphicsRootDescriptorTable`。
+
+```C++
+    void ID3D12GraphicsCommandList::SetGraphicsRootDescriptorTable(
+        UINT RootParameterIndex,
+        D3D12_GPU_DESCRIPTOR_HANDLE BaseDescriptor);
+```
+
+- `RootParameterIndex`: 我们要设置到哪个来源参数中去。
+- `BaseDescriptor`:  
