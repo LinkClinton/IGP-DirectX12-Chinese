@@ -1,216 +1,220 @@
-# <element id = "4"> Chapter 4 Direct3D Initialization </element>
+# Chapter 4 Direct3D Initialization
 
-��ʼ��`Direct3D`������Ҫ�˽�һЩ������`Direct3D`���ͺ�һЩ������ͼ�θ��
-���ǽ�����һ�µĵ�һ�κ͵ڶ��ν�����Щ֪ʶ��
-Ȼ�����Ǿͽ��ܳ�ʼ��`Direct3D`��Ҫ�Ĳ��衣
-֮����΢��һ��Զ·�������¾�ȷ�ļ�ʱ������ʵʱͼ��Ӧ�õ�ʱ�����������
+初始化`Direct3D`我们需要了解一些基础的`Direct3D`类型和一些基础的图形概念。
+我们将在这一章的第一段和第二段讲述这些知识。
+然后我们就介绍初始化`Direct3D`必要的步骤。
+之后稍微绕一点远路，介绍下精确的计时和用于实时图形应用的时间测量方法。
 
-**Ŀ��**
+目标
 
-- �������˽�`Direct3D`��3D�����д�ϰ��ݵĽ�ɫ��
-- ����`COM`��`Direct3D`�����е����á�
-- �˽������ͼ�θ������2DͼƬ��δ���ģ�ҳ��Ĺ��ˣ���Ȼ��棬���ز�����`CPU`��`GPU`�Ľ�����
-- ѧϰ���ʹ�ü�ʱ����ʵ�ָ߾��ȵļ�ʱ����
-- ѧϰ��γ�ʼ��`Direct3D`��
+- 基本上了解`Direct3D`在3D程序编写上扮演的角色。
+- 理解`COM`在`Direct3D`里面中的作用。
+- 了解基本的图形概念，例如2D图片如何储存的，页面的过滤，深度缓存，多重采样和`CPU`与`GPU`的交互。
+- 学习如何使用计时函数实现高精度的计时器。
+- 学习如何初始化`Direct3D`。
 
-## <element id = "4.1"> 4.1 PRELIMINARIES </element>
+## 4.1 PRELIMINARIES
 
-��ʼ��`Direct3D`������Ҫ�˽�һЩ������`Direct3D`���ͺ�һЩ������ͼ�θ��
-��������һ���н�����Щ���ͺ͸�����Բ�Ҫ��Ϊ���������ˡ�
+初始化`Direct3D`我们需要了解一些基础的`Direct3D`类型和一些基础的图形概念。
+我们在这一段中介绍这些类型和概念，所以不要认为我们离题了。
 
-### <element id = "4.1.1"> 4.1.1 Direct3D 12 Overview </element>
+### 4.1.1 Direct3D 12 Overview
 
-`Direct3D` ��һ�����ڿ��ƺ͹���`GPU`(**graphics	processing	unit**)�ĵײ��ͼ��`API`(**application	programming	interface**)�����ܹ�������ʹ��Ӳ��������Ⱦ�����3D���硣
-�������Ҫ�ύ��`GPU`һ��ָ��ȥ����`Render Target`(��Ļ)�����ǿ���ͨ��ʹ��`Direct3D`������������
-`Direct3D`��Ӳ�����������`Direct3D`��ָ���ɿ��Ա�`GPU`����Ļ������ԡ�
-���ǲ�����Ҫ���ľ���ʹ�õ�`GPU`��ʲô������ֻ��Ҫ֪�����Ƿ�֧����������ʹ�õ�`Direct3D`�İ汾��
-ͨ����˵`GPU`���ң�����`NVIDIA`,`Intel`,`AMD`�����ṩ֧��`Direct3D`��������
+`Direct3D` 是一个用于控制和管理`GPU`(**graphics processing unit**)的底层的图形`API`(**application programming interface**)，它能够让我们使用硬件加速渲染虚拟的3D世界。
+我们如果要提交给`GPU`一个指令去清理`Render Target`(屏幕)，我们可以通过使用`Direct3D`函数来做到。
+`Direct3D`和硬件驱动将会把`Direct3D`的指令翻译成可以被`GPU`理解的机器语言。
+我们并不需要关心具体使用的`GPU`是什么，我们只需要知道他是否支持我们正在使用的`Direct3D`的版本。
+通常来说`GPU`厂家，例如`NVIDIA`,`Intel`,`AMD`都会提供支持`Direct3D`的驱动。
 
-`Direct3D 12`������һЩ�µ����ԣ����������ǰ�İ汾��˵�����ĸĽ�����������������������˶�`CPU`�����ĺ�����˶Զ��̵߳�֧�֡�
-Ϊ�˴ﵽ���Ŀ�ģ�`Direct3D 12`��`Direct3D 11`��ø��ӵײ㣬���ӽӽ��ִ�`GPU`�ܹ���
-��Ȼʹ��������Ϊ�鷳��`API`�����ƾ������ܵõ�������
+`Direct3D 12`增加了一些新的特性，但是相比以前的版本来说，最大的改进还是重新设计了它，减少了对`CPU`的消耗和提高了对多线程的支持。
+为了达到这个目的，`Direct3D 12`比`Direct3D 11`变得更加底层，更加接近现代`GPU`架构。
+当然使用这样较为麻烦的`API`的优势就是性能得到提升。
 
-### <element id = "4.1.2"> 4.1.2 COM </element>
+### 4.1.2 COM
 
-`Component	Object	Model`(**COM**)��һ���ܹ���`DirectX`�����ĳ��������޹غ��������Եļ�����
-����ͨ���ýӿ�`Interface`����ʽ����һ��`COM`�����ʹ�������ܹ�������Ϊ`C++`������࣬���ҵ�����ʹ�á�
-�������`COM`ϸ��������ʹ��`C++`��д`DirectX`�����ʱ��ͱ������ˡ�
-Ψһ��Ҫע�����������ͨ��ָ���ĺ�����������һ���ӿ�ȥʵ����һ��`Interface`��������ͨ��ʹ��`C++`�Ĺؼ���`new`��(**Interfaceͨ������Ϊһ��ָ��**)��
-`COM`��������ü����ģ�Ҳ����˵�����ǲ���Ҫʹ��һ���ӿڵ�ʱ�����Ǿͱ���ͨ��`Release`����ȥ�ͷ���(**���е�Interface���Ǽ̳���IUnknown��**)��
-��һ��`COM`��������ô�����0��ʱ�����ǲŻ�������ɾ����������
+`Component Object Model`(**COM**)是一项能够让`DirectX`与具体的程序语言无关和向后兼容性的技术。
+我们通常用接口`Interface`的形式引用一个`COM`组件，使得我们能够将其视为`C++`里面的类，并且当作类使用。
+大多数的`COM`细节在我们使用`C++`编写`DirectX`程序的时候就被隐藏了。
+唯一需要注意的是我们是通过指定的函数或者另外一个接口去实例化一个`Interface`，而不是通过使用`C++`的关键字`new`。(**Interface通常声明为一个指针**)。
+`COM`组件是引用计数的，也就是说当我们不需要使用一个接口的时候，我们就必须通过`Release`方法去释放它(**所有的Interface都是继承自IUnknown的**)。
+当一个`COM`组件的引用次数是0的时候我们才会真正的删除这个组件。
 
-Ϊ�˰������ǹ���`COM`������������ڣ�`Windows Runtime Library`�ṩ��һ����`Microsoft::WRL::ComPtr`ʹ���ǿ��Խ�`COM`�������һ������ָ�롣
-��һ��`ComPtr`ʵ����Ҳ���ᱻʹ�õ�ʱ�����ͻ��Լ�����`Release`�ͷ��Լ��������Ļ����ǾͲ���Ҫ�����Լ��Ƿ���Ҫ�ͷ�`COM`����ˡ�
+为了帮助我们管理`COM`组件的生命周期，`Windows Runtime Library`提供了一个类`Microsoft::WRL::ComPtr`使我们可以将`COM`组件看作一个智能指针。
+当一个`ComPtr`实例再也不会被使用的时候，它就会自己调用`Release`释放自己。这样的话我们就不需要关心自己是否需要释放`COM`组件了。
 
-- `Get`: �������`COM`�ӿڵ�ָ�롣
-- `GetAddressOf`:�������`COM`�ӿڵ�ָ��ĵ�ַ��
-- `Reset`: �����ʵ������Ϊ`nullptr`��ͬʱ���Լ��ͷš�
+- `Get`: 返回这个`COM`接口的指针。
+- `GetAddressOf`:返回这个`COM`接口的指针的地址。
+- `Reset`: 将这个实例设置为`nullptr`，同时会自己释放。
 
-��Ȼ�����кܶ��`COM`����йصĶ��������ǽ���ֻ��ʹ��`DirectX`�Ļ�����ô��û�б�Ҫ֪����ô��ϸ�ڡ�
+当然，还有很多和`COM`组件有关的东西，但是仅仅只是使用`DirectX`的话，那么就没有必要知道那么多细节。
 
-### <element id = "4.1.3"> 4.1.3 Textures Formats </element>
+### 4.1.3 Textures Formats
 
-һ����ά������һ�����ݾ���
-�������ʹ�ö�ά����ȥ�洢ͼƬ�Ļ�����ôÿ��Ԫ������洢�ľ���ÿ�����ص���ɫ��
-��Ȼ�Ⲣ���Ƕ�ά������Ψһ�ô���
-`Normal mapping`�����У�ÿ��Ԫ�ش���ľ���һ����ά��������������ɫ��
-��Ȼ����ͨ������������ͼ�����ݣ����ǻ����кܶ�������;�ġ�
-һ��һά��������һ��һά���飬��ά��������һ����ά���飬��ά��������һ����ά���顣
-����������������ֻ�����飬������ǻ����Ժ���½������۵���
-������`mipmap levels`��`GPU`��������������һЩ����Ĳ�����������˺Ͷ��ز�����
-�������������ܴ洢�������͵����ݣ���ֻ�ܴ洢һЩ������������ͣ��μ�`DXGI_FORMAT`��
+一个二维纹理是一个数据矩阵。
+如果我们使用二维纹理去存储图片的话，那么每个元素里面存储的就是每个像素的颜色。
+当然这并不是二维纹理的唯一用处。
+`Normal mapping`技术中，每个元素储存的就是一个三维向量，而不是颜色。
+虽然纹理通常被用来储存图像数据，但是还是有很多其他用途的。
+一个一维纹理就是一个一维数组，二维纹理就是一个二维数组，三维纹理就是一个三维数组。
+但是纹理并不单纯只是数组，这个我们会在稍后的章节中讨论到。
+纹理有`mipmap levels`，`GPU`可以在这上面做一些特殊的操作，例如过滤和多重采样。
+但是纹理并不能存储任意类型的数据，他只能存储一些具体的数据类型，参见`DXGI_FORMAT`。
 
-- `DXGI_FORMAT_R32G32B32_FLOAT`: ÿ��Ԫ����3��`32bit`��С�ĸ�������ɡ�
-- `DXGI_FORMAT_R16G16B16A16_UNORM`: ÿ��Ԫ����4��`16bit`��С���޷���������ɡ�
-- `DXGI_FORMAT_R32G32_UINT`: ÿ��Ԫ����2��`32bit`��С���޷���������ɡ�
-- `DXGI_FORMAT_R8G8B8A8_UNORM`: ÿ��Ԫ����4��`8bit`��С���޷���������ɡ�
-- `DXGI_FORMAT_R8G8B8A8_SNORM`: ÿ��Ԫ����4��`8bit`��С���з���������ɡ�
-- `DXGI_FORMAT_R8G8B8A8_SINT`: ÿ��Ԫ����4��`8bit`��С���з���������ɡ�
-- `DXGI_FORMAT_R8G8B8A8_UINT`: ÿ��Ԫ����4��`8bit`��С���޷���������ɡ�
+- `DXGI_FORMAT_R32G32B32_FLOAT`: 每个元素由3个`32bit`大小的浮点型组成。
+- `DXGI_FORMAT_R16G16B16A16_UNORM`: 每个元素由4个`16bit`大小的无符号类型组成。
+- `DXGI_FORMAT_R32G32_UINT`: 每个元素由2个`32bit`大小的无符号整型组成。
+- `DXGI_FORMAT_R8G8B8A8_UNORM`: 每个元素由4个`8bit`大小的无符号类型组成。
+- `DXGI_FORMAT_R8G8B8A8_SNORM`: 每个元素由4个`8bit`大小的有符号类型组成。
+- `DXGI_FORMAT_R8G8B8A8_SINT`: 每个元素由4个`8bit`大小的有符号整型组成。
+- `DXGI_FORMAT_R8G8B8A8_UINT`: 每个元素由4个`8bit`大小的无符号整型组成。
 
-ö���е�`R`,`G`,`B`,`A`ͨ����ʾ��ɫ����ɫ����ɫ��`Alpha`��
-��ɫ����ǰ��������ɫ��϶��ɵġ���`Alpha`ֵͨ�������ڿ��������͸���ȵġ�
-������ʵ�ʴ洢��Ԫ�ص����Ͳ���һ��Ҫ������������������һ����
-����`DXGI_FORMAT_R32G32B32_FLOAT`,��3����������ɣ���ô��ͬ�������������д洢һ����ά������
-��Ȼ�ɶ���һ�����������ͣ����ǲ�û��ǿ��Ҫ�����ͣ�����ֻ����һ���������󶨵��ܵ���ȥ��ʱ�򣬽��������ݷŵ�Ԥ�����ڴ�ռ�����ȥ��
+枚举中的`R`,`G`,`B`,`A`通常表示红色，绿色，蓝色和`Alpha`。
+颜色是由前面三种颜色组合而成的。而`Alpha`值通常是用于控制物体的透明度的。
+纹理中实际存储的元素的类型并不一定要和这个纹理定义的类型一样。
+例如`DXGI_FORMAT_R32G32B32_FLOAT`,由3个浮点型组成，那么我同样可以在纹理中存储一个三维向量。
+虽然由定义一个纹理的类型，但是并没有强制要求类型，我们只是在一个纹理被绑定到管道上去的时候，将纹理数据放到预留的内存空间里面去。
 
-### <element id = "4.1.4"> 4.1.4 The Swap Chain and Page Flipping </element>
+### 4.1.4 The Swap Chain and Page Flipping
 
-Ϊ�˱�����Ƶ�ʱ����˸����õķ������ǽ�Ҫ���Ƶ���һ֡���Ƶ�һ������������(`Back Buffer`)��ȥ��
-ֻҪ���ǽ�Ҫ���Ƶ�����ȫ�����Ƶ�`Back Buffer`��ȥ�����ǾͿ��Խ���һ֡���ֵ���Ļ��ȥ��
-�����Ļ����ۿ��߾Ͳ��ῴ�����ƵĹ��̣����ǿ���������һ֡��
-Ϊ��ʵ�������ļ�����������Ҫά������������һ������`Front Buffer`��һ������`Back Buffer`��
-`Front Buffer`�洢������ʾ��ͼ�����ݣ�Ȼ����һ֡���ڻ��Ƶ�`Back Buffer`��ȥ��
-����һ֡������ɵ�ʱ�����Ǿ��л�������������`Front Buffer`�����`Back Buffer`,`Back Buffer`�����`Front Buffer`��
-�������������л��Ĺ������Ǿͳ�֮Ϊ����`presenting`��������һ��Ч�ʷǳ��ߵĲ�������ֻ�ǽ�����������ָ�뽻���˶��ѡ����Բμ�ͼƬ[4.1](#Image4.1)��
+为了避免绘制的时候闪烁，最好的方法就是将要绘制的这一帧绘制到一个离屏的纹理(`Back Buffer`)中去。
+只要我们将要绘制的内容全部绘制到`Back Buffer`中去，我们就可以将这一帧呈现到屏幕中去。
+这样的话，观看者就不会看到绘制的过程，而是看到完整的一帧。
+为了实现这样的技术，我们需要维持两个纹理，一个叫做`Front Buffer`，一个叫做`Back Buffer`。
+`Front Buffer`存储正在显示的图像数据，然后下一帧正在绘制到`Back Buffer`中去。
+当下一帧绘制完成的时候，我们就切换这两个纹理，`Front Buffer`变成了`Back Buffer`,`Back Buffer`变成了`Front Buffer`。
+将这两个纹理切换的过程我们就称之为呈现`presenting`。呈现是一个效率非常高的操作，他只是将两个纹理的指针交换了而已。可以参见图片4.1。
 
-<img src="Images/4.1.png" id = "Image4.1"> </img>
+![Image4.1](Images/4.1.png)
+> 图片4.1
 
-����ͨ��ʹ�ý�������������������������`Direct3D`�У�����ʹ��`IDXGISwapChain`��������
-�������д洢�����������������ǿ���ʹ��`ResizeBuffers`���ı������������Ĵ�С��`Present`�����֡�
+我们通常使用交换链来管理这两个纹理。在`Direct3D`中，我们使用`IDXGISwapChain`来管理。
+交换链中存储着着两个纹理。我们可以使用`ResizeBuffers`来改变着两个纹理的大小。`Present`来呈现。
 
-ʹ������������Ϊ`Buffer`�ļ������ǳ���˫���塣��Ȼ�����ʹ�ø����`Buffer`��
+使用两个纹理作为`Buffer`的技术我们称作双缓冲。当然你可以使用更多的`Buffer`。
 
-### <element id = "4.1.5"> 4.1.5 Depth Buffering </element>
+### 4.1.5 Depth Buffering
 
-`Depth Buffer`��һ���ܺõ�ʹ������������ͼ������(**���洢���������Ϣ**)�����ӡ�
-�������Ϊ�����Ϣ��һ�ֱȽ���������أ�����ֵ��Χ��`[0.0, 1.0]`��
-0.0��ʱ���������Ϊ������������������1.0��ʱ�����Զ��
-`Back Buffer`�е����غ�`Depth Buffer`�е������Ϣ��һһ��Ӧ�ģ�ÿ����`Back Buffer`�е����ض���`Depth Buffer`���ж�Ӧ�������Ϣ(��i,j�����ض�Ӧ��i,j�������Ϣ)��
-������`Back Buffer`�Ĵ�С��`1280 x 1024`�Ļ�����ô`Depth Buffer`�Ĵ�СҲҪ��`1280 x 1024`��
+`Depth Buffer`是一个很好的使用纹理不储存图像数据(**它存储的是深度信息**)的例子。
+你可以认为深度信息是一种比较特殊的像素，他的值范围是`[0.0, 1.0]`。
+0.0的时候你可以认为这个点距离摄像机最近，1.0的时候就最远。
+`Back Buffer`中的像素和`Depth Buffer`中的深度信息是一一对应的，每个在`Back Buffer`中的像素都在`Depth Buffer`中有对应的深度信息(第i,j个像素对应第i,j个深度信息)。
+因此如果`Back Buffer`的大小是`1280 x 1024`的话，那么`Depth Buffer`的大小也要是`1280 x 1024`。
 
-ͼƬ[4.2](#Image4.2)������һ���򵥵ĳ�����һЩ����������һЩ����ĺ��档
-`Direct3D`Ϊ��ȷ���ĸ����������Ӧ������Щ���������ǰ�棬��˾�ʹ����**��Ȼ���**��һ�����
-�����Ļ������Ƶ�˳��ͱ���޹ؽ�Ҫ��
+图片4.2呈现了一个简单的场景，一些物体在另外一些物体的后面。
+`Direct3D`为了确定哪个物体的像素应当在哪些物体的像素前面，因此就使用了**深度缓冲**这一项技术。
+这样的话，绘制的顺序就变得无关紧要。
 
-<img src="Images/4.2.png" id = "Image4.2"> </img>
+![Image4.2](Images/4.2.png)
+> 图片4.2
 
-Ϊ��˵����Ȼ�����������еģ���������һ�����ӡ�ͼƬ[4.3](#Image4.3)�����������ǹۿ����ܹ��������ķ�Χ��
-��ͼƬ�����ǿ��Է�����3����ͬ�����ؽ�Ҫ����Ⱦ�������е�ͬһ��λ��`P`(����֪�����϶������������һ�����أ���������ػᱻ�����������ס)��
-���ȣ�����Ⱦ֮ǰ��`Back Buffer`�ᱻ���ΪĬ�ϵ���ɫ��Ȼ��`Depth Buffer`Ҳ�ᱻ���ΪĬ�ϵ�ֵ��ͨ����˵��1��
-�������Ǽ����Ȼ���Բ���壬Ȼ�����壬Ȼ��Բ׶�塣
-��������������`P`�����������Ϣ`d`������Ⱦһ�������ʱ����θı䡣
+为了说明深度缓冲是如何运行的，我们来看一个例子。图片[4.3](#Image4.3)，告诉了我们观看者能够看看到的范围。
+从图片中我们可以发现有3个不同的像素将要被渲染到窗口中的同一个位置`P`(我们知道最后肯定是留下最近的一个像素，其余的像素会被最近的像素遮住)。
+首先，在渲染之前，`Back Buffer`会被清空为默认的颜色，然后`Depth Buffer`也会被清空为默认的值，通常来说是1。
+现在我们假设先绘制圆柱体，然后球体，然后圆锥体。
+接下来我们来看`P`和他的深度信息`d`会在渲染一个物体的时候如何改变。
 
-<img src="Images/4.3.png" id = "Image4.3"> </img>
+![Image4.3](Images/4.3.png)
+> 图片4.3
 
-| ���� | P | d | ���� |
+| 操作 | $P$ | $d$ | 描述 |
 | --- | - | - | ---- |
-| ��ղ��� | ��ɫ | 1.0 | ��ʼ�����غͶ�Ӧ�������Ϣ |
-| ����Բ׶�� | P<sub>3</sub> | d<sub>3</sub> | ��Ϊd<sub>3</sub> <= d���������ǽ�P����ΪP<sub>3</sub>����d����Ϊd<sub>3</sub>�� |
-| �������� | P<sub>1</sub> | d<sub>1</sub> | ��Ϊd<sub>1</sub> <= d<sub>3</sub>���������ǽ�P����ΪP<sub>1</sub>����d����Ϊd<sub>1</sub>��|
-| ����Բ׶�� | P<sub>1</sub> | d<sub>1</sub> | ��Ϊd<sub>2</sub> > d<sub>1</sub>������û��ͨ����Ȳ��ԣ������¡�|
+| 清空操作 | 黑色 | 1.0 | 初始化像素和对应的深度信息 |
+| 绘制圆锥体 | $P_3$ | $d_3$ | 因为$d_3 \le d$，所以我们将$P$更新为$P_3$，将$d$更新为$d_3$。 |
+| 绘制球体 | $P_1$ | $d_1$ | 因为$d_1 \le d_3$，所以我们将$P$更新为$P_1$，将$d$更新为$d_1$。|
+| 绘制圆锥体 | $P_1$ | $d_1$ | 因为$d_2 > d_1$，所以没有通过深度测试，不更新。|
 
-���Է��֣�����ֻ����һ���������������ϢС���������ص������Ϣ��ʱ��Ÿ��¡������Ļ������ǾͿ���ȷ��������µ����ؾ��Ǿ���ۿ��������������(����Գ��Ըı����˳��Ȼ��ᷢ�ֽ��һ��)��
-�ܵ���˵������ͨ������һ�����ص����ֵ��Ȼ�������Ȳ���������һ�����ص�ȥ����
-��Ȳ��ԱȽ�ÿ�����ص����ֵ��Ȼ�������ϢС�����£���Ӧ�����ػ��Ƶ�`Back Buffer`��ȥ��
+可以发现，我们只有在一个像素他的深度信息小于现有像素的深度信息的时候才更新。这样的话，我们就可以确保最后留下的像素就是距离观看者最近的像素了(你可以尝试改变绘制顺序，然后会发现结果一样)。
+总的来说，我们通过计算一个像素的深度值，然后进行深度测试来决定一个像素的去留。
+深度测试比较每个像素的深度值，然后深度信息小的留下，对应的像素绘制到`Back Buffer`中去。
 
-`Depth Buffer`Ҳ��һ��������������Ǵ�������ʱ����Ҫָ�����ĸ�ʽ��
-����ʹ�õĸ�ʽ���£�
+`Depth Buffer`也是一个纹理，因此我们创建它的时候需要指定他的格式。
+可以使用的格式如下：
 
-- `DXGI_FORMAT_D32_FLOAT_S8X24_UINT`: ʹ��`32bit`��С�����ͣ�ǰ��`8bit`����`Depth Buffer`�������`24bit`���á�
-- `DXGI_FORMAT_D32_FLOAT`: ʹ��`32bit`��С�ĸ����͡�
-- `DXGI_FORMAT_D24_UNORM_S8_UINT`: ǰ��`24bit`�޷�����������`Depth Buffer`������`8bit`�޷�����������`Stencil Buffer`��
-- `DXGI_FORMAT_D16_UNORM`: ʹ��`16bit`��С���޷������͡�
+- `DXGI_FORMAT_D32_FLOAT_S8X24_UINT`: 使用`32bit`大小的类型，前面`8bit`用于`Depth Buffer`，后面的`24bit`无用。
+- `DXGI_FORMAT_D32_FLOAT`: 使用`32bit`大小的浮点型。
+- `DXGI_FORMAT_D24_UNORM_S8_UINT`: 前面`24bit`无符号类型用于`Depth Buffer`，后面`8bit`无符号整型用于`Stencil Buffer`。
+- `DXGI_FORMAT_D16_UNORM`: 使用`16bit`大小的无符号类型。
 
-ͨ����˵һ����������ͬʱ��Ϊ`Depth Buffer`��`Stencil Buffer`������ͨ��ʹ��`DXGI_FORMAT_D24_UNORM_S8_UINT`������������
+通常来说一个纹理可以同时作为`Depth Buffer`和`Stencil Buffer`。我们通常使用`DXGI_FORMAT_D24_UNORM_S8_UINT`来创建纹理。
 
-### <element id = "4.1.6"> 4.1.6 Resources and Descriptors</element>
+### 4.1.6 Resources and Descriptors
 
-����Ⱦ�Ĺ����У�`GPU`��д����Դ(����`Back Buffer`,`Depth Buffer`)���Լ��������Դ(����һ�����������ߴ洢��λ�������ݵĻ���)��
-�����Ƿ�������ָ��֮ǰ��������Ҫ����Դ�󶨵���Ҫʹ�õ���Ⱦ�ܵ���ȥ��
-��Щ��Դ���ܻ���ÿ�λ��Ƶ�ʱ�����Ҫ�ı䣬����������Ҫ��ÿ�λ��Ƶ�ʱ�����¸��°󶨵���Դ��
-��Ȼ��`GPU`��Դ������ֱ�ӵİ���ȥ(**�����Ὣ������Դ��ô��Ŀռ����ȥ**)��
-����ʹ��`Descriptor`(������)������һ����Ҫ�󶨵���Դ�����ǿ�����Ϊ����һ����С����С�Ľṹ(**�������Ϊ��ָ��**)��
-ʵ������˵������һЩ��ƭ����ģ����Ǹ�`GPU`һ����Դ��������`GPU`����ͨ��������������ʵ���Դ����ľ������ݡ�
-Ȼ�����ǾͿ�����ÿ�λ��Ƶ�ʱ������Դ�������󶨵���Ⱦ�ܵ��ϡ�
+在渲染的过程中，`GPU`会写入资源(例如`Back Buffer`,`Depth Buffer`)，以及会读入资源(例如一个纹理，或者存储三位顶点数据的缓冲)。
+在我们发出绘制指令之前，我们需要将资源绑定到正要使用的渲染管道中去。
+有些资源可能会在每次绘制的时候就需要改变，所以我们需要在每次绘制的时候重新更新绑定的资源。
+当然，`GPU`资源并不会直接的绑定上去(**即不会将整个资源那么大的空间绑定上去**)。
+我们使用`Descriptor`(描述符)来描述一个需要绑定的资源。我们可以认为这是一个大小及其小的结构(**你可以认为是指针**)。
+实质上来说这是有一些欺骗含义的，我们给`GPU`一个资源描述符，`GPU`可以通过这个描述符访问到资源里面的具体数据。
+然后我们就可以在每次绘制的时候将这资源描述符绑定到渲染管道上。
 
-ΪʲôҪ����������ΪGPU��Դͨ����һ���ռ�(�ܶ�ʱ�����ǽ��ܶ����ݷŵ�һ����Դ����ȥ)��
-��Դͨ����������״̬(��`Direct3D 12`�У���Դ�����Լ���״̬�ģ�������룬д��ȣ���ǰ����ǽ�����`GPU`�Լ�����)���Ӷ�����������Ⱦ�ܵ��еĲ�ͬ�Ľ׶���ʹ�á�
-���������Ƚ�����Ϊ`Render Target`��Ⱦ��֮����������Ϊ��ɫ����Դʹ�á�һ����Դ�ǲ���˵���Լ���������ʲô�ġ�
-�������ֻ����Ҫ��һ����Դ�󶨵���Ⱦ�ܵ���ȥ����ô����֮����Ҫ���ʹ�������߶�������ʲô���������һ����Դ��ʹ������ʽ�����ģ�`GPU`��������֪�������Դ�ľ����ʽ��ʲô��
+为什么要这样做？因为GPU资源通常是一大块空间(很多时候我们将很多数据放到一个资源里面去)。
+资源通常保持正常状态(在`Direct3D 12`中，资源是有自己的状态的，例如读入，写入等，以前这个是交给了`GPU`自己处理)，从而他可以在渲染管道中的不同的阶段中使用。
+例如我们先将其作为`Render Target`渲染，之后我们又作为着色器资源使用。一个资源是不会说明自己是用于做什么的。
+如果我们只是想要将一个资源绑定到渲染管道中去，那么我们之后又要如何使用它或者对他进行什么操作？如果一个资源是使用弱格式创建的，`GPU`甚至都不知道这个资源的具体格式是什么。
 
-��˾ͳ�������Դ������������ʶ����Դ���ݡ�
-��Դ����������`GPU`�����Դ��������ʲô(��Ҫ�󶨵��ܵ��е��ĸ��׶�)����Դ�е���һ���ڴ�ռ�������Ҫ�󶨣��Լ���ʹ�õ�ʱ��Ҫ���嵱��ʲô��ʽ����Դʹ�ã����Ǳ�����ʹ�õ�ʱ��ȷ����Դ�ľ����ʽ��
+因此就出现了资源描述符，用于识别资源数据。
+资源描述符告诉`GPU`这个资源将会用于什么(即要绑定到管道中的哪个阶段)，资源中的哪一块内存空间我们想要绑定，以及在使用的时候要具体当作什么格式的资源使用，我们必须在使用的时候确定资源的具体格式。
 
-��Դ���������Լ������ͣ���Щ���ͱ�ʾ�������Դ������������ôʹ�á�
+资源描述符有自己的类型，这些类型表示了这个资源描述符将会怎么使用。
 
-- `CBV/SRV/UAV`: ���������壬��ɫ����Դ�ȡ�
-- `Sampler`: ��������������������������
-- `RTV`: ����`Render Target`����������
-- `DSV`: ����`Depth/Stencil Buffer`����������
+- `CBV/SRV/UAV`: 描述常缓冲，着色器资源等。
+- `Sampler`: 描述采样器，用于纹理采样。
+- `RTV`: 用于`Render Target`的描述符。
+- `DSV`: 用于`Depth/Stencil Buffer`的描述符。
 
-����������һ������������֧�ַ����κ����͵���������
-�㲻�ܽ���ͬ������������ͬһ�����С���������Դ�������Ѳ���һ�����������Է��뵽������С�
+描述符堆是一组描述符。它支持放入任何类型的描述符。
+你不能将不同的描述符放入同一个堆中。但是你可以创建多个堆并且一个描述符可以放入到多个堆中。
 
-���ǿ����ж����������ʹ��ͬ������Դ���������ǿ����ö����������ʹ��һ����Դ�в�ͬλ�õ���Դ��
-֮ǰ˵����Դ���԰󶨵���Ⱦ�ܵ��в�ͬ�Ľ׶Σ�����ÿ���׶Σ�������Ҫ��ͬ����������
-����һ��������Ϊ`Render Target`����ɫ����Դ�����Ǿ���Ҫ����������(`RTV`��`SRV`)��������Ȼֻ��һ����Դ��
-���Ƶ��㴴��һ������ʽ����Դ�����ǿ��Դ洢��ͬ���͵�ֵ�ģ����縡������͡���ô�����Ҫ����������������һ�����������Դ�Ǹ���ģ�һ�����������Դ�����͵ġ�
+我们可以有多个描述符来使用同样的资源。例如我们可以用多个描述符来使用一个资源中不同位置的资源。
+之前说过资源可以绑定到渲染管道中不同的阶段，对于每个阶段，我们需要不同的描述符。
+例如一个纹理作为`Render Target`和着色器资源，我们就需要两个描述符(`RTV`和`SRV`)，但是任然只是一个资源。
+类似的你创建一个弱格式的资源，他是可以存储不同类型的值的，例如浮点和整型。那么你就需要创建两个描述符，一个描述这个资源是浮点的，一个描述这个资源是整型的。
 
-��Դ����������ڳ�ʼ����ʱ��ʹ�����
+资源描述符最好在初始化的时候就创建。
 
-### <element id = "4.1.7"> 4.1.7 Multisampling Theory </element>
+### 4.1.7 Multisampling Theory
 
-������ʾ�������ز���������С�ģ�����һ��������߿��ܾ�û�а취�����ĳ��ֵ���ʾ��ȥ��
-ͼƬ[4.4](#Image4.4)������һ������״��Ч��������ʵ����һ�������رƽ����ɵ��ߡ�
-ͬ����Ч��Ҳ���������εı��ϳ��֡�
+由于显示器的像素并不是无限小的，所以一条任意的线可能就没有办法完美的呈现到显示器去。
+图片$4.4$描述了一个阶梯状的效果，他其实就是一条由像素逼近构成的线。
+同样的效果也会在三角形的边上出现。
 
-<img src="Images/4.4.png" id = "Image4.4"> </img>
+![Image4.4](Images/4.4.png)
+> 图片4.4
 
-�����һ�������Ƿ������о�ݵġ������һ�����ǿ���ݵ��ߡ�
-����Է��������������ص���ɫ�����ܱߵ���ɫ�����˲�����
-��ᷢ�����߻��������߸��ӵ�ƽ���ˡ�
+上面的一条线我们发现是有锯齿的。下面的一条线是抗锯齿的线。
+你可以发现它附近的像素的颜色还对周边的颜色进行了采样。
+你会发现这线会比上面的线更加的平滑了。
 
-��С��ʾ���ϵ�һ�����صĴ�С���������ʾ���ķֱ��ʿ��Խ������ľ��Ч����
+减小显示器上的一个像素的大小，即提高显示器的分辨率可以解决上面的锯齿效果。
 
-���ǽ���ֻ����߷ֱ��ʵĻ����ǲ�����(�����ͳɱ����ܸ�)��������ǿ���ʹ�ÿ���ݼ�����������⡣
-���Ƚ��ܵ���һ�ֽ�����������(**SuperSampling**)�ļ�������ͨ����`Back Buffer`��`Depth Buffer`������4����
-�����Ļ����������Ⱦ��һ���ȷֱ�����Ļ��Ҫ��ĵط���
-������Ҫ�����`Back Buffer`������ȥ��ʱ�����Ǿͽ�4��λ�õ����ص���һ��λ�õ����أ�ȡƽ��ֵ��Ϊ������Ļ�ϵ����ء�
-���仰˵��ʵ����ʹ�������ķ������ֱ���������4����
+但是仅仅只是提高分辨率的话，是不够的(开销和成本都很高)，因此我们可以使用抗锯齿技术来解决问题。
+首先介绍的是一种叫做超级采样(**SuperSampling**)的技术。它通过将`Back Buffer`，`Depth Buffer`等扩大4倍。
+这样的话，物体就渲染在一个比分辨率屏幕还要大的地方。
+当我们要将这个`Back Buffer`呈现上去的时候，我们就将4个位置的像素当作一个位置的像素，取平均值作为最后的屏幕上的像素。
+换句话说其实就是使用软件的方法将分辨率扩大了4倍。
 
-�������������Ƿǳ���ġ���Ϊ����Ҫ������������ԭ����4�����ռ�Ҳ��ԭ����4����
-`Direct3D`֧��һ��������еĿ�����㷨�����ز���(**Multisampling**)��
-��ͨ������������Ϣʹ���������ȳ��������١�
-������������ʹ��4X���ز���(������4��)�����ز���ͬ����Ҫ����4����`Back Buffer`,`Depth Buffer`�ȡ�
-���ǲ�ͬ���ǣ����ǲ�����ȫ�������أ�����ֻ����4�����ص��м���Ǹ����ء�
-Ȼ��������ص���Ϣ��Ϊ��һ������(4��)����Ϣ���Ⲣ��������һ������ÿ�������Ϣ�����м���Ǹ�������������Ļ����ǺͲ���Ӧ���ز�����ʲô����(��Ⱥ�ģ����Ի�����Ҫ����ÿ������)��
-֮������Ҫ���в�������ȷ����һ������(4��)���ǵ�ֵ��������������Ƿ��ڶ�����ڲ������ˡ�
-ͼƬ[4.5](#Image4.5)����һ�����ӡ�
+超级采样开销是非常大的。因为它需要处理的像素是原本的4倍，空间也是原本的4倍。
+`Direct3D`支持一种相对折中的抗锯齿算法，多重采样(**Multisampling**)。
+它通过共有像素信息使得它开销比超级采样少。
+假设我们正在使用4X多重采样(即扩大4倍)，多重采样同样需要扩大4倍的`Back Buffer`,`Depth Buffer`等。
+但是不同的是，我们不处理全部的像素，我们只处理4个像素的中间的那个像素。
+然后将这个像素的信息作为这一组像素(4个)的信息，这并不代表这一组像素每个点的信息都是中间的那个，如果是这样的话，那和不适应多重采样有什么区别？(深度和模板测试还是需要测试每个像素)。
+之后，我们要进行采样，即确定这一组像素(4个)他们的值，这个就由他们是否在多边形内部决定了。
+图片4.5给出一个例子。
 
-<img src="Images/4.5.png" id = "Image4.5"> </img>
+![Image4.5](Images/4.5.png)
+> 图片4.5
 
-���ǿ�һ����������α�Ե������(a)����3�����ص���ɫ����ɫ�ģ�����һ��������Ϊ�ڶ�������棬������ɫ��û�б��ı䣬�����������ǰ����ɫ��
-Ȼ�����Ǽ���������ɫ����һ��������Ϊ����һ�����أ�����ͨ����ȡƽ��ֵ����Ϊ������ɫ�������Ļ����ͻ��ԭ���ľ��״(����״)ƽ���ܶࡣ
+我们看一个穿过多边形边缘的像素(a)，有3个像素的颜色是绿色的，还有一个像素因为在多边形外面，他的颜色并没有被改变，因此他还是以前的颜色。
+然后我们计算最后的颜色，即一组像素作为最后的一个像素，我们通常是取平均值来作为最后的颜色。这样的话他就会比原本的锯齿状(阶梯状)平滑很多。
 
-��ͼƬ[4.5](#Image4.5)�У����ǽ�4�����ط�Ϊһ������ģʽ(����һ��������ֳ�4��С����)��
-���Ǿ����ģʽȴ����Ӳ���������ģ���һ�������������������������������е�λ�á�
-`Direct3D`��û��Ҫ�������ص�λ��������������
+在图片$4.5$中，我们将4个像素分为一个网格模式(即将一个像素组分成4个小矩形)。
+但是具体的模式却是由硬件来决定的，即一个像素组里面的子像素在这个像素组中的位置。
+`Direct3D`并没有要求子像素的位置在像素组的哪里。
 
+### 4.1.8 Multisampling in Direct3D
 
-### <element id = "4.1.8"> 4.1.8 Multisampling in Direct3D </element>
-
-����һ���֣�������Ҫ���һ��`DXGI_SAMPLE_DESC`�Ľṹ���ṹ�������£�
+在下一部分，我们需要填充一个`DXGI_SAMPLE_DESC`的结构。结构定义如下：
 
 ```C++
 struct DXGI_SAMPLE_DESC
@@ -220,135 +224,136 @@ struct DXGI_SAMPLE_DESC
 };
 ```
 
-`Count`��ʾ������ʱ�򼸸�����һ�顣`Quality`��ʾ�����������ȼ�(�����֧����Ҫ�������Ӳ��)��
-�߲��������Ͳ����ȼ��Ŀ����Ǻܴ�ģ�������������Ч������ҪȨ��һ�¡�
-������ʽ�Ͳ���������Ӱ������ȼ��ķ�Χ��
+`Count`表示采样的时候几个像素一组。`Quality`表示采样的质量等级(这个的支持需要看具体的硬件)。
+高采样数量和采样等级的开销是很大的，所以在质量和效率上面要权衡一下。
+纹理格式和采样数量会影响采样等级的范围。
 
-���ǿ���ʹ��`ID3D12Device::CheckFeatureSupport`����ѯ�����ȼ���֧�֡�
+我们可以使用`ID3D12Device::CheckFeatureSupport`来查询采样等级的支持。
 
-**��һ���Ǵ��룬�����Լ�ȥԭ���Ͽ�**
+> 这一段是代码，可以自己去原书上看
 
-ע��ڶ����������������Ҳ������ģ�����������˵�����Ǳ���ȷ�������ĸ�ʽ������������������Ҫ��ѯ�Ĳ�����ʶ��
-Ȼ�������`NumQualityLevels`��Ϊ����������ȼ��ķ�Χ����`[0,NumQualityLevels)`.
+注意第二个参数既是输入的也是输出的，对于输入来说，我们必须确定纹理的格式，采样数量，我们想要查询的采样标识。
+然后函数填充`NumQualityLevels`作为输出。质量等级的范围就是`[0,NumQualityLevels)`.
 
 ```C++
-#define D3D11_MAX_MULTISAMPLE_SAMPLE_COUNT  (32) 
+#define D3D11_MAX_MULTISAMPLE_SAMPLE_COUNT  (32)
 ```
 
-ͨ��Ϊ�˱�֤���ܺͿռ��㹻����������һ����4����8�ͺ���(����...)��
-����㲻��ʹ�ö��ز�������������ò�������Ϊ1�������ȼ�Ϊ0��
+通常为了保证性能和空间足够，采样数量一般是4或者8就好了(逗我...)。
+如果你不想使用多重采样，你可以设置采样数量为1，质量等级为0。
 
-### <element id = "4.1.9"> 4.1.9 Feature Levels </element>
+### 4.1.9 Feature Levels
 
-��һ����ôȫ��`Direct3D 11`�����ݣ��ж���������������(YY)�ˡ�
+这一章怎么全是`Direct3D 11`的内容，有毒，所以我来意译(YY)了。
 
-`Direct3D 12`�����������ȼ��ĸ���(��`D3D_FEATURE_LEVEL`����)��
+`Direct3D 12`介绍了特征等级的概念(即`D3D_FEATURE_LEVEL`类型)。
 
-�����ȼ��ϸ�����һЩ���ܣ��ٸ�������˵���`GPU`֧��`Direct3D 12`�������ȼ��Ļ�����ô���ͱ���֧�����е�`Direct3D 12`�Ĺ���(����һЩ�������ܣ�������ز���������Ҫ��ѯ����Ϊ�����ڲ�ͬ���豸������˵�в���)��
+特征等级严格定义了一些功能，举个例子来说如果`GPU`支持`Direct3D 12`的特征等级的话，那么他就必须支持所有的`Direct3D 12`的功能(还有一些其他功能，例如多重采样还是需要查询，因为他对于不同的设备来可以说有差异)。
 
-���Ӳ������֧�����ڵ������ȼ��Ļ���Ӧ�þͻ��Լ�ʹ�����µ�Ӳ��֧�ֵİ汾�������ȼ���
+如果硬件并不支持现在的特征等级的话，应用就会自己使用最新的硬件支持的版本的特征等级。
 
-### <element id = "4.1.10"> 4.1.10 DirectX Graphics Infrastructure</element>
+### 4.1.10 DirectX Graphics Infrastructure
 
-`DirectX`ͼ�νӿ�������`Direct3D`��`API`��
-����ӿ��ǻ���һЩͼ��`API`���кܶ๲ͨ�ĵط��Ӷ����ֵġ�
-����2D��Ⱦ`API`����Ҳ��Ҫ����3D��Ⱦ��һ��������������������ǾͲ�����`DXGI`
-`IDXGISwapChain`����`DXGI`�е�һ���֣�����Ҫ����ȫ���ʹ��ڵ��л���ö��ͼ��ϵͳ��Ϣ������ʾ�豸����ʾ����֧�ֵ���ʾģʽ�ȡ�
+`DirectX`图形接口是用于`Direct3D`的`API`。
+这个接口是基于一些图形`API`会有很多共通的地方从而出现的。
+例如2D渲染`API`中你也需要类似3D渲染中一样交换交换链，因此我们就产生了`DXGI`
+`IDXGISwapChain`就是`DXGI`中的一部分，它主要用于全屏和窗口的切换，枚举图形系统信息，如显示设备，显示器，支持的显示模式等。
 
-���ǻ������ǳ�ʼ��`Direct3D`��ʱ���Ҫ��������`DXGI`�ӿڡ�
-����`IDXGIFactory`��Ҫ�����ڴ�����������ö����ʾ�豸��ͨ����˵��ʾ�豸������Ӳ����һ����(�Կ�)��
-һ��ϵͳ�����кܶ��Կ��豸��һ���Կ��豸ʹ��`IDXGIAdapter`�ӿڡ������������ö���豸�Ĵ��롣
+我们会在我们初始化`Direct3D`的时候简要的描述下`DXGI`接口。
+例如`IDXGIFactory`主要是用于创建交换链，枚举显示设备。通常来说显示设备是物理硬件的一部分(显卡)。
+一个系统可以有很多显卡设备，一个显卡设备使用`IDXGIAdapter`接口。下面的内容是枚举设备的代码。
 
-һ��ϵͳ�����м�����ʾ����һ����ʾ������һ����ʾ�������������Ϊ`IDXGIOutput`��
-ÿ����ʾ�豸��Ͷ����ʾ����������������3����ʾ�������Կ��ĵ��ԣ���ô�϶���һ���Կ����ٹ�����̨��ʾ��������Ĵ���ö����ʾ�������
+一个系统可以有几个显示器，一个显示器就是一个显示输出，他被定义为`IDXGIOutput`。
+每个显示设备会和多个显示器关联，例如你有3个显示器两个显卡的电脑，那么肯定有一个显卡至少管理两台显示器。下面的代码枚举显示器输出。
 
-### <element id = "4.1.11"> 4.1.11 Checking Feature Support </element>
+### 4.1.11 Checking Feature Support
 
-�����Ѿ�ʹ�ù�`ID3D12Device::CheckFeatureSupport`ȥ�������ʹ�õ��Կ��Զ��ز�����֧���ˡ�
-������ֻ������������Լ���һ�������ԡ�
+我们已经使用过`ID3D12Device::CheckFeatureSupport`去检测现在使用的显卡对多重采样的支持了。
+但是这只是这个函数可以检测的一部分特性。
 
 ```C++
     HRESULT ID3D12Device::CheckFeatureSupport(
-        D3D12_FEATURE Feature, 
+        D3D12_FEATURE Feature,
         void *pFeatureSupportData,
-        UINT FeatureSupportDataSize); 
+        UINT FeatureSupportDataSize);
 ```
 
-- `Feature`:`D3D12_FEATURE`���͡�
-  - `D3D12_FEATURE_D3D12_OPTIONS`:���`Direct3D 12`������֧�֡�
-  - `D3D12_FEATURE_ARCHITECTURE`:���Ӳ���ܹ�����֧�֡�
-  - `D3D12_FEATURE_FEATURE_LEVELS`:������Եȼ�֧�֡�
-  - `D3D12_FEATURE_FORMAT_SUPPORT`:���������ʽ֧�֡�
-  - `D3D12_FEATURE_MULTISAMPLE_QUALITY_LEVELS`:�����ز��������ȼ�֧�֡�
-- `pFeatureSupportData`:һ���洢����Ҫ�������Ե����ݵĵ�ַ��ָ�롣����ֵ��������Ҫ�������ԡ�
-- `FeatureSupportDataSize`:��һ�����������ݵ��ڴ��С��
+- `Feature`:`D3D12_FEATURE`类型。
+  - `D3D12_FEATURE_D3D12_OPTIONS`:检测`Direct3D 12`的特性支持。
+  - `D3D12_FEATURE_ARCHITECTURE`:检测硬件架构特性支持。
+  - `D3D12_FEATURE_FEATURE_LEVELS`:检测特性等级支持。
+  - `D3D12_FEATURE_FORMAT_SUPPORT`:检测纹理格式支持。
+  - `D3D12_FEATURE_MULTISAMPLE_QUALITY_LEVELS`:检测多重采样质量等级支持。
+- `pFeatureSupportData`:一个存储你需要检测的特性的数据的地址的指针。他的值依据你需要检测的特性。
+- `FeatureSupportDataSize`:上一个参数的数据的内存大小。
 
-`ID3D12Device::CheckFeatureSupport`����֧�ּ��ܶ����ԣ��ܶ�߼����Բ�����Ҫ�ڱ����м�⡣
-��������ǻ���ȥ���ٷ��ĵ��ȽϺá�
+`ID3D12Device::CheckFeatureSupport`函数支持检测很多特性，很多高级特性并不需要在本书中检测。
+建议大佬们还是去看官方文档比较好。
 
-### <element id = "4.1.12"> 4.1.12 Residency </element>
+### 4.1.12 Residency
 
-һ�����ӵ���Ϸ��ʹ�õ��ܶ���Դ������������ģ�����񣬵��Ǻܶ���Դ������Ҫһֱʹ����ȥ��
-�������ǻ���һ��ɭ�ֺ�һ���޴�Ķ�Ѩ��������ǽ��붴Ѩ֮ǰ��Ѩ����Դ��û�б�Ҫ�ġ�
-����ҽ��붴Ѩ��ɭ�ֵ���Դ����û�б�Ҫ���ˡ�
+一个复杂的游戏会使用到很多资源，例如纹理和模型网格，但是很多资源并不需要一直使用下去。
+例如我们绘制一个森林和一个巨大的洞穴，在玩家们进入洞穴之前洞穴的资源是没有必要的。
+当玩家进入洞穴后，森林的资源就是没有必要的了。
 
-��`Direct3D 12`�У�Ӧ��ͨ������Դ���Դ����Ƴ���������Դ��
-Ȼ��������Ҫ�����Դ��ʱ�����¼��ء�
-��������뷨���Ǿ��������Դ��ʹ�ã���Ϊ���ǿ���û�а취��������Ϸ����Դ�浽�Դ�����ȥ���ֻ���������Ӧ����Ҫʹ�õ��Դ档
-������Ҫע����ǲ�Ҫ��һ����Դ���ǵ������ͬ����Դ��
-�������Ҫ��һ����Դ���Դ����Ƴ�����ô�����Դ�����һ��ʱ�䲻��Ҫʹ�õ���Դ��
+在`Direct3D 12`中，应用通过将资源从显存中移除来管理资源。
+然后在又需要这个资源的时候重新加载。
+最基本的想法就是尽量减少显存的使用，因为我们可能没有办法将整个游戏的资源存到显存里面去，又或者有其他应用需要使用到显存。
+性能上要注意的是不要将一个资源覆盖掉这个相同的资源。
+如果你想要将一个资源从显存中移除，那么这个资源最好是一段时间不需要使用的资源。
 
-ͨ����˵��һ����Դ�ڴ�����ʱ��ͻᱻ�����Դ棬������ʱ�����Դ����Ƴ���
-����Ӧ��Ҳ����ʹ��`ID3D12Device::MakeResident`��������
+通常来说，一个资源在创建的时候就会被加入显存，丢弃的时候会从显存中移除。
+但是应用也可以使用`ID3D12Device::MakeResident`来管理。
 
 ```C++
     HRESULT ID3D12Device::MakeResident(
-        UINT NumObjects, 
+        UINT NumObjects,
         ID3D12Pageable *const *ppObjects);
-	
+
     HRESULT ID3D12Device::Evict(
-        UINT NumObjects, 
-        ID3D12Pageable *const *ppObjects); 
+        UINT NumObjects,
+        ID3D12Pageable *const *ppObjects);
 ```
 
-��һ����������Դ�������ڶ���������һ��`ID3D12Pageable`���͵����顣
-��Ϊ��������Ķ���̫�������Բ�ʹ����������������ȥ�����ĵ���������ӡ�
+第一个参数是资源个数，第二个参数是一个`ID3D12Pageable`类型的数组。
+因为本书里面的东西太弱，所以不使用这个东西，你可以去看看文档里面的例子。
 
-## <element id = "4.2"> 4.2 CPU/GPU INTERACTION </element>
+## 4.2 CPU/GPU INTERACTION
 
-����֪��ͼ�α������������������ͬʱ�����ģ�һ��`CPU`һ��`GPU`��
-����ͬʱ���������е�ʱ��������Ҫ����ͬ����
-Ϊ�˴ﵽ��������ܣ�������Ҫ�����ܵļ���ͬ��������
-ͬ�������Ǻܺõ����������ζ�Ż���һ�����������ڿ���״̬ȥ�ȴ�����һ�������������������
-���仰˵�����ƻ������ǻ��������еĶ�����
+我们知道图形编程中是有两个处理器同时工作的，一个`CPU`一个`GPU`。
+他们同时工作，但有的时候他们需要进行同步。
+为了达到理想的性能，我们需要尽可能的减少同步次数。
+同步并不是很好的情况，这意味着会有一个处理器处于空闲状态去等待另外一个处理器完成他的任务。
+换句话说，他破坏了他们互相间的运行的独立。
 
-### <element id = "4.2.1"> 4.2.1 The Command Queue and Commmand Lists </element>
+### 4.2.1 The Command Queue and Commmand Lists
 
-`GPU`��һ��ָ�����(`Command Queue`)��`CPU`ͨ��ʹ��`Direct3D`�е�ָ���(`Command List`)��ָ���ύ��ָ�������ȥ(�μ�ͼƬ[4.6](#Image4.6))��
-��һ����Ҫ�ĵط��ǣ���һ��ָ��ύ��ָ����к�`GPU`����������ִ������
-��Щָ������ָ��������棬�ȴ�`GPU`������ǰ���ύ��ָ���������
+`GPU`有一个指令队列(`Command Queue`)。`CPU`通过使用`Direct3D`中的指令表(`Command List`)将指令提交到指令队列中去(参见图片[4.6](#Image4.6))。
+有一个重要的地方是，当一组指令被提交到指令队列后`GPU`并不会立马执行他。
+这些指令将会放在指令队列里面，等待`GPU`处理完前面提交的指令后处理他。
 
-<img src="Images/4.6.png" id = "Image4.6"> </img>
+![Image4.6](Images/4.6.png)
+> 图片4.6
 
-���ָ������ǿյģ���ô����û��������Դ�����`GPU`���ǿ��е��ˡ�
-��һ������˵�����ָ�����̫���ˣ���ô`CPU`�Ϳ�����Ҫ�ȴ�`GPU`����������ָ�
-��������������Ǻܺõ����������ζ���������˷ѡ�
+如果指令队列是空的，那么由于没有事情可以处理，`GPU`就是空闲的了。
+另一方面来说，如果指令队列太满了，那么`CPU`就可能需要等待`GPU`处理完他的指令。
+这两种情况都不是很好的情况，这意味着有性能浪费。
 
-��`Direct3D 12`�У�ָ����б�����Ϊ`ID3D12CommandQueue`��
-��ͨ�����`D3D12_QUEUE_DESC`�ṹ������`ID3D12Device::CreateCommandQueue`������������
+在`Direct3D 12`中，指令队列被声明为`ID3D12CommandQueue`。
+它通过填充`D3D12_QUEUE_DESC`结构，调用`ID3D12Device::CreateCommandQueue`函数来创建。
 
-�����Ǵ������롣
+下面是创建代码。
 
-������һ����Ա����`ExecuteCommandLists`���ǿ��Խ�ָ���б��ύ��ָ�������ȥ��
+其中有一个成员函数`ExecuteCommandLists`就是可以将指令列表提交到指令队列中去。
 
 ```C++
 void ID3D12CommandQueue::ExecuteCommandLists(
-    UINT Count, //Ҫ�ύ��ָ���б�������
-    ID3D12CommandList *const *ppCommandLists); //ָ���б�������
+    UINT Count, //要提交的指令列表的数量
+    ID3D12CommandList *const *ppCommandLists); //指令列表的数组
 ```
 
-���ǿ��Դ�����Ĵ��뿴����һ��ͼ��ָ���б�����Ϊ`ID3D12GraphicsCommandList`���̳���`ID3D12CommandList`��
-ͼ��ָ���б��кܶ෽������ָ���������`ViewPort`,����`Render Target`�����磺
+我们可以从上面的代码看出，一个图形指令列表声明为`ID3D12GraphicsCommandList`他继承自`ID3D12CommandList`。
+图形指令列表有很多方法加入指令，例如设置`ViewPort`,清理`Render Target`。例如：
 
 ```C++
     CommandList->RSSetViewports(1, &myViewport);
@@ -356,32 +361,32 @@ void ID3D12CommandQueue::ExecuteCommandLists(
     CommandList->DrawIndexedInstanced(36, 1, 0, 0, 0);
 ```
 
-��Ȼ��������Щ�����ǵ��ú������ִ�еģ�������ʵ�����ǡ�����Ĵ���ֻ�ǽ�ָ����뵽ָ���б���ȥ���ѡ�
-`ExecuteCommandLists`�Ž�ָ����뵽ָ�������ȥ��Ȼ��`GPU`��ָ������ж�ȡָ��ȥ����ָ�
-ͨ���Ȿ�����ǽ���ѧϰ`ID3D12GraphicsCommandList`֧�ֵĸ��ֲ�ͬ��ָ�
-�����ǽ����е�ָ����뵽ָ���б���������Ҫʹ��`ID3D12GraphicsCommandList::Close`ȥ�ر�ָ����С�
+虽然看起来这些函数是调用后就立马执行的，但是其实并不是。上面的代码只是将指令加入到指令列表中去而已。
+`ExecuteCommandLists`才将指令加入到指令队列中去，然后`GPU`从指令队列中读取指令去处理指令。
+通过这本书我们将会学习`ID3D12GraphicsCommandList`支持的各种不同的指令。
+当我们将所有的指令加入到指令列表后，我们需要使用`ID3D12GraphicsCommandList::Close`去关闭指令队列。
 
 ```C++
     CommandList->Close();
 ```
 
-ע�������ָ���б����ύ��ָ�����ǰ�ر�����
+注意必须在指令列表被提交到指令队列前关闭他。
 
-һ����ָ���б��й����ľ���ָ�������(`ID3D12CommandAllocator`)��ָ���б���¼ָ���ָ����������Ǵ洢��������ݡ�
-��һ��ָ���б���ָ������ύ��ʱ��ָ����л�ʹ��ָ���������������ݡ�
+一个和指令列表有关联的就是指令分配器(`ID3D12CommandAllocator`)，指令列表记录指令，而指令分配器则是存储具体的数据。
+当一个指令列表被指令队列提交的时候，指令队列会使用指令分配器里面的数据。
 
 ```C++
     HRESULT ID3D12Device::CreateCommandAllocator(
-        D3D12_COMMAND_LIST_TYPE type, 
-        REFIID riid, 
+        D3D12_COMMAND_LIST_TYPE type,
+        REFIID riid,
         void **ppCommandAllocator);
 ```
 
-- `type`: ����ʲô���͵�ָ���б����Ժ�ָ�������������
-  - `D3D12_COMMAND_LIST_TYPE_DIRECT`: �洢ֱ���ύ��`GPU`���͵�ָ���б�
-  - `D3D12_COMMAND_LIST_TYPE_BUNDLE`: ����`CPU`�ڹ���ָ���б���ʱ��Ҳ���п����ģ����`Direct3D 12`�ṩ��һ���Ż����������ܹ���¼һ��ָ���ν��`Bundle`��ȥ����һ��`Bundle`����¼��������Ԥ����һЩָ��������Ⱦ��ʱ���Ż�����ִ�С���ˣ�`Bundle`�е�ָ��Ӧ���ڿ�ʼ��ʱ��ͼ�¼��������Ϊ`Direct3D 12`��`API`Ч���Ѿ��㹻���ˣ������㲢����Ҫ����ʹ��`Bundle`�������ֻ�����ܹ�ȷ��ʹ��`Bundle`�ܹ�������ܵ������ʹ������
-- `riid`: `ID3D12CommandAllocator`��**COM ID**��
-- `ppCommandAllocator`: ������ָ���������
+- `type`: 允许什么类型的指令列表可以和指令分配器关联。
+  - `D3D12_COMMAND_LIST_TYPE_DIRECT`: 存储直接提交给`GPU`类型的指令列表
+  - `D3D12_COMMAND_LIST_TYPE_BUNDLE`: 由于`CPU`在构建指令列表的时候也是有开销的，因此`Direct3D 12`提供了一个优化，让我们能够记录一组指令到所谓的`Bundle`中去。在一个`Bundle`被记录后，驱动会预处理一些指令来在渲染的时候优化他的执行。因此，`Bundle`中的指令应当在开始的时候就记录下来。因为`Direct3D 12`的`API`效率已经足够高了，所以你并不需要经常使用`Bundle`，你最好只在你能够确保使用`Bundle`能够提高性能的情况下使用他。
+- `riid`: `ID3D12CommandAllocator`的**COM ID**。
+- `ppCommandAllocator`: 创建的指令分配器。
 
 ```C++
     HRESULT ID3D12Device::CreateCommandList(
@@ -394,25 +399,25 @@ void ID3D12CommandQueue::ExecuteCommandLists(
     );
 ```
 
-- `nodeMask`: ͨ������Ϊ0����������ȷ�������ָ����й�����`GPU`���ĸ���
-- `type`: �����н����ˡ�
-- `pCommandAllocator`: ������ָ���������ָ�������֧�ֵ����ͱ�������ָ���б�����һ�¡�
-- `pInitialState`: ʹ�õĳ�ʼ����Ⱦ�ܵ���û�еĻ�������Ϊ`nullptr`��
-- `riid`: `ID3D12GraphicsCommandList`��**COM ID**��
-- `ppCommandList`: ������ָ���б���
+- `nodeMask`: 通常设置为0。在这里他确定和这个指令队列关联的`GPU`是哪个。
+- `type`: 上面有解释了。
+- `pCommandAllocator`: 关联的指令分配器。指令分配器支持的类型必须和这个指令列表类型一致。
+- `pInitialState`: 使用的初始的渲染管道，没有的话就设置为`nullptr`。
+- `riid`: `ID3D12GraphicsCommandList`的**COM ID**。
+- `ppCommandList`: 创建的指令列表。
 
-����Դ������ָ���б�ͬʱ����ͬһ��ָ��������������㲻��ͬʱ��¼ָ�
-Ҳ����˵���Ǳ��뱣֤�������ڼ�¼ָ����Ǹ�ָ���б��⣬������ָ���б����뱻�رա�
-�����Ļ������е������ָ���б�������ָ�����ָ��������������������ˡ�
-ע����ǣ�ֻҪһ��ָ���б��Ǳ�������������(**Reset**)�ˣ���ô�ʹ����������ˡ�
-�������������һ�д������洴����������ͬһ��ָ���������ָ���б��Ļ��ͻᱨ����
+你可以创建多个指令列表同时关联同一个指令分配器，但是你不能同时记录指令。
+也就是说我们必须保证除了正在记录指令的那个指令列表外，其他的指令列表必须被关闭。
+这样的话，所有的由这个指令列表发出的指令就在指令分配器那里是连续的了。
+注意的是，只要一个指令列表是被创建或者重置(**Reset**)了，那么就代表他被打开了。
+所以如果我们在一行代码里面创建两个关联同一个指令分配器的指令列表的话就会报错。
 
-```
+```Unknown Language
 D3D12 ERROR: ID3D12CommandList:: {Create,Reset}CommandList: The command allocator is currently in-use by another command list.
 ```
 
-�����ǽ�һ��ָ���б��ύ��ָ����к�����ʹ�������ڴ�ȥ��¼�µ�ָ����û����ġ�
-����ʹ�ú���`ID3D12CommandList::Reset`�������������ǵĲ����ʹ�����ʱ���ࡣ
+在我们将一个指令列表提交给指令队列后，重新使用他的内存去记录新的指令是没问题的。
+我们使用函数`ID3D12CommandList::Reset`来重置他。他们的参数和创建的时候差不多。
 
 ```C++
     HRESULT ID3D12CommandList::Reset(
@@ -420,31 +425,32 @@ D3D12 ERROR: ID3D12CommandList:: {Create,Reset}CommandList: The command allocato
         ID3D12PipelineState *pInitialState);
 ```
 
-�����Ļ����ǾͿ�����ָ���б���úʹ�����ʱ��һ���ˣ����ҿ�������ʹ����ԭ�����ڴ�ռ䣬�����ڿ��Բ����ͷ��ڴ����´���һ���µ�ָ���б��ˡ�
-����һ��ָ���б�����Ӱ�쵽ָ����������ָ���Ϊ��Щָ��洢��Ȼ������ָ����������档
+这样的话我们就可以让指令列表变得和创建的时候一样了，并且可以重新使用他原本的内存空间，以至于可以不用释放内存重新创建一个新的指令列表了。
+重置一个指令列表不会影响到指令队列里面的指令，因为那些指令存储仍然储存在指令分配器里面。
 
-�������Ѿ��ύ����һ֡����Ⱦָ�������Ҳ��������ʹ��ָ�������������ڴ档������ǿ�����������
+在我们已经提交完这一帧的渲染指令后，我们也可以重新使用指令分配器里面的内存。因此我们可以重置他。
 
 ```C++
     HRESULT ID3D12CommandAllocator::Reset();
 ```
 
-�������������`std::vector::clear`�����������ֵ��Ϊ0�����Ǵ�С��Ȼ���䡣
-��Ȼ����ָ�����Ҫ��ָ��������л�ȡָ�����ݣ�**һ��ָ�������������`GPU`������������������������ָ���ſ�������**��
+这个方法类似于`std::vector::clear`。能让里面的值变为0，但是大小仍然不变。
+当然由于指令队列要从指令分配器中获取指令数据，**一个指令分配器必须在`GPU`处理完这个分配器里面的所有指令后才可以重置**。
 
-### <element id = "4.2.2"> 4.2.2 CPU/GPU Synchronization </elemnt>
+### 4.2.2 CPU/GPU Synchronization
 
-����������������ͬʱ�����У�һϵ��ͬ��������ͳ����ˡ�
-����������һЩ��Ҫ������Դ**R**��Ȼ����**p1**��ʱ��`CPU`�������������ݣ����ҷ����˻�������ָ��**C**��
-���ڼ���ָ�ָ����к󣬲������谭`CPU`�ļ������У�����`CPU`�������С�Ȼ����**p2**��ʱ��`CPU`���¸�������Դ`R`�����ݣ�Ȼ�����ύ��������ȥ��
-�μ�ͼƬ[4.7](#Image4.7)
+由于由两个处理器同时在运行，一系列同步的问题就出现了。
+假设我们有一些想要绘制资源**R**。然后再**p1**的时候，`CPU`更新了他的数据，并且发出了绘制他的指令**C**。
+由于加入指令到指令队列后，并不会阻碍`CPU`的继续运行，所以`CPU`继续运行。然后在**p2**的时候`CPU`重新更新了资源`R`的数据，然后将其提交到队列中去。
+参见图片[4.7](#Image4.7)
 
-<img src="Images/4.7.png" id = "Image4.7"> </img>
+![Image4.7](Images/4.7.png)
+> 图片4.7
 
-ֻ��һ����������ӡ���Ϊָ��**C**���Ƶ�ͼ�ο�����**p2**���ʱ���������Ϣ��������**R**�����¹����������Ϣ��
+只是一个错误的例子。因为指令**C**绘制的图形可能是**p2**这个时候的数据信息，或者是**R**被更新过后的数据信息。
 
-���ǵĽ������������`CPU`�ȴ�`GPU`���е�ĳһʱ��(**fence**)�����С�
-���ǳ�֮Ϊ�������С����ǿ���ʹ��`fence`��������㡣
+我们的解决方法就是让`CPU`等待`GPU`运行到某一时刻(**fence**)再运行。
+我们称之为清理队列。我们可以使用`fence`来做到这点。
 
 ```C++
     HRESULT ID3D12Device::CreateFence(
@@ -455,93 +461,93 @@ D3D12 ERROR: ID3D12CommandList:: {Create,Reset}CommandList: The command allocato
     );
 ```
 
-������`fence`�Ļ���һ��`UINT64`��ֵ��
-���ǳ�ʼ����Ϊ0��Ȼ����ÿ��������Ҫ�ڱ�־һ���µĵ���Ϊͬ���ı�־��ʱ�����Ƕ���Ҫ������������ӡ�
-���ﻹ�Ǹ������ӡ�
+伴随着`fence`的还有一个`UINT64`的值。
+我们初始化他为0，然后在每次我们需要在标志一个新的点作为同步的标志的时候，我们都需要将这个数字增加。
+这里还是给个例子。
 
 ```C++
     CommandQueue->Signal(Fence, ++CurrentFence);
 
     if (Fence->GetCompletedValue() < CurrentFence) {
         HANDLE eventHandle = CreateEventEx(nullptr, false,
-            false, EVENT_ALL_ACCESS); //�����¼�
+            false, EVENT_ALL_ACCESS); //创建事件
 
-        Fence->SetEventOnCompletion(CurrentFence, eventHandle); //�����¼��ȴ�
+        Fence->SetEventOnCompletion(CurrentFence, eventHandle); //设置事件等待
 
-        WaitForSingleObject(eventHandle, INFINITE); //�ȴ�ֻҪ���Ϊֹ
+        WaitForSingleObject(eventHandle, INFINITE); //等待只要完成为止
         CloseHandle(eventHandle);
     }
 ```
 
-<img src="Images/4.8.png" id = "Image4.8"> </img>
+![Image4.8](Images/4.8.png)
+> 图片4.8
 
-����`GPU`����ָ���**x<sub>gpu</sub>**��`CPU`��ʼ����`ID3D12CommandQueue::Signal`��**n+1**��
-`ID3D12Fence::GetCompletedValue`�᷵�����һ����ɵĵ��ֵ��
+现在`GPU`处理指令到了$x_{gpu}$，`CPU`开始调用`ID3D12CommandQueue::Signal`到**n+1**。
+`ID3D12Fence::GetCompletedValue`会返回最后一个完成的点的值。
 
-�����֮ǰ�������У���`CPU`�������ָ��**C**�����������¸���**R**֮ǰ���ָ����������ָ�
-�����������������һ���ܺõķ�������Ϊ����`CPU`ȥ�ȴ�`GPU`��ɡ�
-��������һ����Ϊ�򵥵ķ��������ǻ�һֱ�õ���7�¡�
-��������κ�ʱ���������������������С�
-��������Ҫ�ڽ�����ѭ��֮ǰ����һЩ��Դ��ʱ����Ϳ��Ե���������������������������ָ�
+因此在之前的例子中，在`CPU`加入绘制指令**C**，他将会重新更新**R**之前完成指令队列里面的指令。
+但是这个方案并不是一个很好的方案，因为他让`CPU`去等待`GPU`完成。
+但是这是一个最为简单的方案，我们会一直用到第7章。
+你可以在任何时候调用这个方法清理掉队列。
+例如你需要在进入主循环之前加载一些资源的时候，你就可以调用这个方法先清理掉队列里面的指令。
 
-�������ͬ��Ҳ���Խ�����������ᵽ��**�������ָ������е�����ָ���ſ���ȥ����ָ�������**�����⡣
+这个方法同样也可以解决我们上面提到的**必须完成指令队列中的所有指令后才可以去重置指令分配器**的问题。
 
-### <element id = "4.2.3"> 4.2.3 Resource Transitions </element>
+### 4.2.3 Resource Transitions
 
-ʵ��һ���򵥵�Ч����һ�㶼����һ������`GPU`д����Դ**R**��
-Ȼ����֮���ĳЩʱ�򣬶�����Դ**R**��
-�����Ļ�������ڶ�����Դ**R**��ʱ��`GPU`��û��д������Դ���߻�û��ʼд����ô�ͱȽ������ˡ�
-Ϊ�˽�����������������`Direct3D`����Դ������һ���µ�״̬��
-��Դ������ʱ��ΪĬ��״̬��Ȼ��Ӧ�ó�����Ҫ����`Direct3D`��Դ״̬�ĸı䡣
-�����Ļ�`GPU`�Ϳ���������Ҫ���Ķ����õ�����������������������ˡ�
-��������һ���������㽫����״̬����Ϊ`Render Target`��Ȼ��������Ҫ��ȡ������������ǽ��Ὣ����״̬����Ϊ`Shader Resource`��
-ͨ����Դ״̬�ı任��`GPU`�跨�ر�������������������ȴ�����д�������ɺ���ȥ��ȡ��
-�����Ļ�����ʵ��Դ״̬��ת��Ŀ���Ҳ���͡���Ϊ���򿪷�����֪����Դת����ʲôʱ�����ģ���һ���Զ��ж���Դת���ϵͳȴ��Ҫ���Ӷ���Ŀ�����
+实现一个简单的效果，一般都会有一步就是`GPU`写入资源**R**。
+然后在之后的某些时候，读入资源**R**。
+这样的话，如果在读入资源**R**的时候，`GPU`并没有写入完资源或者还没开始写，那么就比较尴尬了。
+为了解决这样的尴尬情况，`Direct3D`给资源增加了一个新的状态。
+资源创建的时候为默认状态，然后应用程序需要告诉`Direct3D`资源状态的改变。
+这样的话`GPU`就可以做他需要做的而不用担心遇到上面那种尴尬情况了。
+例如你有一个纹理，你将他的状态设置为`Render Target`，然后我们需要读取这个纹理，我们将会将他的状态设置为`Shader Resource`。
+通过资源状态的变换，`GPU`设法回避上面的尴尬情况，例如等待所有写入操作完成后再去读取。
+这样的话，其实资源状态的转变的开销也会变低。因为程序开发者是知道资源转变是什么时候发生的，而一个自动判断资源转变的系统却是要增加额外的开销。
 
-������ԭ�����ǽ�����ʹ��`D3DX12`������Դת�������ӡ���������Լ�ȥ����
+接下来原文中是介绍了使用`D3DX12`进行资源转换的例子。这里可以自己去看。
 
+### 4.2.4 Multithreading with Commands
 
-### <element id = "4.2.4"> 4.2.4 Multithreading with Commands </element>
+`Direct3D 12`对多线程的支持很好。
+指令列表的设计就是为了让`Direct3D`能够在多线程上面发挥优势。
+对于一个很大的有很多物体的场景，构建指令列表去绘制整个场景要花费很多时间。
+因此就产生一个同时构建指令列表的主意。
+比如说你可以开4个线程，然后每个线程构建 **25%** 的指令。
 
-`Direct3D 12`�Զ��̵߳�֧�ֺܺá�
-ָ���б�����ƾ���Ϊ����`Direct3D`�ܹ��ڶ��߳����淢�����ơ�
-����һ���ܴ���кܶ�����ĳ���������ָ���б�ȥ������������Ҫ���Ѻܶ�ʱ�䡣
-��˾Ͳ���һ��ͬʱ����ָ���б������⡣
-����˵����Կ�4���̣߳�Ȼ��ÿ���̹߳��� **25%** ��ָ�
+但是如果你使用多个线程构建指令列表的话，需要注意下面的问题：
 
-���������ʹ�ö���̹߳���ָ���б��Ļ�����Ҫע����������⣺
+- 指令列表并不是无限制的，多个线程里面并不能使用同一个指令列表，因此每个线程都需要有自己的一个指令列表。
+- 指令分配器也是不能同时用于多个线程，每个线程必须创建自己的指令分配器。
+- 指令队列是可以共用的，也就是说每个线程的指令列表都可以提交给同一个指令队列。
+- 由于性能原因，必须在初始化的时候说明最多同时使用多少个指令列表。
 
-- ָ���б������������Ƶģ�����߳����沢����ʹ��ͬһ��ָ���б������ÿ���̶߳���Ҫ���Լ���һ��ָ���б���
-- ָ�������Ҳ�ǲ���ͬʱ���ڶ���̣߳�ÿ���̱߳��봴���Լ���ָ���������
-- ָ������ǿ��Թ��õģ�Ҳ����˵ÿ���̵߳�ָ���б��������ύ��ͬһ��ָ����С�
-- ��������ԭ�򣬱����ڳ�ʼ����ʱ��˵�����ͬʱʹ�ö��ٸ�ָ���б���
+我们并不会在本书中设计多线程。
+如果读者看完了本书，我们推荐去学习**Multithreading12 SDK sample** 来了解多线程。
+一个应用程序想最大化使用系统资源的话，对于多核`CPU`来说，使用多线程是很有优势的。
 
-���ǲ������ڱ�������ƶ��̡߳�
-������߿����˱��飬�����Ƽ�ȥѧϰ**Multithreading12 SDK sample** ���˽���̡߳�
-һ��Ӧ�ó��������ʹ��ϵͳ��Դ�Ļ������ڶ��`CPU`��˵��ʹ�ö��߳��Ǻ������Ƶġ�
+## 4.3 INITIALIZING DIRECT3D
 
-## <element id = "4.3"> 4.3 INITIALIZING DIRECT3D </element>
+接下来将要介绍如何初始化`Direct3D`。
+步骤稍微多，不过并不需要一次性完成。
+我们可以分为这些步骤：
 
-��������Ҫ������γ�ʼ��`Direct3D`��
-������΢�࣬����������Ҫһ������ɡ�
-���ǿ��Է�Ϊ��Щ���裺
+- 使用`D3D12CreateDevice`函数创建`ID3D12Device`。
+- 创建`ID3D12Fence`并且查询描述符大小。
+- 检测`4XMSAA`的质量等级支持。
+- 创建指令队列，指令分配器和指令列表。
+- 创建交换链。
+- 创建程序需要的描述符堆。
+- 从`Back Buffer`中创建`Render Target View`。
+- 创建`Depth/Stencil Buffer`和`Depth/Stencil View`。
+- 设置视口和裁剪矩形。
 
-- ʹ��`D3D12CreateDevice`��������`ID3D12Device`��
-- ����`ID3D12Fence`���Ҳ�ѯ��������С��
-- ���`4XMSAA`�������ȼ�֧�֡�
-- ����ָ����У�ָ���������ָ���б���
-- ������������
-- ����������Ҫ���������ѡ�
-- ��`Back Buffer`�д���`Render Target View`��
-- ����`Depth/Stencil Buffer`��`Depth/Stencil View`��
-- �����ӿںͲü����Ρ�
+### 4.3.1 Create the Device
 
-### <element id = "4.3.1"> 4.3.1 Create the Device </element>
-
-��ʼ��`Direct3D`�ĵ�һ�����Ǵ���`Direct3D 12`�豸(**device**)��
-һ���豸�ͱ�ʾ��һ����ʾ��������ͨ����˵һ����ʾ�������ͱ�ʾ��һ��3DӲ��(�Կ�)��
-��ȻϵͳҲ������ö��3DӲ����ʱ��ö�ٵ�������ʾ������(**WARP**)��
-`Direct3D 12`�豸���Լ��֧�ֵ����Ժʹ���`Direct3D`�ӿڣ�������Դ(**Resource**)����־��(**View**)�Լ�ָ���б��ȡ�
+初始化`Direct3D`的第一步就是创建`Direct3D 12`设备(**device**)。
+一个设备就表示了一个显示适配器，通常来说一个显示适配器就表示了一块3D硬件(显卡)。
+当然系统也可以在枚举3D硬件的时候枚举到软件显示适配器(**WARP**)。
+`Direct3D 12`设备可以检测支持的特性和创建`Direct3D`接口，例如资源(**Resource**)，标志符(**View**)以及指令列表等。
 
 ```C++
 
@@ -554,26 +560,26 @@ D3D12 ERROR: ID3D12CommandList:: {Create,Reset}CommandList: The command allocato
 
 ```
 
-- `pAdapter`: ָ�����Ǵ������豸Ҫʹ���Ŀ���ʾ��������������ó�`nullptr`�Ļ�����ô���Ǿ�ʹ��Ĭ�ϵ���ʾ�����������ǽ����ں���������ö��ϵͳ����ʾ��������
-- `MinimumFeatureLevel`: ���ǳ���Ҫ�����͵ȼ��������ȼ������Ӳ�����������֧�ֵĻ�����ô�豸�ͻᴴ��ʧ�ܡ�
-- `riid`: ������Ҫ�������豸��**COM ID**��
-- `ppDevice`: �������Ǵ������豸��
+- `pAdapter`: 指定我们创建的设备要使用哪块显示适配器。如果设置成`nullptr`的话，那么我们就使用默认的显示适配器。我们将会在后面介绍如何枚举系统的显示适配器。
+- `MinimumFeatureLevel`: 我们程序要求的最低等级的特征等级，如果硬件连这个都不支持的话，那么设备就会创建失败。
+- `riid`: 我们需要创建的设备的**COM ID**。
+- `ppDevice`: 返回我们创建的设备。
 
-���沿���Ǵ���...
+下面部分是代码...
 
-���������`Debug`��ʱ�������Բ㣬�����ǵĵ��Բ��Ѿ�������ʱ��`Direct3D`������ж���ĵ��Բ��һὫ�ᷢ����Ϣ��`VC++ Output Window`��
+我们最好在`Debug`的时候开启调试层，当我们的调试层已经开启的时候，`Direct3D`将会进行额外的调试并且会将会发送消息到`VC++ Output Window`。
 
-�������ʹ��Ӳ�������豸ʧ���˵Ļ������Ǿͳ���ʹ������������
-`WARP`��**Windows Advanced Rasterization Platform**��
+如果我们使用硬件创建设备失败了的话，我们就尝试使用软件创建。
+`WARP`，**Windows Advanced Rasterization Platform**。
 
-- `Windows7`֧�ֵ������ȼ���`10.1`��
-- `Windows8`֧�ֵ������ȼ���`11.1`��
+- `Windows7`支持的特征等级是`10.1`。
+- `Windows8`支持的特征等级是`11.1`。
 
-### <element id = "4.3.2"> 4.3.2 Create the Fence and Descriptor Sizes </element>
+### 4.3.2 Create the Fence and Descriptor Sizes
 
-�����Ǵ������豸��������Ҫ����һ������`GPU`��`CPU`ͬ����`Fence`��
-��������ʹ�������������������Ҫ֪����ͬ�����������Ĵ�С��
-������������С��ͬ��`GPU`�в�ͬ��ֵ�����������Ҫ��ѯ���Ĵ�С��
+在我们创建完设备后，我们需要创建一个用于`GPU`和`CPU`同步的`Fence`。
+由于我们使用描述符，因此我们需要知道不同的描述符他的大小。
+由于描述符大小不同的`GPU`有不同的值，因此我们需要查询他的大小。
 
 ```C++
     Device->CreateFence(0, D3D12_FENCE_FLAG_NONE,
@@ -582,25 +588,25 @@ D3D12 ERROR: ID3D12CommandList:: {Create,Reset}CommandList: The command allocato
     Device->GetDescriptorHandleIncrementSize(Type);
 ```
 
-### <element id = "4.3.3"> 4.3.3 Check 4X MSAA Quality Support </element>
+### 4.3.3 Check 4X MSAA Quality Support
 
-��������Ǽ��`4XMSAA`�������ȼ���
-����ѡ��4X��ԭ������Ϊ���Ŀ��������Ǻܴ󣬲������е�`Direct3D 11`�豸��֧�ָ��ָ�ʽ��`Render Target`ʹ��`4XMSAA`��
-Ҳ����˵ֻҪ��֧��`Direct3D 11`���豸��ô�Ϳ϶�֧��`4XMSAA`��
-�������Ǳ�����`4XMSAA`�������ȼ���
+在这里，我们检测`4XMSAA`的质量等级。
+我们选择4X的原因是因为他的开销并不是很大，并且所有的`Direct3D 11`设备都支持各种格式的`Render Target`使用`4XMSAA`。
+也就是说只要是支持`Direct3D 11`的设备那么就肯定支持`4XMSAA`。
+但是我们必须检测`4XMSAA`的质量等级。
 
-�����Ǵ��롣
+下面是代码。
 
-����������`4XMSAA`�ǿ϶���֧�ֵģ���ô�������ĵȼ��϶��Ǵ���0�ġ�
-������������������һ�����ԡ�
+由于在这里`4XMSAA`是肯定被支持的，那么检测出来的等级肯定是大于0的。
+所以我们在这里设置一个断言。
 
-### <element id = "4.3.4"> 4.3.4 Create Command Queue and Command List </element>
+### 4.3.4 Create Command Queue and Command List
 
-���ǻع�<a href ="#4.2.1">**4.2.1**</a>����֪����
+我们回顾**4.2.1**可以知道：
 
-- `ID3D12CommandQueue`: ָ����С�
-- `ID3D12CommandAllocator`: ָ���������
-- `ID3D12GraphicsCommandList`: ָ���б���
+- `ID3D12CommandQueue`: 指令队列。
+- `ID3D12CommandAllocator`: 指令分配器。
+- `ID3D12GraphicsCommandList`: 指令列表。
 
 ```C++
     queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
@@ -616,13 +622,14 @@ D3D12 ERROR: ID3D12CommandList:: {Create,Reset}CommandList: The command allocato
 
     CommandList->Close();
 ```
-������һ�½����ǲ�����Ҫʹ��ָ���б�����ʲô����˳�ʼ������Ⱦ�ܵ��ͱ�����Ϊ���ˡ�
-���ǽ��ڵ�6�½�����Ⱦ�ܵ���
 
-### <element id = "4.3.5"> 4.3.5 Describe and Create the Swap Chain </element>
+由于这一章节我们并不需要使用指令列表绘制什么，因此初始化的渲染管道就被设置为空了。
+我们将在第6章介绍渲染管道。
 
-��ʼ������һ���Ǵ��������������Ǵ�����������ʱ��������Ҫ���`DXGI_SWAP_CHAIN_DESC`�ṹ��
-������Ҫ����͹�����������Ҫ����ʲô���ԵĽ�������
+### 4.3.5 Describe and Create the Swap Chain
+
+初始化的下一步是创建交换链。我们创建交换链的时候首先需要填充`DXGI_SWAP_CHAIN_DESC`结构。
+我们需要这个就够来描述我们要创建什么属性的交换链。
 
 ```C++
     struct DXGI_SWAP_CHAIN_DESC
@@ -639,67 +646,67 @@ D3D12 ERROR: ID3D12CommandList:: {Create,Reset}CommandList: The command allocato
 
     struct DXGI_MODE_DESC
     {
-        UINT Width; //����Ŀ���
-        UINT Height; //����ĸ߶�
-        DXGI_RATIONAL RefreshRate; 
-        DXGI_FORMAT Format; //����ĸ�ʽ
+        UINT Width; //缓存的宽度
+        UINT Height; //缓存的高度
+        DXGI_RATIONAL RefreshRate;
+        DXGI_FORMAT Format; //缓存的格式
         DXGI_MODE_SCANLINE_ORDER ScanlineOrdering;
-        DXGI_MODE_SCALING Scaling; //�������ʾ����������ʾ
+        DXGI_MODE_SCALING Scaling; //如何在显示器上缩放显示
     };
 ```
 
-���ǽ���ʹ�ý�Ϊ���õ�����ȥ�������ĳ�Ա��
-��������˽�����������ԣ������ȥ����**SDK**�ĵ���
+我们将会使用较为常用的属性去填充下面的成员。
+如果你想了解更多填充的属性，你可以去参阅**SDK**文档。
 
-- `BufferDesc`: �������Ǵ�����`BackBuffer`�����ԣ���Ҫ���Ծ������Ŀ��ȸ߶��Լ����ĸ�ʽ������Ŀ���ȥ�ο�**SDK**�ĵ���
-- `SampleDesc`: ���ز����������������ȼ����������óɲ�������Ϊ1�������ȼ�Ϊ0��
-- `BufferUsage`: ����Ϊ`DXGI_USAGE_RENDER_TARGET_OUTPUT`��
-- `BufferCount`: �����ڽ�������Ҫʹ�ö��ٸ����壬��������ʹ��˫�����������Ϊ2��
-- `OutputWindow`: ����Ҫ���ֵĴ��ڵľ����
-- `Windowed`: ����Ϊ`true`���Ǵ���ģʽ��������ȫ��ģʽ��
-- `SwapEffect`: ����Ϊ`DXGI_SWAP_EFFECT_FLIP_DISCARD`��
-- `Flags`: һЩ�������á������������`DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH`����ô�����л���ȫ��ģʽ��ʱ��ͻ�ѡ��һ�����ʺϵ�ǰ�������ʾģʽ�������û������������ԣ���ô���л���ȫ����ʱ������ʹ�õ�ǰ�������ʾģʽ��
+- `BufferDesc`: 描述我们创建的`BackBuffer`的属性，主要属性就是他的宽度高度以及他的格式。其余的可以去参考**SDK**文档。
+- `SampleDesc`: 多重采样的数量和质量等级，我们设置成采样数量为1，质量等级为0。
+- `BufferUsage`: 设置为`DXGI_USAGE_RENDER_TARGET_OUTPUT`。
+- `BufferCount`: 我们在交换链中要使用多少个缓冲，由于我们使用双缓冲因此设置为2。
+- `OutputWindow`: 我们要呈现的窗口的句柄。
+- `Windowed`: 设置为`true`就是窗口模式，否则是全屏模式。
+- `SwapEffect`: 设置为`DXGI_SWAP_EFFECT_FLIP_DISCARD`。
+- `Flags`: 一些其他设置。如果你设置了`DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH`，那么在你切换到全屏模式的时候就会选择一个最适合当前程序的显示模式，如果你没有设置这个属性，那么你切换成全屏的时候他就使用当前桌面的显示模式。
 
-����������������ṹ�����ǾͿ��Դ����������ˡ�
+在我们填充完毕这个结构后，我们就可以创建交换链了。
 
 ```C++
     HRESULT IDXGIFactory::CreateSwapChain(
         IUnknown *pDevice, //ID3D12CommandQueue
-        DXGI_SWAP_CHAIN_DESC *pDesc, 
+        DXGI_SWAP_CHAIN_DESC *pDesc,
         IDXGISwapChain **ppSwapChain);
 ```
 
-�����Ǵ��롣
+下面是代码。
 
-### <element id = "4.3.6"> 4.3.6 Create the Descriptor Heaps</element>
+### 4.3.6 Create the Descriptor Heaps
 
-������Ҫ������������ȥ�洢���ǳ�����Ҫ����������
-һ����������ʹ�õ���`ID3D12DescriptorHeap`�ӿڡ�
-���ǿ���ʹ��`ID3D12Device::CreateDescriptorHeap`�������������ѡ�
-�ڱ����У�������Ҫ�����ڽ�������ʹ�õĻ��������ô���`Render Target View`ȥ�����������еĻ�����Դ����Щ��Դ���洢�������Ҫ���ֵ����ݡ�
-�������ǻ���Ҫһ��`Depth/Stencil View`ȥ����һ��������Ȳ��Ե�`Depth/Stencil Buffer`��Դ��
-���������Ҫһ���Ѵ洢`Render Target View`��`Depth/Stencil View`��
+我们需要创建描述符堆去存储我们程序需要的描述符。
+一个描述符堆使用的是`ID3D12DescriptorHeap`接口。
+我们可以使用`ID3D12Device::CreateDescriptorHeap`来创建描述符堆。
+在本章中，我们需要我们在交换链中使用的缓冲个数那么多的`Render Target View`去描述交换链中的缓冲资源，这些资源将存储我们最后要呈现的内容。
+并且我们还需要一个`Depth/Stencil View`去描述一个用于深度测试的`Depth/Stencil Buffer`资源。
+因此我们需要一个堆存储`Render Target View`和`Depth/Stencil View`。
 
-�����Ǵ��롣
+下面是代码。
 
-������Ҫ��¼��ǰʹ�õĺ�̨��������һ����������ÿ�ν������������λ�õ�ʱ��(��**Present**)�����ǻ��Ƶ��Ļ���ͻ�ı��ˣ�ԭ�����ǻ��Ƶ����Ǹ�����Ϊ��ʾ�Ļ����ˣ���ԭ������ʾ�ľͱ����Ҫ�����Ƶ��ˡ�
+我们需要记录当前使用的后台缓冲是哪一个，当我们每次交换两个缓冲的位置的时候(即**Present**)，我们绘制到的缓冲就会改变了，原本我们绘制到的那个就作为显示的缓冲了，而原本的显示的就变成了要被绘制的了。
 
-�����Ǵ������������Ѻ�������Ҫ�ܹ����ʶ�����洢����������������Ƕ�����һ�����(`Handle`)�����ڷ������������������������
-���ǿ���ͨ��`ID3D12DescriptorHeap::GetCPUDescriptorHandleForHeapStart`������������������е�һ����������Ȼ�����ǿ��Զ���Ӽ�����ȡǰ��Ļ��ߺ������������
-���ǼӼ��Ļ�����������Ҫ֪����������С�ģ������ǼӼ���ƫ���������������Ĵ�С��
+在我们创建完描述符堆后，我们需要能够访问堆里面存储的描述符。因此我们定义了一个句柄(`Handle`)来用于访问描述符堆里面的描述符。
+我们可以通过`ID3D12DescriptorHeap::GetCPUDescriptorHandleForHeapStart`函数来获得描述符堆中第一个描述符，然后我们可以对其加减来获取前面的或者后面的描述符。
+但是加减的话，我们是需要知道描述符大小的，即我们加减的偏移量就是描述符的大小。
 
 ```C++
-    rtvHandle = heap->GetCPUDescriptorHandleForHeapStart(); //��һ��������
-    rtvHandle += rtvDescriptorSize; //�ڶ���������
+    rtvHandle = heap->GetCPUDescriptorHandleForHeapStart(); //第一个描述符
+    rtvHandle += rtvDescriptorSize; //第二个描述符
 ```
 
-### <element id = "4.3.7"> 4.3.7 Create the Render Target View </element>
+### 4.3.7 Create the Render Target View
 
-��<a href="#4.1.6">**4.1.6**</a>�У����ǲ�û��ֱ�ӽ�һ����Դ�󶨵���Ⱦ�ܵ���ȥ��
-�෴�����Ǹ���Դ������һ��������(**Descriptor**)������ͼ(**View**)��Ȼ������������ͼ�󶨵���Ⱦ�ܵ���ȥ��
-Ϊ�˽���̨����(`Back Buffer`)�󶨵���Ⱦ�ܵ��е�����ϲ��׶�(**Output Merger Stage**)��������Ҫ����̨���崴��һ��`Render Target View`��
+在**4.1.6**中，我们并没有直接将一个资源绑定到渲染管道中去。
+相反，我们给资源创建了一个描述符(**Descriptor**)或者视图(**View**)，然后将描述符和视图绑定到渲染管道上去。
+为了将后台缓冲(`Back Buffer`)绑定到渲染管道中的输出合并阶段(**Output Merger Stage**)，我们需要给后台缓冲创建一个`Render Target View`。
 
-��һ���������Ȼ�ú�̨����:
+第一步就是首先获得后台缓冲:
 
 ```C++
     HRESULT IDXGISwapChain::GetBuffer(
@@ -708,11 +715,11 @@ D3D12 ERROR: ID3D12CommandList:: {Create,Reset}CommandList: The command allocato
         void **ppSurface);
 ```
 
-- `Buffer`: �ڼ������塣
-- `riid`: ��������ʹ��`ID3D12Resource`��**COM ID**��
-- `ppSurface`: ���������������һ��`ID3D12Resource`���͵Ļ��塣
+- `Buffer`: 第几个缓冲。
+- `riid`: 我们这里使用`ID3D12Resource`的**COM ID**。
+- `ppSurface`: 这里我们输出的是一个`ID3D12Resource`类型的缓冲。
 
-ʹ��`IDXGISwapChain::GetBuffer`���������������õ����Ǹ�������Դ�����ã�����������ʹ������������ͽ���������ͷţ������ʹ����`ComPtr`�Ļ������Լ��ͷš�
+使用`IDXGISwapChain::GetBuffer`这个函数会增加你得到的那个缓冲资源的引用，因此你必须在使用完这个缓冲后就将这个缓冲释放，如果你使用了`ComPtr`的话他会自己释放。
 
 ```C++
     void ID3D12Device::CreateRenderTargetView(
@@ -721,11 +728,11 @@ D3D12 ERROR: ID3D12CommandList:: {Create,Reset}CommandList: The command allocato
         D3D12_CPU_DESCRIPTOR_HANDLE DestDescriptor);
 ```
 
-- `pResource`: ����`Render Target View`����Դ��������������ǵĺ�̨���塣
-- `pDesc`: ����һ����Դ�����Ԫ�صĸ�ʽ�������Դ������ʱ��������Ѿ�ȷ����������������(**typeless**)����ô�Ϳ�������Ϊ`nullptr`����Ϊ�����Ѿ�ָ���˺�̨����ĸ�ʽ�������������ǿ�������Ϊ`nullptr`��
-- `DestDescriptor`: ������Ҫ�����洢`Render Target View`���������ľ��(**Handle**)��
+- `pResource`: 创建`Render Target View`的资源，在这里就是我们的后台缓冲。
+- `pDesc`: 描述一个资源里面的元素的格式，如果资源创建的时候的类型已经确定，即不是弱类型(**typeless**)，那么就可以设置为`nullptr`。因为我们已经指定了后台缓冲的格式，所以这里我们可以设置为`nullptr`。
+- `DestDescriptor`: 我们想要用来存储`Render Target View`的描述符的句柄(**Handle**)。
 
-������Ҫע����ǣ�ÿ����̨���嶼���봴��һ��`Render Target View`����Ϊÿ�γ��ֺ󣬺�̨���嶼�����ˣ�����ÿ�����嶼������Ϊ`Render Target View`ʹ�á�
+这里需要注意的是，每个后台缓冲都必须创建一个`Render Target View`，因为每次呈现后，后台缓冲都交换了，所以每个缓冲都可能作为`Render Target View`使用。
 
 ```C++
     var rtvHandle = rtvHeap->GetCPUDescriptorHandleForHeapStart();
@@ -736,12 +743,12 @@ D3D12 ERROR: ID3D12CommandList:: {Create,Reset}CommandList: The command allocato
     }
 ```
 
-### <element id = "4.3.8"> 4.3.8 Create the Depth/Stencil Buffer and View </element>
+### 4.3.8 Create the Depth/Stencil Buffer and View
 
-����������Ҫ�������ģ�建��(`Depth/Stencil Buffer`)��
-������<a href = "#4.1.5">**4.1.5**</a>˵����Ȼ�����ʵ����һ���洢�����Ϣ�Ķ�ά�������ѡ�
-����Ҳ��`GPU`��Դ��һ�֣��������ǿ���ͨ�����`D3D12_RESOURCE_DESC`�ṹ������һ��������Դ��
-Ȼ��ʹ��`ID3D12Device::CreateCommittedResource`��������Դ��
+我们现在需要创建深度模板缓冲(`Depth/Stencil Buffer`)。
+我们在**4.1.5**说过深度缓冲其实就是一个存储深度信息的二维纹理而已。
+纹理也是`GPU`资源的一种，所以我们可以通过填充`D3D12_RESOURCE_DESC`结构来创建一个纹理资源。
+然后使用`ID3D12Device::CreateCommittedResource`来创建资源。
 
 ```C++
     struct D3D12_RESOURCE_DESC
@@ -759,23 +766,23 @@ D3D12 ERROR: ID3D12CommandList:: {Create,Reset}CommandList: The command allocato
     };
 ```
 
-- `Dimension`: ȷ����Դ�����͡�
+- `Dimension`: 确定资源的类型。
   - `D3D12_RESOURCE_DIMENSION_UNKNOWN = 0`
   - `D3D12_RESOURCE_DIMENSION_BUFFER = 1`
   - `D3D12_RESOURCE_DIMENSION_TEXTURE1D = 2`
   - `D3D12_RESOURCE_DIMENSION_TEXTURE2D = 3`
   - `D3D12_RESOURCE_DIMENSION_TEXTURE3D = 4`
-- `Width`: �����Ŀ���(**�����ֽڴ�С������ÿһ���ж��ٸ�Ԫ��**)�����ڻ�����˵���������ֽڴ�С��
-- `Height`: �����ĸ߶ȡ�
-- `DepthOrArraySize`: ��������ȣ����ڶ�ά��һά��������˵������������Ԫ�ظ����������Ļ������ǲ��ܹ�ʹ����ά����������ġ�
-- `MipLevels`: `Mipmap Level`����ϸ��Ρ����ǽ����ڵ�9�½��������������ģ�建�壬����ֻ��Ҫ����Ϊ1�ͺ��ˡ�
-- `Format`: �����ĸ�ʽ��`DXGI_FORMAT`���͡��������ģ�建�壬���Ǵ�[**4.1.5**](#4.1.5)���ᵽ�ĸ�ʽ��ѡһ����
-- `SampleDesc`: ���ز����ĵȼ�����Ϣ����������Բμ�[**4.1.7**](#4.1.7)��[**4.1.8**](#4.1.8)��������ڴ�����������ʱ��ʹ���˶��ز�������ô�����Ȼ���ҲҪ�ͺ�̨����һ��ʹ��ͬ�������á�
-- `Layout`: ��ȷ���������Ĳ��֣���������û��Ҫ�˽⣬��������Ϊ`D3D12_TEXTURE_LAYOUT_UNKNOWN`��
-- `MiscFlags`: ���ֻ��ӵ���Դ��־������������Դ�������ԡ��������ģ�建����˵����������Ϊ`D3D12_RESOURCE_MISC_DEPTH_STENCIL`��
+- `Width`: 纹理的宽度(**不是字节大小，而是每一行有多少个元素**)，对于缓冲来说就是他的字节大小。
+- `Height`: 纹理的高度。
+- `DepthOrArraySize`: 纹理的深度，对于二维和一维的纹理来说就是他的数组元素个数。这样的话我们是不能够使用三维纹理的数组的。
+- `MipLevels`: `Mipmap Level`，明细层次。我们将会在第9章介绍他。对于深度模板缓冲，我们只需要设置为1就好了。
+- `Format`: 纹理的格式，`DXGI_FORMAT`类型。对于深度模板缓冲，我们从[**4.1.5**](#4.1.5)中提到的格式中选一个。
+- `SampleDesc`: 多重采样的等级等信息。具体你可以参见[**4.1.7**](#4.1.7)和[**4.1.8**](#4.1.8)。如果你在创建交换链的时候使用了多重采样，那么你的深度缓冲也要和后台缓冲一样使用同样的设置。
+- `Layout`: 他确定了纹理的布局，现在我们没必要了解，我们设置为`D3D12_TEXTURE_LAYOUT_UNKNOWN`。
+- `MiscFlags`: 各种混杂的资源标志，用于描述资源其他属性。对于深度模板缓冲来说，我们设置为`D3D12_RESOURCE_MISC_DEPTH_STENCIL`。
 
-`GPU`��Դ�洢�ڶ��У���������˵����һ���ִ��о���������Ϣ���Դ档
-`ID3D12Device::CreateCommittedResource`����һ����Դ���ҽ����ύ������ָ���Ķ��С�
+`GPU`资源存储在堆中，本质上来说就是一部分带有具体数据信息的显存。
+`ID3D12Device::CreateCommittedResource`创建一个资源并且将其提交到我们指定的堆中。
 
 ```C++
     HRESULT ID3D12Device::CreateCommittedResource(
@@ -797,35 +804,36 @@ D3D12 ERROR: ID3D12CommandList:: {Create,Reset}CommandList: The command allocato
     };
 ```
 
-- `pHeapProperties`: ������Ҫ����Դ�ύ���Ķѵ����ԡ�����������Ҫ���ĵ��Ƕѵ�����(**D3D12_HEAP_TYPE**)��
-  - `D3D12_HEAP_TYPE_DEFAULT`: �洢ֻ�ܱ�`GPU`��ȡ����Դ�Ķѡ����ģ�建�����һ�����ӣ�`GPU`��Ҫ��д���ģ�建������ݣ���`CPU`������Ҫ��������Ǿ�ʹ��Ĭ�ϵĶѡ�
-  - `D3D12_HEAP_TYPE_UPLOAD`: �洢���ܹ���`CPU`���ܹ���`GPU`���ʵ���Դ�Ķѣ��ϸ���˵������`CPU`��Դ����ʽ���ڣ�Ȼ��ʹ�õ�ʱ���ϴ�������Ϊ`GPU`��Դ��`GPU`��ȡ��
-  - `D3D12_HEAP_TYPE_READBACK`: �洢ֻ�ܱ�`CPU`��ȡ����Դ�Ķѡ�
-  - `D3D12_HEAP_TYPE_CUSTOM`: ��һЩ������;���������ȥ�ο�**MSDN**��
-- `HeapMiscFlags`: ���ǽ���Դ�ύ���Ķѵ����ԡ�ͨ�����ǲ�����Ҫʹ�ã�����Ϊ`D3D12_HEAP_MISC_NONE`��
-- `pResourceDesc`: ����Ҫ��������Դ�����Ե�ָ�롣
-- `InitialResourceState`: ��Դ�ĳ�ʼ״̬��������[**4.2.3**](#4.2.3)���۹���Դ��״̬���������ģ�建����˵������������Ϊ`D3D12_RESOURCE_USAGE_INITIAL`��֮����ȥת��Ϊ`D3D12_RESOURCE_USAGE_DEPTH`���������Ϳ�����Ϊ���ģ�建��󶨵���Ⱦ�ܵ���ȥ�ˡ�
-- `pOptimizedClearValue`: ������ѵ�����ֵ��������Դ��ʱ��(ָ���ǽ���Դ��ֵȫ����ɸ���ֵ)ʹ�õ�ֵ��������������õ�ֵ����ô�ͻ�Ȳ��������趨��ֵ��ܶࡣ���������Ϊ��һ���Ż������������Ϊ`nullptr`��
-- `riidResource`:`ID3D12Resource`��**COM ID**��
-- `ppvResource`: ���ش�������Դ��
+- `pHeapProperties`: 我们想要将资源提交到的堆的属性。现在我们主要关心的是堆的类型(**D3D12_HEAP_TYPE**)。
+  - `D3D12_HEAP_TYPE_DEFAULT`: 存储只能被`GPU`读取的资源的堆。深度模板缓冲就是一个例子，`GPU`需要读写深度模板缓冲的数据，而`CPU`并不需要，因此我们就使用默认的堆。
+  - `D3D12_HEAP_TYPE_UPLOAD`: 存储即能够被`CPU`有能够被`GPU`访问的资源的堆，严格来说他是以`CPU`资源的形式存在，然后使用的时候上传数据作为`GPU`资源被`GPU`读取。
+  - `D3D12_HEAP_TYPE_READBACK`: 存储只能被`CPU`读取的资源的堆。
+  - `D3D12_HEAP_TYPE_CUSTOM`: 有一些其他用途，具体可以去参考**MSDN**。
+- `HeapMiscFlags`: 我们将资源提交到的堆的属性。通常我们并不需要使用，设置为`D3D12_HEAP_MISC_NONE`。
+- `pResourceDesc`: 我们要创建的资源的属性的指针。
+- `InitialResourceState`: 资源的初始状态。我们在[**4.2.3**](#4.2.3)讨论过资源的状态。对于深度模板缓冲来说我们首先设置为`D3D12_RESOURCE_USAGE_INITIAL`，之后再去转换为`D3D12_RESOURCE_USAGE_DEPTH`，这样他就可以作为深度模板缓冲绑定到渲染管道上去了。
+- `pOptimizedClearValue`: 设置最佳的清理值，清理资源的时候(指的是将资源的值全部变成给定值)使用的值如果是在这里设置的值，那么就会比不是这里设定的值快很多。这里可以认为是一个优化。你可以设置为`nullptr`。
+- `riidResource`:`ID3D12Resource`的**COM ID**。
+- `ppvResource`: 返回创建的资源。
 
-��Դͨ����˵����ŵ�Ĭ�϶��У������Ļ�������Ҳ����õġ�ֻ���ڱ����ʱ��ŷ����ϴ��ѵȶ��С�
+资源通常来说都会放到默认堆中，这样的话性能上也是最好的。只有在必须的时候才放在上传堆等堆中。
 
-��ʹ�����ģ�建��ǰ��������Ҫ����һ����ͼȥ�󶨵���Ⱦ�ܵ��ϡ�
-����ʹ���`Render Target`����ͼ**���**��
+在使用深度模板缓冲前，我们需要创建一个视图去绑定到渲染管道上。
+这个和创建`Render Target`的视图**差不多**。
 
-�������Ǵ��롣
+接下来是代码。
 
-### <element id ="4.3.9"> 4.3.9 Set the ViewPort </element>
+### 4.3.9 Set the ViewPort
 
-ͨ����˵���ǻ��3D�������Ƶ�������̨������ȥ������ȫ��ģʽ�»��Ƶ�������Ļ������ģʽ�»��Ƶ��������ڵĿͻ�����
-����ʱ�����ǿ��ܻ���Ҫ������Ƶ���̨�����һ���Ӿ���ȥ���μ�ͼƬ[4.9](#Image4.9)��
+通常来说我们会把3D场景绘制到整个后台缓冲中去，即在全屏模式下绘制到整个屏幕，窗口模式下绘制到整个窗口的客户区。
+但有时候我们可能会需要将其绘制到后台缓冲的一个子矩形去。参见图片[4.9](#Image4.9)。
 
-<img src="Images/4.9.png" id = "Image4.9"> </img>
+![Image4.9](Images/4.9.png)
+> 图片4.9
 
-���ǿ��Ի���3D��������̨�����һ���Ӿ�������ȥ������̨������Ȼռ�������ͻ�����
+我们可以绘制3D场景到后台缓冲的一个子矩形里面去，而后台缓冲仍然占据整个客户区。
 
-�����̨������Ӿ������ǳ�֮Ϊ�ӿ�(**ViewPort**)��
+这个后台缓冲的子矩形我们称之为视口(**ViewPort**)。
 
 ```C++
     struct D3D12_VIEWPORT
@@ -839,11 +847,11 @@ D3D12 ERROR: ID3D12CommandList:: {Create,Reset}CommandList: The command allocato
     };
 ```
 
-ǰ��4����Ա��������Ӿ���(���Է������ǵ��ӿڴ�С�Ǹ������ͣ�Ҳ����˵����ָ���ķ�Χ�ı߽���԰���һ�����ص�һ����)��
-��`Direct3D`�У����ֵ�洢����Ȼ����У����ҷ�Χ���޶��� **[0, 1]** ֮�䡣Ȼ��`MinDepth`��`MaxDepth`�ͽ�������ֵ������ **[MinDepth, MaxDepth]**��
-��ʱ��������ֵ����ʵ��һЩ�ر����Ч��
+前面4个成员描述这个子矩形(可以发现我们的视口大小是浮点类型，也就是说我们指定的范围的边界可以包含一个像素的一部分)。
+在`Direct3D`中，深度值存储在深度缓冲中，并且范围会限定在 **[0, 1]** 之间。然后`MinDepth`和`MaxDepth`就将会把深度值放缩到 **[MinDepth, MaxDepth]**。
+有时候放缩深度值可以实现一些特别的特效。
 
-���������������ṹ������ͨ��`ID3D12CommandList::RSSetViewports`�������ӿڡ�
+在我们填充完这个结构后，我们通过`ID3D12CommandList::RSSetViewports`来设置视口。
 
 ```C++
     ViewPort.TopLeftX = 0.0f;
@@ -856,17 +864,17 @@ D3D12 ERROR: ID3D12CommandList:: {Create,Reset}CommandList: The command allocato
     CommandList->RSSetViewports(1, &ViewPort);
 ```
 
-��һ�������ǰ󶨵��ӿڵĸ���(ĳЩ�߼�Ч��������Ҫ����ӿ�)���ڶ������������ӿ�����ĵ�һ��Ԫ�صĵ�ַ��
+第一个参数是绑定的视口的个数(某些高级效果可能需要多个视口)，第二个参数就是视口数组的第一个元素的地址。
 
-�����ʹ���ӿ���ʵ�ַ�����Ϸ��
-���㴴�������ӿڣ�һ�����ڴ��ڵ���벿�֣�һ�������Ұ벿�֡���ô��Ϳ������õ�һ���ӿ�����Ⱦ���1�ĳ�����Ȼ�����õڶ����ӿ�����Ⱦ���2�ĳ�����
+你可以使用视口来实现分屏游戏。
+即你创建两个视口，一个用于窗口的左半部分，一个用于右半部分。那么你就可以设置第一个视口来渲染玩家1的场景，然后设置第二个视口来渲染玩家2的场景。
 
-### <element id = "4.3.10"> 4.3.10 Set the Scissor Rectangles </element>
+### 4.3.10 Set the Scissor Rectangles
 
-���ǿ��Զ���һ���ü�����������̨�����г���������η�Χ�����زü�����
-����һ���Ż��ķ�����������֪��������Ļ�ǻ���������һЩ**UI**Ԫ�صģ�**UI**���ڵĵط���û�б�Ҫ����������Ϣ�ģ���Ϊ���ᱻ**UI**���ǵ���
+我们可以定义一个裁剪矩形来将后台缓冲中超出这个矩形范围的像素裁剪掉。
+这是一个优化的方法，即我们知道整个屏幕是会在最顶层包含一些**UI**元素的，**UI**存在的地方是没有必要处理像素信息的，因为最后会被**UI**覆盖掉。
 
-һ���ü����ζ������¡�
+一个裁剪矩形定义如下。
 
 ```C++
     typedef struct tagRect
@@ -878,34 +886,31 @@ D3D12 ERROR: ID3D12CommandList:: {Create,Reset}CommandList: The command allocato
     } RECT;
 ```
 
-
-����ʹ��`ID3D12CommandList::RSSetScissorRects`���òü����Ρ�
+我们使用`ID3D12CommandList::RSSetScissorRects`设置裁剪矩形。
 
 ```C++
     rect = { 0, 0, width, height };
     CommandList->RSSetScissorRects(1, &rect);
 ```
 
-�������ӿ����ƣ���һ�������Ǹ������ڶ�������������ͷԪ�ص�ָ�롣
+和设置视口类似，第一个参数是个数，第二个参数是数组头元素的指针。
 
-�ӿںͲü�����ÿ��`Render Target`ֻ������һ��������������ָ���б����õ�ʱ����Ҫ�������á�
+视口和裁剪矩形每个`Render Target`只能设置一个，并且两者在指令列表重置的时候需要重新设置。
 
+整个4.4章节是在写计时器。我觉得这个很没必要用那么大的篇幅来写，以及他主要也是代码实现。
 
-����4.4�½�����д��ʱ�����Ҿ��������û��Ҫ����ô���ƪ����д���Լ�����ҪҲ�Ǵ���ʵ�֡�
+整个4.5章节是在写这本书的例子的代码框架，这个的话看代码就好了。
 
-����4.5�½�����д�Ȿ������ӵĴ����ܣ�����Ļ�������ͺ��ˡ�
+整个4.7章节是在写如果调试`Direct3D`，主要方法就是通过读取`HResult`返回的值来报错。
 
-����4.7�½�����д�������`Direct3D`����Ҫ��������ͨ����ȡ`HResult`���ص�ֵ��������
+## 4.7 SUMMARY
 
-## <element id = "4.7"> 4.7 SUMMARY </element>
-
-- `Direct3D`���Ա���Ϊ�����ͼ��Ӳ��֮����н顣�������ͨ��ʹ��`Direct3D`�ĺ�������Դ��ͼ�󶨵�Ӳ����Ⱦ�ܵ���ȥ��������Ⱦ�ܵ�������Լ�����3Dͼ�Ρ�
-- `Component Object Model`��һ����`DirectX`�ܹ��;���������޹أ��Լ�ӵ���������Եļ��������ǲ�����Ҫ�˽�`COM`�Ĺ���ԭ����ϸ�ڣ�����ֻ��Ҫ֪����εõ�`COM`�ӿں��ͷ�`COM`�ӿڡ�
-- һά��������һά���飬��ά�������ƶ�ά���飬��ά����������ά���顣ÿ����������Ҫ����ÿ��Ԫ�صĸ�ʽ���������Ϊ�Ƕ�����������͡�����������ֻ���ڴ洢ͼƬ��Ϣ�������������ܶ����飬����洢�����Ϣ��`GPU`�����������������ܶ������������˺Ͷ��ز�����
-- Ϊ�˻رܻ��Ƶ�ʱ����˸����õķ������ǻ��Ƶ�һ��������������ȥ������̨���塣������������������Ϻ�����ֱ�ӽ���һ���������ֵ���Ļ�������Ļ����Ͳ��ῴ����һ֡�е����屻���ƵĹ����ˡ���ÿһ֡���ֺ�ԭ���ĺ�̨�������ǰ̨����������ʾ��ԭ����ǰ̨���廻�ɺ�̨���壬�����Ĳ����ͽ������֡�����ʹ�ý�������ʵ��������ܣ�ʹ����������ķ������ǳ�֮Ϊ˫���塣
-- ������һ����͸���ĳ����У������������ĵ㽫���ڸ�ס������������ĵ㡣��Ȼ������һ������ȷ�������������ĵ�ļ�����ͨ��ʹ�������ķ��������ǾͲ���Ҫ������Ⱦ3D���������˳���ˡ�
-- ��`Direct3D`�У���Դ������ֱ�Ӱ󶨵���Ⱦ�ܵ���ȥ�����ǰ󶨵���Ⱦ�ܵ���ȥ����һ����Դ����������һ�����������Կ���һ�������Ľṹ������`GPU`��Դ�����͵���Ϣ��ͬһ����Դ���ܻᴴ����ͬ���͵����������Ͼ�һ����Դ��;δ�ص�һ���������󶨵���Ⱦ�ܵ��Ĳ�ͬ�׶Σ��ֻ�����������Ϊ��������͵�������ʹ�á�Ӧ�ó��򴴽������������洢��������
-- `ID3D12Device`������Ϊ����`Direct3D`�п�������ͼ�εĿ����������ǿ���ʹ�����������������`GPU`��Դ���ֻ��ߴ�����������ͼ��Ӳ���Ľӿڡ�
-- `GPU`��һ��ָ����У�`CPU`ͨ��ʹ��`Direct3D API`��ָ���б��ύ��ָ����С��ύ��ָ��������Ͼͻ�ִ�У���Ҫ�ȵ�`GPU`ִ�����������ǰ���ύ��ָ���Ż�ִ�е�ǰ�����ָ����ָ������ǿյģ���ô`GPU`�ͻ��ɿ���״̬����Ϊ��û���κ���Ҫ�����������ˡ���һ�������`GPU`��ָ�����̫���ˣ���ô`CPU`�ͻ�ȴ�`GPU`�����Լ���������������������û�г������ϵͳ��Դ��
-- `GPU`��ϵͳ�ڶ�������������������`CPU`���С���ʱ��������Ҫͬ��`CPU`��`GPU`�����磬`GPU`��ָ�����������һ��ָ����Ҫʹ��һ����Դ��`CPU`�ǲ�����`GPU`���������ָ��֮ǰȥ�޸Ļ��������Ǹ���Դ�ġ�����һ��ͬ������ζ����һ���ᴦ�ڿ���״̬������������Ӧ���������ٵĳ��֣�����ζ������û�г�ַ����������������ơ�
-
+- `Direct3D`可以被认为程序和图形硬件之间的中介。例如程序通过使用`Direct3D`的函数将资源试图绑定到硬件渲染管道上去，管理渲染管道的输出以及绘制3D图形。
+- `Component Object Model`是一项让`DirectX`能够和具体的语言无关，以及拥有向后兼容性的技术。我们并不需要了解`COM`的工作原理和细节，我们只需要知道如何得到`COM`接口和释放`COM`接口。
+- 一维纹理类似一维数组，二维纹理类似二维数组，三维纹理类似三维数组。每个纹理都需要定义每个元素的格式，你可以认为是定义数组的类型。纹理不仅仅只用于存储图片信息，他还可以做很多事情，例如存储深度信息。`GPU`可以在纹理上面做很多操作，例如过滤和多重采样。
+- 为了回避绘制的时候闪烁，最好的方法就是绘制到一个离屏的纹理上去，即后台缓冲。当整个场景被绘制完毕后，我们直接将这一个场景呈现到屏幕。这样的话，就不会看到这一帧中的物体被绘制的过程了。在每一帧呈现后，原本的后台缓冲会变成前台缓冲用于显示，原本的前台缓冲换成后台缓冲，这样的操作就叫做呈现。我们使用交换链来实现这个功能，使用两个缓冲的方法我们称之为双缓冲。
+- 假设在一个不透明的场景中，离摄像机最近的点将会遮盖住所有在他后面的点。深度缓冲就是一项用来确定离摄像机最近的点的技术。通过使用这样的方法，我们就不需要关心渲染3D场景物体的顺序了。
+- 在`Direct3D`中，资源并不是直接绑定到渲染管道上去。我们绑定到渲染管道上去的是一个资源的描述符。一个描述符可以看作一个轻量的结构来告诉`GPU`资源的类型等信息。同一个资源可能会创建不同类型的描述符，毕竟一个资源用途未必单一。例如他绑定到渲染管道的不同阶段，又或者他可以作为另外的类型的纹理来使用。应用程序创建描述符堆来存储描述符。
+- `ID3D12Device`可以认为就是`Direct3D`中控制物理图形的控制器。我们可以使用这个控制器来创建`GPU`资源，又或者创建其他控制图形硬件的接口。
+- `GPU`有一个指令队列，`CPU`通过使用`Direct3D API`将指令列表提交到指令队列。提交到指令并不是马上就会执行，而要等到`GPU`执行完毕所有他前面提交到指令后才会执行当前的这个指令。如果指令队列是空的，那么`GPU`就会变成空闲状态，因为他没有任何需要处理的事情了。另一方面如果`GPU`的指令队列太满了，那么`CPU`就会等待`GPU`赶上自己。但是上面的两者情况都没有充分利用系统资源。
+- `GPU`是系统第二个处理器，他独立于`CPU`运行。有时候我们需要同步`CPU`和`GPU`。例如，`GPU`的指令队列里面有一个指令需要使用一个资源，`CPU`是不能在`GPU`处理完这个指令之前去修改或者销毁那个资源的。任意一次同步就意味着有一方会处于空闲状态，这样的我们应当尽可能少的出现，这意味着我们没有充分发挥两个处理器优势。
