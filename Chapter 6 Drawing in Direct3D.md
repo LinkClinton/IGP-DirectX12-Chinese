@@ -649,4 +649,19 @@ cbuffer Material : register(b2)
 ```
 
 - `RootParameterIndex`: 我们要设置到哪个来源参数中去。
-- `BaseDescriptor`:
+- `BaseDescriptor`: 描述符在描述符堆中的位置，表示我们要设置的描述符表的第一个元素。例如，我们指定了一个有5个描述符的描述符表，那么`BaseDescriptor`和在他后面4个的描述符就会作为一个描述符表被设置。
+
+下面的代码我们会设置一个`CBV`堆和一个描述符表到管道。
+
+```C++
+    commandList->SetGraphicsRootSignature(...);
+
+    commandList->SetDescriptorHeaps(descriptorHeapsCount, descriptorHeaps);
+
+    D3DX12_GPU_DESCRIPTOR_HANDLE cbvPosition = descriptorHeaps->GetGPUDescriptorHandleForHeapStart() + offset;
+
+    commandList->SetGraphicsRootDescriptorTable(0, cbvPosition);
+```
+
+> 为了性能考虑，建议不要创建太大的来源标记，以及不要过于频繁更换来源标记。
+> 当你更换一个来源标记的时候，你原本绑定的资源全部都会被取消绑定，你需要重新绑定。
