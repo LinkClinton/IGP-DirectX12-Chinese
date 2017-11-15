@@ -665,3 +665,65 @@ cbuffer Material : register(b2)
 
 > 为了性能考虑，建议不要创建太大的来源标记，以及不要过于频繁更换来源标记。
 > 当你更换一个来源标记的时候，你原本绑定的资源全部都会被取消绑定，你需要重新绑定。
+
+## 6.7 COMPILING SHADERS
+
+在`Direct3D`中着色器程序首先需要编译成较为简便的字节码。
+然后图形驱动会将编译后的字节码重新编译成`GPU`的指令。
+我们可以在程序运行的时候使用下面的函数去编译我们的着色器程序。
+
+```C++
+    HRESULT D3DCompileFromFile(
+        LPCWSTR pFileName,
+        const D3D_SHADER_MACRO *ppDefines,
+        ID3DInclude *pInclude,
+        LPCSTR pEntrypoint,
+        LPCSTR pTarget,
+        UINT Flags1,
+        UINT Flags2,
+        ID3DBlob **ppCode,
+        ID3DBlob **ppErrorMsgs);
+```
+
+- `pFileName`: 我们要编译的着色器代码所在的文件名。
+- `pDefines`: 我们目前不需要使用，如果你需要使用的话，参见SDK文档。
+- `pInclude`: 同上。
+- `pEntrypoint`: 我们要使用的着色器程序的名字，因为本身来说一个着色器程序就是一个函数，因此就是对应的函数名，我们可以在一个着色器代码文件里面写多个着色器。
+- `pTarget`: 指定我们的着色器的类型和版本，具体参数参见文档。
+- `Flags1`: 指定我们要如何编译着色器，参数很多。我们这里主要使用`D3DCOMPILE_DEBUG`和`D3DCOMPILE_SKIP_OPTIMIZATION`用来方便我们进行调试。
+- `Flags2`: 我们目前不需要使用。
+- `ppCode`: 返回编译后的字节码，类型`ID3DBlob`。
+- `ppErrorMsgs`: 如果编译错误，返回编译的错误信息，类型`ID3DBlob`。
+
+`ID3DBlob`本质上就是一块内存，我们可能需要使用到下面的两个成员函数。
+
+- `LPVOID GetBufferPointer`: 返回这块内存的头指针。
+- `SIZE_T GetBufferSize`: 返回这块内存的大小，单位`byte`。
+
+### 6.7.1 Offline Compilation
+
+除了在运行的时候编译着色器程序，我们也可以预先编译好它。
+
+下面是一些为什么要预先编译的理由:
+
+- 编译着色器程序需要花费一段时间，预先编译的话就可以减少这段时间。
+- 预先编译的话能够更好的去调试我们的着色器程序，以及更早的知道我们的着色器程序的错误。
+- Windows 8 应用商店程序只能使用预先编译好的着色器程序。
+
+编译后的文件格式会变成`.cso`。
+
+我们通常`DirectX`附带的`FXC`工具来预先编译我们的着色器程序。`FXC`是一个控制台工具，因此我们需要键入一些指令来编译我们的着色器。
+
+下面的例子是我们使用`Debug`模式编译我们的着色器程序。
+
+```command line
+    fxc ".hlsl" /Od /Zi /T vs_5_0 /E "entryPoint" /Fo ".cso" /Fc ".asm"
+
+    fxc ".hlsl" /Od /Zi /T ps_5_0 /E "entryPoint" /Fo ".cso" /Fc ".asm"
+```
+
+下面的例子是编译成`Release`模式的。
+
+```command line
+    fxc ".hlsl" /Od /Zi /T 
+```
