@@ -725,5 +725,56 @@ cbuffer Material : register(b2)
 下面的例子是编译成`Release`模式的。
 
 ```command line
-    fxc ".hlsl" /Od /Zi /T 
+    fxc ".hlsl" /Od /Zi /T vs_5_0 /E "entryPoint" /Fo ".cso" /Fc ".asm"
+
+    fxc ".hlsl" /Od /Zi /T ps_5_0 /E "entryPoint" /Fo ".cso" /Fc ".asm"
 ```
+
+参数 | 描述
+---- | ---
+/Od          | 禁止优化，通常用于调试。
+/Zi          | 允许调试信息。
+/T "string"  | 着色器的类型和版本。
+/E "string"  | 着色器的入口点函数名。
+/Fo "string" | 编译完成后的文件名。
+/Fc "string" | 输出一个用于调试，检测指令数，以及了解代码是如何生成的文件。
+
+如果你编译的着色器程序有语法错误的话，FXC将会输出错误或者警告信息。例如我们编译的代码中有着一段:
+
+```hlsl
+    //worldViewProj is not exist!!
+    output.posH = mul(float4(input.pos, 1.0f)worldViewProj);
+```
+
+然后他就会输出这样的错误:
+
+```command line
+    xxx.hlsl(29,42-54): error X3004: undeclared identifier "worldViewProj"
+
+    xxx.hlsl(29,14-55): error X3013: 'mul': no matching 2 parameter intrinsic function
+
+    ...
+```
+
+虽然我们能够预先编译好了着色器代码，但是我们还是需要读入代码到我们的程序中去，我们可以使用输入输出流在完成这个工作。
+
+```C++
+    std::ifstream file(fileName, std::ios::binary);
+
+    file.seekg(0, std::ios_base::end);
+    std::ifstream::pos_type size = (int)file.tellg();
+    file.seekg(0, std::ios_base::beg);
+
+    ComPtr<ID3DBlob> blob;
+
+    ThrowIfFailed(D3DCreateBlob(size, blob.GetAddressOf()));
+
+    file.read((char*)blob->GetBufferPointer(), size);
+
+    file.close();
+```
+
+### 6.7.2 Generated Assembly
+
+`/Fc` 参数将会告诉`FXC`生成一段汇编代码。
+在调试或者其他时候，时不时看下着色器的汇编码能够很好的帮助我们检查着色器的指令数，以及了解代码如何生成的。
