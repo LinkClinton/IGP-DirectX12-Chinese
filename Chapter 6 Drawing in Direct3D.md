@@ -813,3 +813,33 @@ Visual Studio 2013以上可以直接编译我们的着色器。你只需要将�
 ![Image6.6](Images/6.6.png)
 
 但是使用Visual studio去编译着色器的话就有一个缺点，就是一个文件只能够支持一个着色器程序，即我们不能将多个着色器程序放到一个文件里面去了。
+
+## 6.8 RASTERIZER STATE
+
+虽然渲染管道有很多部分都是可编程的，但是还是有一些部分只允许我们设置参数，而不是可编程。例如关于光栅化部分，我们就不能编写代码，而是必须使用`D3D12_RASTERIZER_DESC`结构来设置我们的渲染管道的光栅化阶段。
+
+```C++
+    struct D3D12_RASTERIZER_DESC {
+        D3D12_FILL_MODE FillMode; //Default: D3D12_FILL_SOLID
+        D3D12_CULL_MODE CullMode; //Default: D3D12_CULL_BACK
+        BOOL FrontCounterClockwise; //Default: false
+        INT DepthBias; //Default: 0
+        FLOAT DepthBiasClamp; //Default: 0.0f
+        FLOAT SlopeScaledDepthBias; //Default: 0.0f
+        BOOL DepthClipEnable; //Default: true
+        BOOL ScissorEnable; //Default: false
+        BOOL MultisampleEnable; //Default: false
+        BOOL AntialiasedLineEnable; //Default: false
+        UINT ForcedSampleCount; //Default: 0
+        D3D12_CONSERVATIVE_RASTERIZATION_MODE ConservativeRaster; //Default: D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF
+    }
+```
+
+大部分参数我们都不会经常使用。如果你想要了解所有的参数的话，建议去翻看SDK文档。我们这里只介绍4个常用的。
+
+- `FillMode`: 指定绘制的模式。`D3D12_FILL_WIREFRAME`表示线框模式，`D3D12_FILL_SOLID`表示实体模式。
+- `CullMode`: 指定剔除模式。`D3D12_CULL_NONE`表示不进行剔除，`D3D12_CULL_BACK`表示进行背面剔除，`D3D12_CULL_FRONT`表示进行正面剔除。
+- `FrontCounterClockwise`: `false`表示顺时针方向的三角形会认为是正面，逆时针方向的三角形会变成反面。`true`这相反。需要注意的是所谓的顺时针方向和逆时针方向都是相对摄像机来说的。
+- `ScissorEnable`: `true`表示开启在4.3.10提到过的剪裁测试，`false`表示关闭。
+
+## 6.9 PIPELINE STATE OBJECT
