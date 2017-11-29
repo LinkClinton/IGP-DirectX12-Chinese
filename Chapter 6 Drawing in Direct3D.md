@@ -843,3 +843,41 @@ Visual Studio 2013以上可以直接编译我们的着色器。你只需要将�
 - `ScissorEnable`: `true`表示开启在4.3.10提到过的剪裁测试，`false`表示关闭。
 
 ## 6.9 PIPELINE STATE OBJECT
+
+到现在为止，我们已经介绍了如何描述输入的顶点格式，如何创建一个顶点着色器和一个像素着色器，如何设置光栅化阶段状态。然而我们并没有介绍如何绑定这些东西到我们的渲染管道中去。这里我们就定义了一个叫做管道状态(`PSO, Pipeline State Object`)的东西来将上面的东西集合在一起，然后统一设定到渲染管道上去。在`Direct3D`中对应`ID3D12PipelineState`接口。
+
+如果要创建一个管道状态的话，我们必须填充`D3D12_GRAPHICS_PIPELINE_STATE_DESC`结构来创建。
+
+```C++
+struct D3D12_GRAPHICS_PIPELINE_STATE_DESC
+{
+    ID3D12RootSignature *pRootSignature;
+    D3D12_SHADER_BYTECODE VS;
+    D3D12_SHADER_BYTECODE PS;
+    D3D12_SHADER_BYTECODE DS;
+    D3D12_SHADER_BYTECODE HS;
+    D3D12_SHADER_BYTECODE GS;
+    D3D12_STREAM_OUTPUT_DESC StreamOutput;
+    D3D12_BLEND_DESC BlendState;
+    UINT SampleMask;
+    D3D12_RASTERIZER_DESC RasterizerState;
+    D3D12_DEPTH_STENCIL_DESC DepthStencilState;
+    D3D12_INPUT_LAYOUT_DESC InputLayout;
+    D3D12_PRIMITIVE_TOPOLOGY_TYPE PrimitiveTopologyType;
+    UINT NumRenderTargets;
+    DXGI_FORMAT RTVFormats[8];
+    DXGI_FORMAT DSVFormat;
+    DXGI_SAMPLE_DESC SampleDesc;
+};
+```
+
+- `pRootSignature`:要绑定到这个管道状态的来源标记的指针。来源标记的内容必须要和绑定到这个管道状态的着色器内容相吻合。
+- `VS`: 要绑定的顶点着色器(`Vertex Shader`)。
+- `PS`: 要绑定的像素着色器(`Pixel Shader`)。
+- `DS`: 要绑定的域着色器(`Domain Shader`)。
+- `HS`: 要绑定的外壳着色器(`Hull Shader`)。
+- `GS`: 要绑定的几何着色器(`Geometry Shader`)。
+- `StreamOutput`: 用于流式输出，我们目前不需要关心。
+- `BlendState`: 指定用于设置混合属性的混合状态。我们之后会讨论。这里我们使用默认值。
+- `SampleMask`: 多重采样最多支持32个采样点，因此我们可以通过这一个$32bit$大小的整型来设置我们采样的时候要忽略的采样点，例如你第5位是$0$，就表示我们在进行多重采样的时候会忽略第5个采样点。通常我们设置为默认值`0xffffffff`表示不忽略任何采样点。
+- `RasterizerState`
