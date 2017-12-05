@@ -869,6 +869,21 @@ struct D3D12_GRAPHICS_PIPELINE_STATE_DESC
     DXGI_FORMAT DSVFormat;
     DXGI_SAMPLE_DESC SampleDesc;
 };
+
+struct D3D12_INPUT_LAYOUT_DESC
+{
+    const D3D12_INPUT_ELEMENT_DESC *pInputElementDescs;
+    UINT NumElements;
+};
+
+enum D3D12_PRIMITIVE_TOPOLOGY_TYPE
+{
+    D3D12_PRIMITIVE_TOPOLOGY_TYPE_UNDEFINED = 0,
+    D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT = 1,
+    D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE = 2,
+    D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE = 3,
+    D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH = 4
+};
 ```
 
 - `pRootSignature`:要绑定到这个管道状态的来源标记的指针。来源标记的内容必须要和绑定到这个管道状态的着色器内容相吻合。
@@ -880,4 +895,51 @@ struct D3D12_GRAPHICS_PIPELINE_STATE_DESC
 - `StreamOutput`: 用于流式输出，我们目前不需要关心。
 - `BlendState`: 指定用于设置混合属性的混合状态。我们之后会讨论。这里我们使用默认值。
 - `SampleMask`: 多重采样最多支持32个采样点，因此我们可以通过这一个$32bit$大小的整型来设置我们采样的时候要忽略的采样点，例如你第5位是$0$，就表示我们在进行多重采样的时候会忽略第5个采样点。通常我们设置为默认值`0xffffffff`表示不忽略任何采样点。
-- `RasterizerState`
+- `RasterizerState`: 指定我们要绑定的光栅化阶段状态。
+- `DepthStencilState`: 指定我们要绑定的用于深度和目标测试的深度和模板状态。我们将会在之后介绍，这里我们使用默认值。
+- `InputLayout`: 指定我们要绑定的输入顶点格式。
+- `PrimitiveTopologyType`: 指定我们要使用的图元拓扑类型。
+- `NumRenderTargets`: 指定我们同时使用的渲染目标的个数。
+- `RTVFormats`: 渲染目标的数据格式。由于支持同时渲染到多个渲染目标中去，因此每个格式要和他对应的渲染目标相吻合。
+- `DSVFormat`: 指定我们要使用的深度模板缓冲的格式，必须和我们之后设置的深度模板缓冲的格式相吻合。
+- `SampleDesc`: 指定我们要使用的多重采样的采样数和采样等级，必须要和我们使用的渲染目标的设置相同。
+
+我们填充完`D3D12_GRAPHICS_PIPELINE_STATE_DESC`结构后就可以通过它来创建我们的渲染管道状态了。
+
+```C++
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
+
+    //Fill psoDesc
+    ...
+    ///
+
+    ComPtr<ID3D12PipelineState> pso;
+
+    device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&pso));
+```
+
+虽然我们需要在创建渲染管道状态的时候指定很多状态，但是这样做的话能够提高性能。我们可以通过提前将所有的状态指定好，那么`Direct3D`就会验证我们的这个管道状态是否合法，然后驱动也会提前生成对应控制硬件状态的代码。在`Direct3D 11`中，我们是可以分别设置渲染管道的状态。但是有些状态是分散的相关联的，例如你改变了一个状态，那么可能另外一个和这个状态相关的状态也需要改变。这样就可能在我们改变几个状态的时候导致会有很多的状态会被改变，以及产生多余的改变，例如一个状态改变多次。为了避免这样的情况，驱动并不会立马改变状态，而是会到下一次绘制指令时，我们能够确定具体的渲染管道状态时才会开始改变，但是如果这样做的话，就意味着驱动要在运行的时候记录这些内容，它需要记录哪些状态需要被改变，以及最后会改变成什么样子，然后在运行的时候生成对应的代码将硬件的状态改变成对应的状态。在`Direct3D 12`中我们可以通过提前创建好渲染管道状态，然后直接更换我们的渲染管道状态一次性的将状态改变，就能够节省性能的浪费。
+
+由于验证和创建一个渲染管道状态的时间开销是比较大的，因此我们通常都会在初始化的时候创建完毕，当然也可以在第一次引用的时候创建然后通过哈希表或者数据结构来存储下来下次直接引用第一次创建的就好了。
+
+并且并不是所有的状态都被放到渲染管道状态中去了，也有一些和渲染管道无关的状态没有放到渲染管道状态中去，例如视角和裁剪矩形。
+
+大致上来说`Direct3D`可以算一个状态机，因此他的所有的状态都会保存到直到这个状态被改变为止。下面的代码将会介绍使用不同的渲染管道状态。当然最好尽可能的少改变我们的渲染管道状态。 
+
+```C++
+    commandList->Reset(commandListAlloc, pso);
+
+    //Draw Call
+
+    commandList->SetPipelineState(pso2);
+
+    //Draw Call
+
+    commandList->SetPipelineState(pso3);
+
+    //Draw Call
+```
+
+## 6.12 SUMMARY
+
+- 除了位置信息外，我们还可以个顶点附加一些额外的信息。通常我们会定义一个结构体来描述我们自定义的顶点结构。然后我们可以通过`D3D12_INPUT_LAYOUT_DESC`来告诉`Direct3D`我们的顶点格式是怎么样的，其中`D3D12_INPUT_LAYOUT_DESC`中的`D3D12_INPUT_ELEMENT_DESC`数组的每一个元素都需要对应顶点结构中的每一个分量。并且我们将会在创建渲染管道状态的时候设置它，以及验证它是否和顶点着色器的输入顶点数据相吻合。最后就是输入顶点格式在渲染管道状态被绑定的时候会被绑定到输入装配阶段(`IA Stage`)。
