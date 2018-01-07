@@ -119,7 +119,7 @@ enum D3D12_SHADER_VISIBILITY{
 ### 7.6.2 Descriptor Tables
 
 ```C++
-struct D3D12_ROOT_DESCRIPTOR_TABLE 
+struct D3D12_ROOT_DESCRIPTOR_TABLE
 {
     UINT NumDescriptorRanges;
     const D3D12_DESCRIPTOR_RANGE *pDescriptorRanges;
@@ -158,3 +158,122 @@ enum D3D12_DESCRIPTOR_RANGE_TYPE
     ```
 - `OffsetInDescriptorsFromTableStart`: 这一组描述符距离描述符表的起始位置的偏差值。具体参见样例。
 
+```C++
+    D3D12_DESCRIPTOR_RANGE range[3];
+    range[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
+    range[0].NumDescriptors = 2;
+    range[0].BaseShaderRegister = 0;
+    range[0].RegisterSpace = 0;
+    range[0].OffsetInDescriptorsFromTableStart = 0;
+
+    range[1].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+    range[1].NumDescriptors = 3;
+    range[1].BaseShaderRegister = 0;
+    range[1].RegisterSpace = 0;
+    range[1].OffsetInDescriptorsFromTableStart = 2;
+
+    range[2].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_UAV;
+    range[2].NumDescriptors = 1;
+    range[2].BaseShaderRegister = 0;
+    range[2].RegisterSpace = 0;
+    range[2].OffsetInDescriptorsFromTableStart = 5;
+
+    D3D12_ROOT_DESCRIPTOR_TABLE table;
+    table.NumDescriptorRanges = 3;
+    table.pDescriptorRanges = range;
+```
+
+上面的例子就创建了一个存储两个`CBV`然后3个`SRV`然后一个`UAV`的描述符表。然后关于`OffsetInDescriptorsFromTableStart`这个参数，我们也可以将其交给`Direct3D`自己去计算，你只需要将这个变量的值设为`D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND`就可以了。
+
+### 7.6.3 Root Descriptors
+
+```C++
+struct D3D12_ROOT_DESCRIPTOR
+{
+    UINT ShaderRegister;
+    UINT RegisterSpace;
+};
+```
+
+- `ShaderRegister`: 描述符要绑定到着色器的哪个寄存器。例如你设置为2并且资源类型是`CBV`的话，那么其对应的映射就是`register(b2)`了。
+    ```hlsl
+    cbuffer buffer : register(b2) {...};
+    ```
+- `RegisterSpace`: 完全和描述符表的一样。
+
+相比描述符表，直接使用描述符的话就相对来说比较简单，我们可以直接在使用的时候设置就好了。
+
+```C++
+void SetGraphicsRootConstantBufferView(
+    UINT RootParameterIndex,
+    D3D12_GPU_VIRTUAL_ADDRESS BufferLocation);
+```
+
+直接使用指令列表的这个成员函数设置就好了，第一个参数是你要设置的那个描述符是来源标记中的哪个参数，第二个参数是资源的虚拟地址。
+
+### 7.6.4 Root Constants
+
+```C++
+struct D3D12_ROOT_CONSTANTS
+{
+    UINT ShaderRegister;
+    UINT RegisterSpace;
+    UINT Num32BitValues;
+};
+```
+
+- `ShaderRegister`: 和描述符一样的参数。
+- `RegisterSpace`: 同上。
+- `Num32BitValues`: 你将要设置的值个数。
+
+```C++
+    D3D12_ROOT_CONSTANTS constant;
+    constant.ShaderRegister = 0;
+    constant.RegisterSpace = 0;
+    constant.Num32BitValues = 3;
+
+    ///Create root signatures
+    ...
+
+    float firstData;
+    float srcData[9];
+
+    commandList->SetGraphicsRoot32BitConstants(0, 1,
+        &firstData, 0);
+    commandList->SetGraphicsRoot32BitConstants(0, 9,
+        srcData, 1);
+```
+
+>对应着色器代码
+
+```hlsl
+cbuffer Data : register(b0)
+{
+    //这里面不能用数组....WTF
+
+    float firstData;
+
+    float srcData0;
+    float srcData1;
+    float srcData2;
+    float srcData3;
+    float srcData4;
+    float srcData5;
+    float srcData6;
+    float srcData7;
+    float srcData8;
+};
+```
+
+```C++
+void SetGraphicsRoot32BitConstants(
+    UINT RootParameterIndex,
+    UINT Num32BitValuesToSet,
+    const void *pSrcData,
+    UINT DestOffsetIn32BitValues);
+```
+
+- `RootParameterIndex`: 要设置到哪个来源参数。
+- `Num32BitValuesToSet`: 你要设置的值的个数。
+- `pSrcData`: 设置的值的第一个元素的地址。
+- `DestOffsetIn32BitValues`: 从缓冲中的第几个元素后开始设置。例如例子中第二次设置就是从`srcData0`开始依次填充的，因为它是第二个元素，所以我们要设置为1，表示从第一个元素后开始填充。
