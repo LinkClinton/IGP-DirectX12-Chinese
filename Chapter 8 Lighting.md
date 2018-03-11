@@ -82,4 +82,82 @@
 简单来说我们知道起始和终止状态($p_0$和$p_1$)，然后我们对于任意的一个$p=p_0 + t(p_1 - p_0)$，那么$p$这个点的面法线就是$n = n_0 + t(n_1 - n_0)$。
 
 如果我们在像素着色器中，通过插值得到面法线，然后进行光照计算，我们称之为逐像素光照。
-我们还有一种开销相对小的，但是质量不高的方法，叫做逐顶点光照，简单来说就是对每个顶点进行光照计算，然后每个像素的值就通过插值来获得。
+我们还有一种开销相对小的，但是质量不高的方法，叫做逐顶点光照，简单来说就是对每个顶点进行光照计算，然后每个像素的值就通过插值来获得。有时候，在使用两种光照视觉效果差别不是很大的时候，我们就会经常将原本的逐像素光照换成逐顶点光照，以便于能够节约开销提高性能。
+
+### 8.2.1 Computing Normal Vectors
+
+计算一个三角形(**$p_0,p_1,p_2$**)的面法线，我们可以先计算出三角形的任意两条边的向量，然后得到三角形的面法线。
+
+两条边的向量:
+
+$u = p_1 - p_0$
+
+$v = p_2 - p_0$
+
+那么面法线就是:
+
+$n = \frac{n \times v}{|u \times v|}$
+
+在一个平面上，我们可以通过计算来得到一个面的法线。
+但是在网格中我们要需要计算出顶点的法向量，因此我们需要一个方法。
+我们假设有一个点$v$，他的法向量为$n$，那么这个点的法向量$n$就是网格中所有的包含这个顶点的多边形的面法线的平均值。例如在[图片8.6](Image8.6)，一个点被4个多边形共用，那么这个点的法向量的计算方法就是:
+
+$n_{avg} = \frac{n_0 + n_1 + n_2 + n_3}{|n_0 + n_1 + n_2 + n_3|}$
+
+![Image8.6](Images/8.6.png)
+
+在上面的式子中，我们不会对其除以4，而是直接将其标准化(**Normalize**)。
+那么在更复杂的图形上，我们的计算也会变得相对简单，我们只需要将所有的面法线相加然后标准化后就可以得到一个顶点的法向量了。
+
+```C++
+    for (int i = 0; i < numTriangles; i++)
+    {
+        uint index0 = indices[i * 3 + 0];
+        uint index1 = indices[i * 3 + 1];
+        uint index2 = indices[i * 3 + 2];
+
+        Vertex vertex0 = vertices[index0];
+        Vertex vertex1 = vertices[index1];
+        Vertex vertex2 = vertices[index2];
+
+        Vector3 e0 = vertex1.pos - vertex0.pos;
+        Vector3 e1 = vertex2.pos - vertex0.pos;s
+
+        Vector3 faceNormal = Cross(e0, e1);
+
+        vertices[index0].normal += faceNormal;
+        vertices[index1].normal += faceNormal;
+        vertices[index2].normal += faceNormal;
+    }
+
+    for (int i = 0; i < numVertices; i++)
+        vertices[i].normal = Normalize(vertices[i].normal);
+```
+
+### 8.2.2 Transforming Normal Vectors
+
+在[图片8.7a](Image8.7a)中，向量$u = v_1 - v_0$垂直法向量$n$。
+如果我们对其进行一个非均匀的变换$A$，变换成[图片8.7b](Image8.7b)中的样子，我们会发现变换后的向量$uA = v_1A - v_0A$和变换后的$nA$并不垂直。
+
+![Image8.7.a](Images/8.7.a.png)
+![Image8.7.b](Images/8.7.b.png)
+![Image8.7.c](Images/8.7.c.png)
+
+其中a部分是变换前，b部分是将其X轴部分缩放两个单位后，c部分是将法向量进行一次逆转变换。
+
+也就是说，我们的问题是，一个变换矩阵$A$(**Transformation Matrix**)对一些点和对应的向量(不要求标准化)进行变换，我们需要找到另外一个矩阵$B$，使得变化后的法向量和变化后的向量垂直($uA \cdot nB = 0$)。
+
+现在我们来推导这个矩阵:
+
+式子 | 解释
+-----| ----
+$u \cdot n = 0$ | 法向量$n$垂直于这个向量$u$。
+$un^T = 0$ | 将点乘写成矩阵乘法的形式。
+$u(AA^{-1})n^T = 0$ | 插入一个单位矩阵$I = AA^{-1}$。
+$(uA)(A^{-1}n^T) = 0$ | 矩阵乘法的结合律。
+$(uA)((A^{-1}n^T)^T)^T = 0$ | 转置矩阵的性质$(M^T)^T = M$。
+$(uA)(n(A^{-1})^T)^T = 0$ | 转置矩阵的性质$(AB^T)^T = B^TA^T$。
+$uA \cdot n(A^{-1})^T = 0$ | 重新将矩阵乘法写成点乘法的形式。
+$uA \cdot nB = 0$| 因此这样的转换就能够使得向量垂直。
+
+因此我们只需要使用矩阵$B = (A^{-1})^T$将法向量进行变换就可以使得法向量重新垂直了。
