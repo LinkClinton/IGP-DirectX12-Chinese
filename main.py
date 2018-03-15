@@ -13,7 +13,14 @@ for item in allFile:
     html = headHtml
     html += markdown2.markdown_path(fileName + ".md", 
         extras=["fenced-code-blocks","code-friendly", "code-color", "tables"])
+    
     output = open("./"+fileName+".html","w",encoding= "utf-16")
     output.write(html)
     pass
+
+html = headHtml
+html += markdown2.markdown_path("readme.md", 
+        extras=["fenced-code-blocks","code-friendly", "code-color", "tables"])
+output = open("./"+"index.html","w",encoding= "utf-16")
+output.write(html)
     

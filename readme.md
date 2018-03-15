@@ -10,7 +10,7 @@
 - [Chapter 5 The Rendering Pipeline](./Chapter%205%20The%20Rendering%20Pipeline.html)
 - [Chapter 6 Drawing in Direct3D](./Chapter%206%20Drawing%20in%20Direct3D.html)
 - [Chapter 7 Drawing in Direct3D Part II](./Chapter%207%20Drawing%20in%20Direct3D%20Part%20II.html)
-- [Chapter 8 Lighting]()
+- [Chapter 8 Lighting](./Chapter%208%20Lighting.html)
 - [Chapter 9 Texturing]()
 - [Chapter 10 Blending]()
 - [Chapter 11 Stenciling]()
@@ -25,7 +25,7 @@
 
 (●'◡'●)，o(*￣▽￣*)o。
 
-现在使用了LaTex以及没有再继续使用一些HTML语法了，因此建议使用一个支持LaTex的Markdown阅读器而不是直接在github上看。
+现在使用了LaTex以及没有再继续使用一些HTML语法了，因此建议使用一个支持LaTex的Markdown阅读器而不是直接在github上看。现在已经支持Github Pages了，点击标题就可以跳转了。
 
 好了说了那么多，欢迎各位大佬加个友链，能够让更多想学习DX12的人找到一本还能看得过去的中文翻译。Intel官网那边似乎也有比较多的中文的关于DX12的资料，有兴趣的可以去看看。
 
