@@ -191,9 +191,9 @@ Matrix InverseTranspose(Matrix matrix)
 $$
  A = \left[
     \begin{matrix}
-    1 & 0 & 0 & 0 \newline
-    0 & 0.5 & 0 & 0 \newline
-    0 & 0 & 0.5 & 0 \newline
+    1 & 0 & 0 & 0 \\
+    0 & 0.5 & 0 & 0 \\
+    0 & 0 & 0.5 & 0 \\
     1 & 1 & 1 & 1
     \end{matrix}
     \right]
@@ -204,9 +204,9 @@ $$
 $$
  (A^{-1})^T = \left[
     \begin{matrix}
-    1 & 0 & 0 & -1 \newline
-    0 & 2 & 0 & -2 \newline
-    0 & 0 & 2 & -2 \newline
+    1 & 0 & 0 & -1 \\
+    0 & 2 & 0 & -2 \\
+    0 & 0 & 2 & -2 \\
     0 & 0 & 0 & 1
     \end{matrix}
     \right]
