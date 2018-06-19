@@ -3,3 +3,4 @@ Chapter 5 The Rendering Pipeline
 Chapter 6 Drawing in Direct3D
 Chapter 7 Drawing in Direct3D Part II
 Chapter 8 Lighting
+Chapter 10 Blending
