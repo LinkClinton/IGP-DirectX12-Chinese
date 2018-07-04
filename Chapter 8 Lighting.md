@@ -387,3 +387,26 @@ $$LitColor = A_L \otimes m_d + max(L \cdot n, 0) \cdot B_L \otimes \bigg( m_d + 
 - $n \cdot h$：表示微平面的法线$h$和平面的法线$n$的夹角$\theta_h$。
 - $\frac{m + 8}{m}$：使得镜面反射的能量守恒的系数。
 
+![Image8.21](Images/8.21.png)
+
+图片中$a$部分则是没有进行任何光照的球体，$b$部分则是漫反射光和环境光的组合，$c$部分则是三种光的组合。
+
+最后提一句，书中关于计算光照的方程只是对应书中建立的模型，并不意味着我们对于光照的计算只有这一种模型。
+
+## 8.9 IMPLEMENTING MATERIALS
+
+对于材质，其结构如下:
+
+```C++
+
+struct Material {
+    float4 DiffuseAlbedo; //default: (1f, 1f, 1f, 1f)
+    float3 FresnelR0; //default: (0.01f, 0.01f, 0.01f)
+    float Roughness; //default: 0.25f
+}
+
+```
+
+想要建立更加真实的材质模型，我们不仅需要定义**DiffuseAlbedo**和**FresnelR0**还可能需要对其进行一些艺术上的微调。例如，金属将会吸收所有的进入金属内部的光线，也就是说金属没有漫反射一说(**DiffuseAlbedo**将会被设置为$0$)。然而由于我们的模型并不是$100\%$模拟的真实光照，为了弥补这个因素，我们可能会将**DiffuseAlbedo**设置的较为小而不是为0，使得我们得到更好的艺术效果。换句话说，我们虽然在模拟真实的光照，但是如果我们可以通过一些微调使得我们的结果看起来更好的话，那么一些微调也是可以的。
+
+在我们的材质结构体中，
