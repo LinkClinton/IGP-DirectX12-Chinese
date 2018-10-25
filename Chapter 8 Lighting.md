@@ -415,5 +415,49 @@ struct Material {
 
 ![Image8.22](Images/8.22.png)
 
-其中一种实现这样的情况方法就是为每个顶点都设置材质，然后在光栅化的时候通过插值来获取面上对应的点的材质值。但是现今常用的方法并不是这样，而是纹理映射(**Texture Mapping**)，将会在之后的章节中讲到。
+其中一种实现这样的情况方法就是为每个顶点都设置材质，然后在光栅化的时候通过插值来获取面上对应的点的材质值。但是现今常用的方法并不是这样，而是纹理映射(**Texture Mapping**)，将会在之后的章节中讲到。在本章节，我们允许在每次渲染的时候更换我们的材质，因此我们需要为不同的材质都创建实例，并将其放入表中。
+
+```C++
+
+Material grass;
+Material water;
+
+grass->Name = "grass";
+grass->MatCBIndex = 0;
+grass->DiffuseAlbedo = float4(0.2f, 0.6f, 0.6f, 1.0f);
+
+....
+
+mMaterials["grass"] = std::move(grass);
+mMaterials["water"] = std::move(water);
+
+```
+
+上述表中的材质数据存放在系统内存中，为了我们能够在着色器中能够访问它，我们得需要将我们所需要的材质数据复制到常缓冲中去。就如同我们为每个物体都创建一个常缓冲一样，我们为为一个`FrameResource`都建立一个缓冲来存放材质数据。
+
+```C++
+
+struct FrameResource{
+    public:
+
+    std::unique_ptr<Buffer<Material> MaterialBuffer = nullptr;
+};
+
+```
+
+我们在渲染中需要设置好材质，可能每次渲染是用的物体不同，因此我们的每个`Material`都记录了一个索引，以方便我们在缓冲中取出我们所需要的材质。我们可以通过对GPU虚拟地址(`GPU Virtual Address`)进行偏移，从而在缓冲中取出我们所需要的材质。
+
+```C++
+    ...
+
+    D3D12_GPU_VIRTUAL_ADDRESS matCBAddress = matCB->GetGPUVirtualAddress() + mat->MatCBIndex * matCBByteSize;
+
+    commandList->SetGraphicsRootConstantBufferView(1, matCBAddress);
+
+    ...
+```
+
+我们需要三角形的每个面的法向量，以便我们能够确定光线照射到面上的时候和面的夹角。因此我们在顶点层次中为其加上一个法线属性，在光栅化的时候，我们的法线会被插值，从而每个像素都能够得到他所在的三角形面的法线。
+
+到现在为止，我们讨论了光线的一些属性，并没有讨论具体的光源的种类。在下一部分，我们将会讨论如何实现平行光，点光源，以及聚光源。
 
