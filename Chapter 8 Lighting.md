@@ -524,3 +524,51 @@ $$k_{spot}(\Phi) = max (cos \Phi, 0) ^ s = max (-L \cdot d, 0) ^ s$$
 聚光灯的公式和方程8.4类似，但是我们需要对光源的亮度$B_L$乘以衰减系数$att(d)$以及聚光灯的因子$k_{spot}$。
 
 从聚光灯的因子$k_{spot}$可以看出计算聚光灯的代价比点光源要大，同样的点光源要比平行光大(由于有一个求平方根的操作，因此代价会大很多)。总的来说，平行光是代价最为小的光源，然后是点光源，最后是聚光灯。
+
+## 8.13 LIGHTING IMPLEMENTATION
+
+这一部分将会讨论平行光，点光源，聚光灯的具体实现。
+
+### 8.13.1 Light Structure
+
+我们将会为光源定义一个结构体(在`HLSL`中同样会定义一样的结构)，用来存储光源的数据。需要注意的是，对于不同类型的光源，其会有一部分成员不会被使用。例如对于点光源来说，`Direction`成员就不会被使用到。
+
+```C++
+struct Light {
+    float3 Strength;
+    float FalloffStart; //point/spot light only
+    float3 Direction; //directional/spot light only
+    float FalloffEnd; //point/spot light only
+    float3 Position; //point light only
+    float SpotPower; //spot light only
+};
+```
+
+需要注意，成员变量在结构体中的排列顺序并不是任意的(详见附录B)。大致上`HLSL`在内存布局上的做法是将成员变量放入到一个4维向量中去，并且不拆分任何一个成员变量到两个四维向量中去。那么按照上面的代码，`HLSL`会这样布局。
+
+- vector 1: (Strength.x, Strength.y, Strength.z, FalloffStart)
+- vector 2: (Direction.x, Direction.y, Direction.z, FalloffEnd)
+- vector 3: (Position.x, Position.y, Position.z, SpotPower)
+
+如果将结构体的成员变量的排列顺序改为下面的话。
+
+```C++
+struct Light {
+    float3 Strength;
+    float3 Direction;
+    float3 Position;
+    float FalloffStart;
+    float FalloffEnd;
+    float SpotPower;
+}
+```
+
+那么其布局将会是。
+
+- vector 1: (Strength.x, Strength.y, Strength.z, empty)
+- vector 2: (Direction.x, Direction.y, Direction.z, empty)
+- vector 3: (Position.x, Position.y, Position.z, empty)
+- vector 4: (FalloffStart, FalloffEnd, SpotPower, empty)
+
+第二种布局方法会消耗更多的空间，但是这不是最主要的问题。最主要的问题是，`C++`和`HLSL`的布局方式不同。对于上述布局方法，`C++`并不会为此预留`empty`，因此我们使用`memcpy`将数据从`CPU`上传到`GPU`的时候，就会产生问题。
+
