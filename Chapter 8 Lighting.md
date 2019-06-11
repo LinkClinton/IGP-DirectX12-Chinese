@@ -572,3 +572,55 @@ struct Light {
 
 第二种布局方法会消耗更多的空间，但是这不是最主要的问题。最主要的问题是，`C++`和`HLSL`的布局方式不同。对于上述布局方法，`C++`并不会为此预留`empty`，因此我们使用`memcpy`将数据从`CPU`上传到`GPU`的时候，就会产生问题。
 
+### 8.13.2 Common Helper Functions
+
+下面几个函数是适用于用于多种类型光源的辅助函数，以便于减少代码量。
+
+- `CalcAttenuation`: 实现一个线性的衰减系数，适用于点光源和聚光灯。
+- `SchlickFresnel`: 计算菲涅尔方程中的近似值。
+- `BlinnPhong`: 计算有多少光线反射到眼中，即漫反射和镜面反射的和。
+
+```hlsl
+float CalcAttenuation(float d, float fallofStart, float falloffEnd){
+    return saturate((falloffEnd - d) / (falloffEnd - fallofStart));
+}
+
+float3 SchlickFresnel(float3 R0, float3 normal, float3 lightVec){
+    float cosIncidentAngle = saturate(dot(normal, lightVec));
+
+    float f0 = 1.0f - cosIncidentAngle;
+    float3 reflectPercent = R0 + (1.0f - R0) * (f0 * f0 * f0 * f0 * f0);
+
+    return reflectPercent;
+}
+
+struct Material{
+    float4 DiffuseAlbedo;
+    float3 FresnelR0;
+    float Shininess; //1 - roughness
+};
+
+float3 BlinnPhong(float3 lightStrength, float3 lightVec, float3 normal, float3 toEye, Material material){
+    const float m = material.Shininess * 256.0f;
+    float3 halfVec = normalize(toEye + lightVec);
+
+    float roughnessFactor = (m + 8.0f) * pow(max(dot(halfVec, normal), 0.0f), m) / 8.0f;
+    float3 fresnelFactor = SchlickFresnel(material.FresnelR0, halfVec, lightVec);
+    float3 specAlbedo = fresnelFactor * roughnessFactor;
+
+    specAlbedo = specAlbedo / (specAlbedo + 1.0f);
+
+    return (material.DiffuesAlbedo.rgb + specAlbedo) * lightStrength;
+}
+```
+
+上面的函数使用了一些HLSL内置的函数，例如`dot`, `pow`, `max`。两个向量相乘，则是单纯的分量相乘。
+
+我们计算高光反射率的公式可能得到超过大于$1$的值，即其光照亮度非常大。然而我们的渲染目标期望的颜色范围则是在$[0, 1]$之间，即LDR(**Low-dynamic-range**)。值超过$1$的部分，将会直接被设为$1$，而为了减缓这样的情况带来的突兀，我们需要缩小它的值：
+
+$$specAlbedo = specAlbedo / (specAlbedo + 1.0)$$
+
+HDR(**High-Dynamic-Range**)光照使用浮点数类型的渲染目标，从而允许颜色值超过$[0,1]$这个范围，然后通过一个颜色映射步骤将颜色值重新映射到$[0,1]$这个范围内，以便于显示。
+
+**Notice** : 在PC上所有的HLSL函数都是内联的，因此不需要担心函数和参数传递的性能开销。
+
