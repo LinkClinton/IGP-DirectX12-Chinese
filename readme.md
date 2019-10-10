@@ -17,7 +17,7 @@
 - [Chapter 17 Picking]()
 - [Chapter 23 Character Animation]()
 
-## 简介
+## 参考
 
 \(￣︶￣*\))*)，Hi~ o(*￣▽￣*)ブ。
 
@@ -25,10 +25,7 @@
 
 (●'◡'●)，o(*￣▽￣*)o。
 
-现在使用了LaTex以及没有再继续使用一些HTML语法了，因此建议使用一个支持LaTex的Markdown阅读器而不是直接在github上看。现在已经支持Github Pages了，点击标题就可以跳转了。
-
-好了说了那么多，欢迎各位大佬加个友链，能够让更多想学习DX12的人找到一本还能看得过去的中文翻译。Intel官网那边似乎也有比较多的中文的关于DX12的资料，有兴趣的可以去看看。
-
-顺便安利一下我实现的软渲染项目，如果相对软渲染以及图形渲染管道有更多的了解可以去看看，[点击传送](https://github.com/LinkClinton/SoftwareGraphics)。内藏PDF可以看哦。
+- 点击标题可以浏览由markdown生成的网页版本的内容。
+- DirectX12和Vulkan的代码可以参考[CodeRed](https://github.com/LinkClinton/Code-Red)，一个支持DirectX12和Vulkan的图形库。
 
 **在Issues中也有一些翻译中的不理解的地方，如果有人知道的话希望能够帮助我解决，谢谢。**

@@ -624,3 +624,89 @@ HDR(**High-Dynamic-Range**)光照使用浮点数类型的渲染目标，从而�
 
 **Notice** : 在PC上所有的HLSL函数都是内联的，因此不需要担心函数和参数传递的性能开销。
 
+### 8.13.3 Implementing Directional Light
+
+设摄像机的位置为$E$，然后可见平面上的点的位置为$p$对应的法线为$n$。下面的`HLSL`函数将会返回平行光源随着向量$v = normalize(E - p)$反射到摄像机的光的强度。在样例中，这个函数将在像素着色器中被调用去计算最后这个像素的颜色。
+
+```HLSL
+float3 ComputeDirectionalLight(Light light, Material material, float3 normal, float3 toEye)
+{
+    float3 lightVector = -light.Direction;
+
+    float ndotl = max(dot(lightVector, normal), 0.0f);
+    float3 lightStrength = light.Strength * ndotl;
+
+    return BlinnPhong(lightStrength, lightVector, normal, toEye, material);
+}
+```
+
+### 8.13.4 Implementing Point Lights
+
+下面的`HLSL`函数将会实现点光源。在样例中，这个函数将在像素着色器中被调用去计算最后这个像素的颜色。
+
+```HLSL
+float3 ComputePointLight(Light light, Material material, float3 position, float3 normal, float3 toEye)
+{
+    float3 lightVector = light.Position - position;
+    float d = length(lightVector);
+
+    if (d > light.FalloffEnd) return float3(0.0f, 0.0f, 0.0f);
+
+    lightVector = lightVector / d;
+
+    float ndotl = max(dot(lightVector, normal), 0.0f);
+    float3 lightStrength = light.Strength * ndotl;
+
+    float att = CalcAttenuation(d, light.FalloffStart, light.FalloffEnd);
+
+    lightStrength = lightStrength * att;
+
+    return BlinnPhong(lightStrength, lightVector, normal, toEye, material);
+}
+```
+
+### 8.13.5 Implementing Spotlights
+
+下面的函数将会实现聚光灯。在样例中，这个函数将在像素着色器中被调用去计算最后这个像素的颜色。
+
+```HLSL
+float3 ComputeSpotLight(Light light, Material material, float3 position, float3 normal, float3 toEye)
+{
+    float3 lightVector = light.Position - position;
+    float d = length(lightVector);
+
+    if (d > light.FalloffEnd) return float3(0.0f, 0.0f, 0.0f);
+
+    lightVector = lightVector / d;
+
+    float ndotl = max(dot(lightVector, normal), 0.0f);
+    float3 lightStrength = light.Strength * ndotl;
+
+    float att = CalcAttenuation(d, light.FalloffStart, light.FalloffEnd);
+    lightStrength = lightStrength * att;
+
+    float spotFactor = pow(max(dot(-lightVector, light.Direction), 0.0f), light.SpotPower);
+
+    lightStrength = lightStrength * spotFactor;
+
+    return BlinnPhong(lightStrength, lightVector, normal, toEye, material);
+}
+```
+
+### 8.13.6 Accumulating Multiple Lights
+
+各个光照的结果的向量的和即为多个光源的最后结果。
+
+## 8.15 Summary
+
+- 通过光照，我们不再为每个顶点定义颜色数据，而是使用场景光照以及为每个顶点定义材质数据来生成像素的颜色。材质可以认为是一种描述光和物体交互的属性。每个顶点的材质通过插值从而得到三角面上每个像素的材质属性。然后通过光照方程来计算出平面上的颜色。
+
+- 平面法线是一个与切平面正交的单位向量。平面法线确定了面上的一个点的朝向。在光照计算中，我们需要平面上的点的平面法线来确定光线照射到这个点的时候和平面成的角度。我们为每个顶点定义法线数据，然后通过插值来得到面上的每个点的平面法线。如果我们使用矩阵$A$对顶点进行变换，那么我们就需要使用$(A^{-1})^T$来对平面法线进行变换。
+
+- 平行光近似的是光源非常远的光源。我们可以近似地认为从光源发出的光照射过来的时候都是互相平行的。一个最为典型的例子就是太阳光。点光源则是发出朝向四周的光的光源。例如灯泡就是一个点光源。聚光灯发出的光则形成一个圆锥体。
+
+- 由于菲涅尔效应，当光线到达两个拥有不同折射系数的介质的交界处的时候，一些光会被反射，然后一些光会经过折射进入介质中去。有多少光会被反射是由介质以及入射角决定的。由于过于复杂，完整的菲涅尔方程通常不会用在实时渲染中，而是使用的近似方法。
+
+- 在现实世界中不存在完美平滑的物体，即便物体的表面看起来很平滑，但是在显微层次仍然是粗糙的。
+
+- 环境光则是一些通过散射，折射等间接照射到物体的光线。也因此它能够照射到物体的每个地方，并且其强度相等。漫反射光则是一些照射到平面，然后一部分被散射，一部分被吸收的光线。由于真实的漫反射实现很困难，因此我们假设散射的光在每个方向上都是同等的。镜面光则是由于菲涅尔效应以及平面的粗糙度反射的光线。
